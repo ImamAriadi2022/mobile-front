@@ -12,14 +12,14 @@ class RegisterWidget extends StatelessWidget {
       child: Column(
         children: [
           const TextField(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Nama Lengkap',
               border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 12),
           const TextField(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Email',
               border: OutlineInputBorder(),
             ),
@@ -27,7 +27,7 @@ class RegisterWidget extends StatelessWidget {
           const SizedBox(height: 12),
           const TextField(
             obscureText: true,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Password',
               border: OutlineInputBorder(),
             ),
