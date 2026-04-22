@@ -11,14 +11,14 @@ class LoginWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          TextField(
+          const TextField(
             decoration: const InputDecoration(
               labelText: 'Email',
               border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 12),
-          TextField(
+          const TextField(
             obscureText: true,
             decoration: const InputDecoration(
               labelText: 'Password',
