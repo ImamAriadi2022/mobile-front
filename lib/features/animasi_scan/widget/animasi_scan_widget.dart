@@ -260,7 +260,7 @@ class _AnimasiScanWidgetState extends State<AnimasiScanWidget>
             ),
             const SizedBox(width: 8),
             Text(
-              '${item['pct'].toInt()}%',
+              '${(item['pct'] as num).toInt()}%',
               style:
                   const TextStyle(color: AppColors.accent, fontSize: 10),
             ),
