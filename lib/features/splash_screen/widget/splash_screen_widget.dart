@@ -96,11 +96,28 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
             ),
           );
         },
-        errorBuilder: (context, error, stackTrace) => Icon(
-          Icons.error_outline_rounded,
-          color: AppColors.accent,
-          size: 44,
-        ),
+        errorBuilder: (context, error, stackTrace) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.accent,
+                size: 44,
+              ),
+              const SizedBox(height: 6),
+              Flexible(
+                child: Text(
+                  error.toString(),
+                  style: TextStyle(color: AppColors.accent, fontSize: 12),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          );
+        },
       );
     }
 
@@ -120,11 +137,28 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
           ),
         ),
       ),
-      errorWidget: (context, url, error) => Icon(
-        Icons.error_outline_rounded,
-        color: AppColors.accent,
-        size: 44,
-      ),
+      errorWidget: (context, url, error) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.accent,
+              size: 44,
+            ),
+            const SizedBox(height: 6),
+            Flexible(
+              child: Text(
+                error.toString(),
+                style: TextStyle(color: AppColors.accent, fontSize: 12),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
