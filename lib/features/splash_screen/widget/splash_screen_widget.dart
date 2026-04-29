@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -26,7 +27,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     super.initState();
     _entryController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 2500),
     );
 
     _slideInAnimation = Tween<Offset>(
@@ -70,6 +71,63 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     );
   }
 
+  Widget _buildLogo() {
+    final imageUrl = '$_cdnBaseUrl$_logoPath';
+
+    if (kIsWeb) {
+      return Image.network(
+        imageUrl,
+        width: 250,
+        fit: BoxFit.contain,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+          return SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  AppColors.accent.withOpacity(0.25),
+                ),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Icon(
+          Icons.error_outline_rounded,
+          color: AppColors.accent,
+          size: 44,
+        ),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      width: 250,
+      fit: BoxFit.contain,
+      placeholder: (context, url) => SizedBox(
+        width: 48,
+        height: 48,
+        child: Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              AppColors.accent.withOpacity(0.25),
+            ),
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(
+        Icons.error_outline_rounded,
+        color: AppColors.accent,
+        size: 44,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -79,28 +137,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
         child: Stack(
           children: [
             Center(
-              child: CachedNetworkImage(
-                imageUrl: '$_cdnBaseUrl$_logoPath',
-                width: 250,
-                fit: BoxFit.contain,
-                placeholder: (context, url) => SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.accent.withOpacity(0.25),
-                      ),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.error_outline_rounded,
-                  color: AppColors.accent,
-                  size: 44,
-                ),
-              ),
+              child: _buildLogo(),
             ),
             Positioned(
               left: 0,
