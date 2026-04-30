@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../home/page/home_page.dart';
+import '../../welcome/page/welcome_page.dart';
 
 class SplashScreenWidget extends StatefulWidget {
   const SplashScreenWidget({super.key});
@@ -55,7 +55,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 420),
         pageBuilder: (context, animation, secondaryAnimation) {
-          return const HomePage();
+          return const WelcomePage();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(0, 1);
