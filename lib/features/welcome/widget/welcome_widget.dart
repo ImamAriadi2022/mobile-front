@@ -127,7 +127,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.login);
+                        Navigator.pushNamed(context, AppRoutes.welcomeTransition);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

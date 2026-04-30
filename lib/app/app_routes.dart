@@ -16,6 +16,7 @@ import '../features/scan_berhasil/page/scan_berhasil_page.dart';
 import '../features/splash_screen/page/splash_screen_page.dart';
 import '../features/tutor_popup/page/tutor_popup_page.dart';
 import '../features/welcome/page/welcome_page.dart';
+import '../features/welcome/page/welcome_transition_page.dart';
 import '../features/welcome_scan/page/welcome_scan_page.dart';
 
 class AppRoutes {
@@ -36,6 +37,7 @@ class AppRoutes {
   static const String editProfil = '/edit-profil';
   static const String pengaturan = '/pengaturan';
   static const String statusKendaraan = '/status-kendaraan';
+  static const String welcomeTransition = '/welcome-transition';
 }
 
 class AppRouter {
@@ -47,6 +49,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const WelcomePage());
       case AppRoutes.login:
         return MaterialPageRoute(builder: (_) => const LoginPage());
+      case AppRoutes.welcomeTransition:
+        return MaterialPageRoute(
+            builder: (_) => const WelcomeTransitionPage());
       case AppRoutes.register:
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case AppRoutes.welcomeScan:
