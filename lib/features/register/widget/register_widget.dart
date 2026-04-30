@@ -88,59 +88,18 @@ class _RegisterWidgetState extends State<RegisterWidget>
   }
 
   void _showSuccessDialog() {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
-      builder: (_) => Dialog(
-        backgroundColor: const Color(0xFF1A2D47),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  color: AppColors.green,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.check, color: Colors.white, size: 48),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Selamat!\nAkun Berhasil Dibuat',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.cardBg,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('Silakan Masuk',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+      isDismissible: false,
+      enableDrag: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.55),
+      builder: (_) => const _SuccessSheet(),
+    ).then((_) {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    });
   }
 
   @override
@@ -483,3 +442,153 @@ class _NeonField extends StatelessWidget {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Bottom sheet sukses daftar — slide dari bawah ke atas
+// ─────────────────────────────────────────────────────────────────────────────
+class _SuccessSheet extends StatefulWidget {
+  const _SuccessSheet();
+
+  @override
+  State<_SuccessSheet> createState() => _SuccessSheetState();
+}
+
+class _SuccessSheetState extends State<_SuccessSheet>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<Offset> _slide;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+
+    _scale = Tween<double>(begin: 0.7, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _ctrl,
+        curve: const Interval(0.4, 1.0, curve: Curves.elasticOut),
+      ),
+    );
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPad = MediaQuery.of(context).padding.bottom;
+
+    return SlideTransition(
+      position: _slide,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(28, 32, 28, 28 + bottomPad),
+        decoration: const BoxDecoration(
+          color: Color(0xFF0F2044),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            // Ikon centang — scale pop animation
+            ScaleTransition(
+              scale: _scale,
+              child: Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.green,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.green.withOpacity(0.45),
+                      blurRadius: 24,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  color: Colors.white,
+                  size: 52,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Teks sukses
+            const Text(
+              'Selamat',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Anda Berhasil Mendaftar',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.65),
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            // Tombol Silahkan Masuk
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A3A6B),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    side: BorderSide(
+                      color: AppColors.accent.withOpacity(0.4),
+                    ),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Silahkan Masuk',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
