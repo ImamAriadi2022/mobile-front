@@ -130,243 +130,56 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
   }
 
   Widget _buildDarkParkingIllustration() {
-    return Container(
-      color: const Color(0xFF1A2840),
-      child: Stack(
-        children: [
-          // Sky gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF2C3E6B), Color(0xFF0D1628)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-          // Parking building layers
-          Center(child: _buildParkingBuilding(isDark: true)),
-        ],
+    final imageUrl = '$_cdnBaseUrl/background/bg-wellcome-dark.png';
+    return _buildNetworkBackground(
+      imageUrl: imageUrl,
+      fallbackGradient: const LinearGradient(
+        colors: [Color(0xFF2C3E6B), Color(0xFF0D1628)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
       ),
     );
   }
 
   Widget _buildLightParkingIllustration() {
     final imageUrl = '$_cdnBaseUrl/background/bg-wellcome-light.png';
-
-    return Container(
-      color: const Color(0xFF87CEEB),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF87CEEB), Color(0xFFB0D9F5)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Center(child: _buildParkingBuilding(isDark: false)),
-        ],
+    return _buildNetworkBackground(
+      imageUrl: imageUrl,
+      fallbackGradient: const LinearGradient(
+        colors: [Color(0xFF87CEEB), Color(0xFFB0D9F5)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
       ),
     );
   }
 
-  Widget _buildParkingBuilding({required bool isDark}) {
-    final Color mainBg = isDark ? const Color(0xFF1B3A5C) : const Color(0xFF4ECDC4);
-    final Color floorBg = isDark ? const Color(0xFF0D2035) : const Color(0xFF3BB5AC);
-    final Color signBg = const Color(0xFF1565C0);
-    final Color accentColor = isDark ? const Color(0xFF00D2FF) : const Color(0xFF26C6DA);
-
-    return SizedBox(
-      width: 340,
-      height: 440,
-      child: Stack(
-        children: [
-          // Main building body
-          Positioned(
-            left: 20,
-            top: 40,
-            child: Container(
-              width: 80,
-              height: 380,
-              decoration: BoxDecoration(
-                color: mainBg,
-                borderRadius: const BorderRadius.only(topLeft: Radius.circular(4)),
-              ),
-              child: Column(
-                children: List.generate(
-                  7,
-                  (i) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 24,
-                            color: accentColor.withOpacity(0.3),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Container(
-                            height: 24,
-                            color: accentColor.withOpacity(0.3),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+  Widget _buildNetworkBackground({
+    required String imageUrl,
+    required LinearGradient fallbackGradient,
+  }) {
+    return SizedBox.expand(
+      child: Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            decoration: BoxDecoration(gradient: fallbackGradient),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white54,
+                strokeWidth: 2,
               ),
             ),
-          ),
-
-          // Parking sign on building
-          Positioned(
-            left: 36,
-            top: 50,
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: signBg,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Center(
-                child: Text(
-                  'P',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Multi-floor ramp structure
-          Positioned(
-            right: 0,
-            top: 80,
-            child: Column(
-              children: [
-                _buildParkingFloor(floorBg, accentColor, 'PARKFINDER: 125 SPACES AVA', true),
-                const SizedBox(height: 4),
-                _buildParkingFloor(floorBg, accentColor, 'PARKFINDER: 125 SPACES AVA', false),
-              ],
-            ),
-          ),
-
-          // Ground floor cars
-          Positioned(
-            bottom: 20,
-            left: 100,
-            child: Row(
-              children: [
-                _buildCarShape(const Color(0xFF26C6DA)),
-                const SizedBox(width: 12),
-                _buildCarShape(const Color(0xFFFFA726)),
-              ],
-            ),
-          ),
-
-          // Ground
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 18,
-              color: isDark ? const Color(0xFF0A1520) : const Color(0xFF78909C),
-            ),
-          ),
-        ],
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            decoration: BoxDecoration(gradient: fallbackGradient),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildParkingFloor(Color bg, Color accent, String text, bool hasGreen) {
-    return Container(
-      width: 230,
-      height: 90,
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(
-          top: BorderSide(color: accent.withOpacity(0.4), width: 2),
-          bottom: BorderSide(color: accent.withOpacity(0.4), width: 2),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              if (hasGreen)
-                Container(width: 28, height: 8, color: Colors.green[400]),
-              Container(width: 28, height: 8, color: Colors.green[300]),
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            color: const Color(0xFF0D1E35),
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Color(0xFF00D2FF),
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          // Car silhouette
-          _buildCarShape(const Color(0xFFB0BEC5), small: true),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCarShape(Color color, {bool small = false}) {
-    final double scale = small ? 0.6 : 1.0;
-    return Transform.scale(
-      scale: scale,
-      child: Container(
-        width: 60,
-        height: 28,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 4,
-              left: 8,
-              right: 8,
-              child: Container(
-                height: 14,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
