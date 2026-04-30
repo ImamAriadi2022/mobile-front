@@ -8,7 +8,7 @@ class WelcomeScanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFF0A1225),
-      body: SafeArea(child: WelcomeScanWidget()),
+      body: WelcomeScanWidget(),
     );
   }
 }

@@ -7,6 +7,7 @@ class ScanBerhasilPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: Color(0xFF0D1628),
       body: ScanBerhasilWidget(),
     );
   }
