@@ -9,6 +9,9 @@ class WelcomeWidget extends StatefulWidget {
   State<WelcomeWidget> createState() => _WelcomeWidgetState();
 }
 
+// CDN base for remote assets used by welcome page
+const String _cdnBaseUrl = 'https://storage.googleapis.com/parkfinderbucket';
+
 class _WelcomeWidgetState extends State<WelcomeWidget> {
   bool _isDark = true;
 
@@ -149,17 +152,27 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
   }
 
   Widget _buildLightParkingIllustration() {
+    final imageUrl = '$_cdnBaseUrl/background/bg-wellcome-light.png';
+
     return Container(
       color: const Color(0xFF87CEEB),
       child: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF87CEEB), Color(0xFFB0D9F5)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+          Positioned.fill(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF87CEEB), Color(0xFFB0D9F5)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           Center(child: _buildParkingBuilding(isDark: false)),
