@@ -8,7 +8,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFF0D1628),
-      body: SafeArea(child: RegisterWidget()),
+      body: RegisterWidget(),
     );
   }
 }
