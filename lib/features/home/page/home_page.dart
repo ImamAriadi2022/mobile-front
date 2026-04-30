@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/home_widget.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../app/app_routes.dart';
 
 const String _cdn = 'https://storage.googleapis.com/parkfinderbucket';
+const String _kTutorialSeen = 'tutorial_seen';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,10 +18,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Tampilkan tutorial saat pertama kali halaman muncul
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showTutorial();
+      _checkAndShowTutorial();
     });
+  }
+
+  Future<void> _checkAndShowTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final alreadySeen = prefs.getBool(_kTutorialSeen) ?? false;
+    if (!mounted) return;
+    if (!alreadySeen) {
+      _showTutorial();
+    }
   }
 
   void _showTutorial() {
@@ -27,7 +37,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.70),
-      builder: (_) => const _TutorialDialog(),
+      builder: (_) => _TutorialDialog(
+        onDone: () async {
+          // Simpan flag agar tidak muncul lagi
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool(_kTutorialSeen, true);
+        },
+      ),
     );
   }
 
@@ -57,7 +73,8 @@ class _TutorialStep {
 }
 
 class _TutorialDialog extends StatefulWidget {
-  const _TutorialDialog();
+  final VoidCallback? onDone;
+  const _TutorialDialog({this.onDone});
 
   @override
   State<_TutorialDialog> createState() => _TutorialDialogState();
@@ -124,11 +141,13 @@ class _TutorialDialogState extends State<_TutorialDialog>
       );
       setState(() => _currentStep++);
     } else {
-      Navigator.pop(context); // tutup dialog → tampil home
+      widget.onDone?.call();
+      Navigator.pop(context);
     }
   }
 
   void _skip() {
+    widget.onDone?.call();
     Navigator.pop(context);
   }
 
