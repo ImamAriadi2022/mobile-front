@@ -6,7 +6,7 @@ import '../../public_widget/search_bar_widget.dart';
 import 'floor_tab_widget.dart';
 import 'parking_slot_item_widget.dart';
 import 'parking_slot_map_widget.dart';
-import '../service/booking_service.dart';
+import '../../booking/service/booking_service.dart';
 import '../../profil/service/profile_service.dart';
 
 /// DetailBookingWidget: Composer untuk halaman peta slot parkir.
