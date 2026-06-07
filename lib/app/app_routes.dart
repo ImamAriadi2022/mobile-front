@@ -69,7 +69,8 @@ class AppRouter {
       case AppRoutes.booking:
         return MaterialPageRoute(builder: (_) => const BookingPage());
       case AppRoutes.detailBooking:
-        return MaterialPageRoute(builder: (_) => const DetailBookingPage());
+        final areaId = settings.arguments as String?;
+        return MaterialPageRoute(builder: (_) => DetailBookingPage(areaId: areaId ?? ''));
       case AppRoutes.history:
         return MaterialPageRoute(builder: (_) => const HistoryPage());
       case AppRoutes.profil:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../service/auth_service.dart';
 import 'dart:ui';
 
 const String _cdnBaseUrl = 'https://storage.googleapis.com/parkfinderbucket';
@@ -49,10 +50,26 @@ class _LoginWidgetState extends State<LoginWidget>
 
   void _doLogin() async {
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800));
+    
+    final email = _emailCtrl.text.trim();
+    final password = _passCtrl.text;
+    
+    final authService = AuthService();
+    final success = await authService.login(email, password);
+
     if (!mounted) return;
     setState(() => _isLoading = false);
-    _showSuccessDialog();
+
+    if (success) {
+      _showSuccessDialog();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login gagal. Periksa email dan password.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _showSuccessDialog() {

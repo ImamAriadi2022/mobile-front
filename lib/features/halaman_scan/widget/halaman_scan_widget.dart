@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import '../service/scan_service.dart';
 
 class HalamanScanWidget extends StatefulWidget {
   const HalamanScanWidget({super.key});
@@ -13,6 +15,8 @@ class _HalamanScanWidgetState extends State<HalamanScanWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _scanLineAnim;
+  final MobileScannerController _cameraController = MobileScannerController();
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -28,7 +32,34 @@ class _HalamanScanWidgetState extends State<HalamanScanWidget>
   @override
   void dispose() {
     _ctrl.dispose();
+    _cameraController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onDetect(BarcodeCapture capture) async {
+    if (_isProcessing) return;
+    final List<Barcode> barcodes = capture.barcodes;
+    if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
+      final code = barcodes.first.rawValue!;
+      setState(() => _isProcessing = true);
+      
+      final scanService = ScanService();
+      final isValid = await scanService.verifyTicket(code);
+
+      if (mounted) {
+        setState(() => _isProcessing = false);
+        if (isValid) {
+          Navigator.pushNamed(context, AppRoutes.scanBerhasil);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Tiket tidak valid atau gagal verifikasi.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -39,60 +70,16 @@ class _HalamanScanWidgetState extends State<HalamanScanWidget>
     return Stack(
       children: [
         // Camera area (gray background simulating camera)
+        // Camera area
         Container(
           width: double.infinity,
           height: size.height * 0.65,
           color: const Color(0xFF5A5A5A),
           child: Stack(
             children: [
-              // Ticket illustration
-              Center(
-                child: Container(
-                  width: 200,
-                  height: 280,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.confirmation_number,
-                          color: Color(0xFF333333), size: 60),
-                      const SizedBox(height: 12),
-                      // Barcode simulation
-                      Container(
-                        width: 160,
-                        height: 60,
-                        color: Colors.black12,
-                        child: Row(
-                          children: List.generate(
-                            20,
-                            (i) => Expanded(
-                              child: Container(
-                                color: i % 3 == 0
-                                    ? Colors.black87
-                                    : Colors.transparent,
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 1),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Parking\nTicket',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF333333),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              MobileScanner(
+                controller: _cameraController,
+                onDetect: _onDetect,
               ),
 
               // Scan frame overlay
@@ -126,6 +113,10 @@ class _HalamanScanWidgetState extends State<HalamanScanWidget>
                   ),
                 ),
               ),
+              if (_isProcessing)
+                const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
             ],
           ),
         ),
@@ -171,7 +162,9 @@ class _HalamanScanWidgetState extends State<HalamanScanWidget>
                     _buildActionButton(
                       icon: Icons.flashlight_on_outlined,
                       label: 'Hidupkan Center',
-                      onTap: () {},
+                      onTap: () {
+                        _cameraController.toggleTorch();
+                      },
                     ),
                     _buildActionButton(
                       icon: Icons.camera_alt_outlined,

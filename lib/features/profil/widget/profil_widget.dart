@@ -6,6 +6,8 @@ import '../../public_widget/info_row_item_widget.dart';
 import '../../public_widget/settings_row_item_widget.dart';
 import 'profile_avatar_widget.dart';
 import 'stats_card_widget.dart';
+import '../service/profile_service.dart';
+import '../../login/service/auth_service.dart';
 
 /// ProfilWidget: Composer untuk halaman profil pengguna.
 ///
@@ -23,6 +25,37 @@ class ProfilWidget extends StatefulWidget {
 class _ProfilWidgetState extends State<ProfilWidget> {
   // ── State ────────────────────────────────────────────────────────────────
   int _navIndex = 4;
+  bool _isLoading = true;
+  ProfileData? _profileData;
+  List<VehicleData> _vehicles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final service = ProfileService();
+    final profile = await service.getProfile();
+    final vehicles = await service.getVehicles();
+    
+    if (mounted) {
+      setState(() {
+        _profileData = profile;
+        _vehicles = vehicles;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _doLogout() async {
+    final auth = AuthService();
+    await auth.logout();
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
+    }
+  }
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
@@ -56,51 +89,58 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                 const SizedBox(height: 12),
 
                 // ② Nama & keterangan
-                const Text(
-                  'Imam Ariadi',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  Column(
+                    children: [
+                      Text(
+                        _profileData?.name ?? 'Nama Tidak Diketahui',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Member Aktif',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 13),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ③ Kartu statistik
+                      const StatsCardWidget(
+                        totalParkir: '0',
+                        parkirAktif: '0',
+                      ),
+                      const SizedBox(height: 16),
+
+                      // ④ Section informasi pribadi
+                      _ProfileSectionCardWidget(
+                        title: 'Informasi Pribadi',
+                        children: [
+                          InfoRowItemWidget(
+                            icon: Icons.email_outlined,
+                            label: 'Email',
+                            value: _profileData?.email ?? '-',
+                          ),
+                          InfoRowItemWidget(
+                            icon: Icons.phone_outlined,
+                            label: 'Nomor Telpon',
+                            value: _profileData?.phoneNumber ?? '-',
+                          ),
+                          InfoRowItemWidget(
+                            icon: Icons.directions_car_outlined,
+                            label: 'Kendaraan Utama',
+                            value: _vehicles.isNotEmpty ? _vehicles.first.plateNumber : 'Belum ada kendaraan',
+                            isLast: true,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Member sejak januari 2026',
-                  style: TextStyle(
-                      color: AppColors.textSecondary, fontSize: 13),
-                ),
-                const SizedBox(height: 20),
-
-                // ③ Kartu statistik
-                const StatsCardWidget(
-                  totalParkir: '33',
-                  parkirAktif: '1',
-                ),
-                const SizedBox(height: 16),
-
-                // ④ Section informasi pribadi
-                _ProfileSectionCardWidget(
-                  title: 'Informasi Pribadi',
-                  children: [
-                    InfoRowItemWidget(
-                      icon: Icons.email_outlined,
-                      label: 'Email',
-                      value: 'imamariadi775@gmail.com',
-                    ),
-                    InfoRowItemWidget(
-                      icon: Icons.phone_outlined,
-                      label: 'Nomor Telpon',
-                      value: '085788322061',
-                    ),
-                    InfoRowItemWidget(
-                      icon: Icons.directions_car_outlined,
-                      label: 'Kendaraan Utama',
-                      value: 'D 12345 FE (Mclaren Senna)',
-                      isLast: true,
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 14),
 
                 // ⑤ Section pengaturan
@@ -156,9 +196,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () =>
-                              Navigator.pushReplacementNamed(
-                                  context, AppRoutes.welcome),
+                          onPressed: _doLogout,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.red,
                             shape: RoundedRectangleBorder(
