@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://backend-api-services-291631508657.asia-southeast2.run.app';
+  static const String baseUrl = 'https://backend-api-services-173368161554.asia-southeast2.run.app';
   static const String _tokenKey = 'jwt_token';
 
   Future<void> setToken(String token) async {

@@ -25,6 +25,29 @@ class AuthService {
     }
   }
 
+  Future<bool> register(String name, String email, String phone, String password, String plateNumber) async {
+    try {
+      final response = await _apiService.post(
+        '/auth/register',
+        body: {
+          'name': name,
+          'email': email,
+          'phoneNumber': phone,
+          'password': password,
+          'plateNumber': plateNumber,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Register error: $e');
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     try {
       await _apiService.post('/auth/logout', requireAuth: true);
