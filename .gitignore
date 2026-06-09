@@ -55,7 +55,15 @@ dash-qr
 /dash-qr/
 
 webGenerateQrcode/
-/webGenerateQrcode
-/webGenerateQrcode/
+ /webGenerateQrcode
+ /webGenerateQrcode/
 
+ # opencode skills
+ skills/
 
+ /skills
+skills/SKILL.md
+
+.opencode/
+
+prompt.md
