@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_routes.dart';
@@ -11,8 +10,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
       title: 'ParkFinder',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
