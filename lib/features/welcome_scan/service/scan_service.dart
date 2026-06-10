@@ -4,14 +4,40 @@ import '../../../core/network/api_service.dart';
 class TicketData {
   final String ticketCode;
   final String status;
+  final String vehicleType;
+  final String areaId;
+  final String areaName;
+  final String bindingId;
 
-  TicketData({required this.ticketCode, required this.status});
+  TicketData({
+    required this.ticketCode,
+    required this.status,
+    this.vehicleType = '',
+    this.areaId = '',
+    this.areaName = '',
+    this.bindingId = '',
+  });
 
   factory TicketData.fromJson(Map<String, dynamic> json) {
     return TicketData(
-      ticketCode: json['ticketCode'] ?? json['ticketId'] ?? json['code'] ?? '',
+      ticketCode: json['ticketId'] ?? json['ticketCode'] ?? json['code'] ?? '',
       status: json['status'] ?? 'active',
+      vehicleType: json['vehicleType'] ?? '',
+      areaId: json['areaId'] ?? '',
+      areaName: json['areaName'] ?? '',
+      bindingId: json['bindingId'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ticketId': ticketCode,
+      'status': status,
+      'vehicleType': vehicleType,
+      'areaId': areaId,
+      'areaName': areaName,
+      'bindingId': bindingId,
+    };
   }
 }
 

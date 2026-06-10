@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../../app/app_routes.dart';
+import '../../welcome_scan/service/scan_service.dart';
+import '../service/parking_service.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
   const StatusKendaraanPage({super.key});
@@ -19,10 +22,13 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
 
   int _seconds = 0;
   Timer? _timer;
+  TicketData? _activeTicket;
+  bool _isCancelling = false;
 
   @override
   void initState() {
     super.initState();
+    _loadActiveTicket();
     _ctrl = AnimationController(
         vsync: this, duration: const Duration(seconds: 2))
       ..repeat(reverse: true);
@@ -32,6 +38,11 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() => _seconds++);
     });
+  }
+
+  Future<void> _loadActiveTicket() async {
+    final ticket = await ActiveTicketStorage().load();
+    if (mounted) setState(() => _activeTicket = ticket);
   }
 
   @override
@@ -66,6 +77,51 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     }
   }
 
+  Future<void> _onKeluarParkir() async {
+    if (_activeTicket == null) {
+      await ActiveTicketStorage().clear();
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      return;
+    }
+
+    setState(() => _isCancelling = true);
+
+    final service = ParkingService();
+    final result = await service.cancelTicket(_activeTicket!.ticketCode);
+
+    if (!mounted) return;
+
+    setState(() => _isCancelling = false);
+
+    if (result.success) {
+      await ActiveTicketStorage().clear();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.cardBg,
+          title: const Text('Gagal', style: TextStyle(color: Colors.white)),
+          content: Text(result.message, style: const TextStyle(color: AppColors.textSecondary)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,18 +139,18 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                         color: AppColors.textSecondary, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'McLaren  Senna',
-                    style: TextStyle(
+                  Text(
+                    _activeTicket?.vehicleType.toUpperCase() ?? 'KENDARAAN',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'D 12345 FE',
-                    style: TextStyle(
+                  Text(
+                    _activeTicket?.areaName ?? '—',
+                    style: const TextStyle(
                         color: AppColors.textSecondary, fontSize: 16),
                   ),
                   const SizedBox(height: 32),
@@ -140,25 +196,25 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildInfoBox(
-                                'Slot parkir yang digunakan',
-                                'A3',
-                                fontSize: 24,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildInfoBox(
+                                  'Lokasi Parkir',
+                                  _activeTicket?.areaName ?? '—',
+                                  fontSize: 24,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: _buildInfoBox(
-                                'Lantai yang digunakan',
-                                'Lantai 1',
-                                fontSize: 18,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _buildInfoBox(
+                                  'Tipe Kendaraan',
+                                  _activeTicket?.vehicleType.toUpperCase() ?? '—',
+                                  fontSize: 18,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                         const SizedBox(height: 10),
                         _buildInfoBox(
                           'Waktu yang dihabiskan',
@@ -179,23 +235,29 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                       width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, AppRoutes.home);
-                        },
+                        onPressed: _isCancelling ? null : _onKeluarParkir,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.accent,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                         ),
-                        child: const Text(
-                          'Keluar Parkir',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child: _isCancelling
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : const Text(
+                                'Keluar Parkir',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
                   ),

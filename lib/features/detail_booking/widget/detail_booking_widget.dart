@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/search_bar_widget.dart';
 import 'floor_tab_widget.dart';
@@ -178,9 +179,8 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     final name = profile?.name ?? 'User';
     final plateNumber = vehicles.isNotEmpty ? vehicles.first.plateNumber : 'UNKNOWN';
 
-    // Get ticketId (assuming from active ticket or dummy for now)
-    // Normally we should check active ticket. For now, use dummy "ticket-user-123"
-    final ticketId = "ticket-user-123"; 
+    final activeTicket = await ActiveTicketStorage().load();
+    final ticketId = activeTicket?.ticketCode ?? 'unknown';
 
     final bookingService = BookingService();
     final success = await bookingService.createReservation(slot.id ?? '', ticketId, name, plateNumber);

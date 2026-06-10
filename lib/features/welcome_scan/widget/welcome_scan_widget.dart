@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 import '../service/scan_service.dart';
 
 class WelcomeScanWidget extends StatefulWidget {
@@ -64,6 +65,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     if (!mounted) return;
 
     if (result != null) {
+      await ActiveTicketStorage().save(result);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.scanBerhasil,
