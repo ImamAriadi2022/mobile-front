@@ -12,9 +12,10 @@ class AuthService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        if (data['token'] != null) {
-          await _apiService.setToken(data['token']);
+        final body = jsonDecode(response.body);
+        final token = body['data']?['token'];
+        if (token != null) {
+          await _apiService.setToken(token);
           return true;
         }
       }
@@ -34,7 +35,8 @@ class AuthService {
           'email': email,
           'phoneNumber': phone,
           'password': password,
-          'plateNumber': plateNumber,
+          'defaultLicensePlate': plateNumber,
+          'vehicleType': 'mobil',
         },
       );
 

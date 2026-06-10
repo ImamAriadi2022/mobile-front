@@ -8,6 +8,7 @@ import '../features/home/page/status_kendaraan_page.dart';
 import '../features/login/page/login_page.dart';
 import '../features/profil/page/edit_profil_page.dart';
 import '../features/profil/page/pengaturan_page.dart';
+import '../features/profil/page/vehicle_management_page.dart';
 import '../features/profil/page/profil_page.dart';
 import '../features/register/page/register_page.dart';
 import '../features/scan_berhasil/page/scan_berhasil_page.dart';
@@ -33,6 +34,7 @@ class AppRoutes {
   static const String pengaturan = '/pengaturan';
   static const String statusKendaraan = '/status-kendaraan';
   static const String welcomeTransition = '/welcome-transition';
+  static const String vehicleManagement = '/vehicle-management';
 }
 
 class AppRouter {
@@ -73,6 +75,8 @@ class AppRouter {
       case AppRoutes.statusKendaraan:
         return MaterialPageRoute(
             builder: (_) => const StatusKendaraanPage());
+      case AppRoutes.vehicleManagement:
+        return MaterialPageRoute(builder: (_) => const VehicleManagementPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

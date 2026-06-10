@@ -7,6 +7,8 @@ import '../../public_widget/settings_row_item_widget.dart';
 import 'profile_avatar_widget.dart';
 import 'stats_card_widget.dart';
 import '../service/profile_service.dart';
+import '../service/vehicle_service.dart';
+import '../model/vehicle.dart';
 import '../../login/service/auth_service.dart';
 
 /// ProfilWidget: Composer untuk halaman profil pengguna.
@@ -27,7 +29,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
   int _navIndex = 4;
   bool _isLoading = true;
   ProfileData? _profileData;
-  List<VehicleData> _vehicles = [];
+  List<Vehicle> _vehicles = [];
 
   @override
   void initState() {
@@ -36,9 +38,10 @@ class _ProfilWidgetState extends State<ProfilWidget> {
   }
 
   Future<void> _loadProfile() async {
-    final service = ProfileService();
-    final profile = await service.getProfile();
-    final vehicles = await service.getVehicles();
+    final profileService = ProfileService();
+    final vehicleService = VehicleService();
+    final profile = await profileService.getProfile();
+    final vehicles = await vehicleService.getVehicles();
     
     if (mounted) {
       setState(() {
@@ -133,8 +136,12 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                           ),
                           InfoRowItemWidget(
                             icon: Icons.directions_car_outlined,
-                            label: 'Kendaraan Utama',
-                            value: _vehicles.isNotEmpty ? _vehicles.first.plateNumber : 'Belum ada kendaraan',
+                            label: 'Kendaraan',
+                            value: _vehicles.isEmpty
+                                ? 'Belum ada kendaraan'
+                                : _vehicles.length == 1
+                                    ? _vehicles.first.plateNumber
+                                    : '${_vehicles.first.plateNumber} (+${_vehicles.length - 1} lainnya)',
                             isLast: true,
                           ),
                         ],
@@ -153,6 +160,16 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                       subtitle: 'Ubah Informasi Profil Anda',
                       onTap: () => Navigator.pushNamed(
                           context, AppRoutes.editProfil),
+                    ),
+                    SettingsRowItemWidget(
+                      icon: Icons.directions_car_outlined,
+                      title: 'Manajemen Kendaraan',
+                      subtitle: 'Tambah & Hapus Kendaraan Anda',
+                      onTap: () => Navigator.pushNamed(
+                          context, AppRoutes.vehicleManagement).then((_) {
+                        // Refresh profil setelah kembali dari vehicle management
+                        _loadProfile();
+                      }),
                     ),
                     SettingsRowItemWidget(
                       icon: Icons.settings_outlined,

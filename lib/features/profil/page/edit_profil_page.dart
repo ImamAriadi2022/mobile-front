@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../service/profile_service.dart';
+import '../service/vehicle_service.dart';
+import '../model/vehicle.dart';
 
 class EditProfilPage extends StatefulWidget {
   const EditProfilPage({super.key});
@@ -13,11 +16,9 @@ class _EditProfilPageState extends State<EditProfilPage> {
   final _namaCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _teleponCtrl = TextEditingController();
-  final _platCtrl = TextEditingController(text: 'D 12345 FE');
-  final _merekCtrl = TextEditingController(text: 'Honda');
-  final _modelCtrl = TextEditingController(text: 'Civic');
   bool _isLoading = true;
   bool _isSaving = false;
+  List<Vehicle> _vehicles = [];
 
   @override
   void initState() {
@@ -26,18 +27,16 @@ class _EditProfilPageState extends State<EditProfilPage> {
   }
 
   Future<void> _loadProfile() async {
-    final service = ProfileService();
-    final profile = await service.getProfile();
-    final vehicles = await service.getVehicles();
+    final profileService = ProfileService();
+    final vehicleService = VehicleService();
+    final profile = await profileService.getProfile();
+    final vehicles = await vehicleService.getVehicles();
     if (mounted) {
       setState(() {
         _namaCtrl.text = profile?.name ?? '';
         _emailCtrl.text = profile?.email ?? '';
         _teleponCtrl.text = profile?.phoneNumber ?? '';
-        if (vehicles.isNotEmpty) {
-          _platCtrl.text = vehicles.first.plateNumber;
-          _merekCtrl.text = vehicles.first.vehicleType;
-        }
+        _vehicles = vehicles;
         _isLoading = false;
       });
     }
@@ -257,101 +256,60 @@ class _EditProfilPageState extends State<EditProfilPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Kendaraan utama section
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardBg2,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Kendaraan Utama',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Data kendaraan utama tidak dapat diubah. Hubungi admin jika perlu mengubah.',
-                            style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildFieldLabel('Plat Nomor*'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _platCtrl,
-                      enabled: false,
-                      style: const TextStyle(color: Colors.white54),
-                      decoration: _inputDeco('Plat Nomor'),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildFieldLabel('Merek*'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _merekCtrl,
-                      enabled: false,
-                      style: const TextStyle(color: Colors.white54),
-                      decoration: _inputDeco('Merek'),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildFieldLabel('Model*'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _modelCtrl,
-                      enabled: false,
-                      style: const TextStyle(color: Colors.white54),
-                      decoration: _inputDeco('Model'),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Kendaraan Sekunder
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardBg2,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Kendaraan Sekunder',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 13)),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
+                    // Kendaraan section — link ke VehicleManagementPage
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.vehicleManagement,
+                      ).then((_) => _loadProfile()),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.cardBg2,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.borderColor),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.directions_car_outlined,
                                   color: AppColors.accent,
-                                  borderRadius: BorderRadius.circular(8),
+                                  size: 18,
                                 ),
-                                child: const Text('+ Kendaraan',
+                                const SizedBox(width: 8),
+                                const Expanded(
+                                  child: Text(
+                                    'Manajemen Kendaraan',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 11)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Belum ada kendaraan sekunder. Klik\ntombol "Tambah Kendaraan" untuk\nmenambahkan.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: AppColors.textSecondary,
+                                  size: 14,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              _vehicles.isEmpty
+                                  ? 'Belum ada kendaraan. Ketuk untuk menambahkan.'
+                                  : '${_vehicles.length} kendaraan terdaftar: ${_vehicles.map((v) => v.plateNumber).join(', ')}',
+                              style: const TextStyle(
                                 color: AppColors.textSecondary,
-                                fontSize: 12),
-                          ),
-                        ],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 28),

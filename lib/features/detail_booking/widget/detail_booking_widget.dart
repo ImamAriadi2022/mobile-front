@@ -9,6 +9,7 @@ import 'parking_slot_item_widget.dart';
 import 'parking_slot_map_widget.dart';
 import '../../booking/service/booking_service.dart';
 import '../../profil/service/profile_service.dart';
+import '../../profil/service/vehicle_service.dart';
 
 /// DetailBookingWidget: Composer untuk halaman peta slot parkir.
 ///
@@ -173,8 +174,9 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
     // Get Profile for name and plateNumber
     final profileService = ProfileService();
+    final vehicleService = VehicleService();
     final profile = await profileService.getProfile();
-    final vehicles = await profileService.getVehicles();
+    final vehicles = await vehicleService.getVehicles();
 
     final name = profile?.name ?? 'User';
     final plateNumber = vehicles.isNotEmpty ? vehicles.first.plateNumber : 'UNKNOWN';
