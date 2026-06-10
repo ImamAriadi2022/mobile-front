@@ -114,19 +114,22 @@ class _HomeWidgetState extends State<HomeWidget> {
                 const SizedBox(height: 12),
 
                 // ⑥ Daftar parkir
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: _parkingList
-                        .map((item) => ParkingListItemWidget(
-                              item: item,
-                              onTap: () => Navigator.pushNamed(
-                                  context, AppRoutes.detailBooking),
-                            ))
-                        .toList(),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: _parkingList
+                          .map((item) => ParkingListItemWidget(
+                                item: item,
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.detailBooking,
+                                  arguments: item.id,
+                                ),
+                              ))
+                          .toList(),
+                    ),
                   ),
-                ),
                 const SizedBox(height: 16),
               ],
             ),

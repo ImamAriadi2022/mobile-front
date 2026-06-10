@@ -111,8 +111,11 @@ class _BookingWidgetState extends State<BookingWidget> {
                       itemBuilder: (context, i) => ParkingListItemWidget(
                         item: _filtered[i],
                         onTap: () {
-                          // TODO: Pass area ID to DetailBooking
-                          Navigator.pushNamed(context, AppRoutes.detailBooking);
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.detailBooking,
+                            arguments: _filtered[i].id,
+                          );
                         },
                       ),
                     ),
