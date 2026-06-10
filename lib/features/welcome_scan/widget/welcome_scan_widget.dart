@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../service/scan_service.dart';
 
 class WelcomeScanWidget extends StatefulWidget {
   const WelcomeScanWidget({super.key});
@@ -18,11 +19,12 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     torchEnabled: false,
   );
 
-  // Animasi garis scan naik-turun
   late final AnimationController _scanLineCtrl;
   late final Animation<double> _scanLine;
 
   bool _hasScanned = false;
+  bool _isLoading = false;
+  String? _errorMessage;
   bool _torchOn = false;
 
   @override
@@ -43,16 +45,44 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     super.dispose();
   }
 
-  void _onDetect(BarcodeCapture capture) {
-    if (_hasScanned) return;
+  Future<void> _onDetect(BarcodeCapture capture) async {
+    if (_hasScanned || _isLoading) return;
     final barcode = capture.barcodes.firstOrNull;
     if (barcode == null || barcode.rawValue == null) return;
 
-    setState(() => _hasScanned = true);
+    setState(() {
+      _hasScanned = true;
+      _isLoading = true;
+      _errorMessage = null;
+    });
     _cameraCtrl.stop();
 
-    // Langsung navigate ke halaman hasil scan
-    Navigator.pushReplacementNamed(context, AppRoutes.scanBerhasil);
+    final qrCode = barcode.rawValue!;
+    final scanService = ScanService();
+    final result = await scanService.verifyTicket(qrCode);
+
+    if (!mounted) return;
+
+    if (result != null) {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.scanBerhasil,
+        arguments: result,
+      );
+    } else {
+      setState(() {
+        _isLoading = false;
+        _hasScanned = false;
+        _errorMessage = 'Tiket tidak valid. Silakan pindai ulang.';
+      });
+      _cameraCtrl.start();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_errorMessage!),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -111,7 +141,18 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             child: _ScanFrame(scanLine: _scanLine),
           ),
 
-          // ── Layer 4: Bottom info panel ─────────────────────────
+          // ── Layer 4: Loading overlay ────────────────────────────
+          if (_isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.accent),
+                ),
+              ),
+            ),
+
+          // ── Layer 5: Bottom info panel ─────────────────────────
           Positioned(
             left: 0,
             right: 0,
@@ -174,7 +215,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             ),
           ),
 
-          // ── Layer 5: Tombol tutup / kembali ───────────────────
+          // ── Layer 6: Tombol tutup / kembali ───────────────────
           Positioned(
             top: topPad + 12,
             left: 16,
@@ -194,7 +235,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             ),
           ),
 
-          // ── Layer 6: Hint teks di atas frame ──────────────────
+          // ── Layer 7: Hint teks di atas frame ──────────────────
           Positioned(
             top: topPad + 72,
             left: 0,

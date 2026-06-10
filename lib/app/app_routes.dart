@@ -11,6 +11,7 @@ import '../features/profil/page/pengaturan_page.dart';
 import '../features/profil/page/profil_page.dart';
 import '../features/register/page/register_page.dart';
 import '../features/scan_berhasil/page/scan_berhasil_page.dart';
+import '../features/welcome_scan/service/scan_service.dart';
 import '../features/splash_screen/page/splash_screen_page.dart';
 import '../features/welcome/page/welcome_page.dart';
 import '../features/welcome/page/welcome_transition_page.dart';
@@ -51,7 +52,9 @@ class AppRouter {
       case AppRoutes.welcomeScan:
         return MaterialPageRoute(builder: (_) => const WelcomeScanPage());
       case AppRoutes.scanBerhasil:
-        return MaterialPageRoute(builder: (_) => const ScanBerhasilPage());
+        final ticketData = settings.arguments as TicketData?;
+        return MaterialPageRoute(
+            builder: (_) => ScanBerhasilPage(ticketData: ticketData));
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case AppRoutes.booking:
