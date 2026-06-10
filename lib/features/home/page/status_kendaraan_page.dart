@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/storage/active_ticket_storage.dart';
+import '../../../core/storage/active_reservation_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../../app/app_routes.dart';
 import '../../welcome_scan/service/scan_service.dart';
@@ -23,12 +24,14 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   int _seconds = 0;
   Timer? _timer;
   TicketData? _activeTicket;
+  ActiveReservation? _activeReservation;
   bool _isCancelling = false;
 
   @override
   void initState() {
     super.initState();
     _loadActiveTicket();
+    _loadActiveReservation();
     _ctrl = AnimationController(
         vsync: this, duration: const Duration(seconds: 2))
       ..repeat(reverse: true);
@@ -43,6 +46,11 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   Future<void> _loadActiveTicket() async {
     final ticket = await ActiveTicketStorage().load();
     if (mounted) setState(() => _activeTicket = ticket);
+  }
+
+  Future<void> _loadActiveReservation() async {
+    final reservation = await ActiveReservationStorage().load();
+    if (mounted) setState(() => _activeReservation = reservation);
   }
 
   @override
@@ -78,17 +86,22 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   Future<void> _onKeluarParkir() async {
-    if (_activeTicket == null) {
+    setState(() => _isCancelling = true);
+
+    final service = ParkingService();
+    CancelResult result;
+
+    if (_activeReservation != null) {
+      result = await service.cancelReservation(_activeReservation!.reservationId);
+    } else if (_activeTicket != null) {
+      result = await service.cancelTicket(_activeTicket!.ticketCode);
+    } else {
       await ActiveTicketStorage().clear();
+      await ActiveReservationStorage().clear();
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.home);
       return;
     }
-
-    setState(() => _isCancelling = true);
-
-    final service = ParkingService();
-    final result = await service.cancelTicket(_activeTicket!.ticketCode);
 
     if (!mounted) return;
 
@@ -96,6 +109,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
 
     if (result.success) {
       await ActiveTicketStorage().clear();
+      await ActiveReservationStorage().clear();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

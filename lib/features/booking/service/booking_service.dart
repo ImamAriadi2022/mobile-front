@@ -84,7 +84,7 @@ class BookingService {
     }
   }
 
-  Future<bool> createReservation(String slotId, String ticketId, String name, String plateNumber) async {
+  Future<ReservationResult> createReservation(String slotId, String ticketId, String name, String plateNumber) async {
     try {
       final response = await _apiService.post(
         '/reservations',
@@ -98,12 +98,51 @@ class BookingService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+        final body = jsonDecode(response.body);
+        final data = body['data'] as Map<String, dynamic>?;
+        if (data != null) {
+          return ReservationResult(
+            success: true,
+            reservationId: data['reservationId'] ?? '',
+            status: data['status'] ?? 'pending',
+            message: body['message'] ?? 'Booking berhasil.',
+          );
+        }
+        return ReservationResult(
+          success: true,
+          reservationId: '',
+          status: 'pending',
+          message: 'Booking berhasil.',
+        );
       }
-      return false;
+      final body = jsonDecode(response.body);
+      return ReservationResult(
+        success: false,
+        reservationId: '',
+        status: '',
+        message: body['message'] ?? 'Booking gagal.',
+      );
     } catch (e) {
-      print('Create reservation error: $e');
-      return false;
+      return ReservationResult(
+        success: false,
+        reservationId: '',
+        status: '',
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
     }
   }
+}
+
+class ReservationResult {
+  final bool success;
+  final String reservationId;
+  final String status;
+  final String message;
+
+  ReservationResult({
+    required this.success,
+    required this.reservationId,
+    required this.status,
+    required this.message,
+  });
 }

@@ -89,7 +89,6 @@ class _LoginWidgetState extends State<LoginWidget>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final topPad = MediaQuery.of(context).padding.top;
 
     final imageUrl = _isDark

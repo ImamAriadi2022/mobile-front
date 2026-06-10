@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/storage/active_ticket_storage.dart';
+import '../../../core/storage/active_reservation_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/search_bar_widget.dart';
 import 'floor_tab_widget.dart';
@@ -185,18 +186,27 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     final ticketId = activeTicket?.ticketCode ?? 'unknown';
 
     final bookingService = BookingService();
-    final success = await bookingService.createReservation(slot.id ?? '', ticketId, name, plateNumber);
+    final result = await bookingService.createReservation(slot.id ?? '', ticketId, name, plateNumber);
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Booking berhasil!'), backgroundColor: Colors.green),
+      if (result.success && result.reservationId.isNotEmpty) {
+        final reservation = ActiveReservation(
+          reservationId: result.reservationId,
+          status: result.status,
+          slotId: slot.id ?? '',
+          slotName: slot.label,
+          areaId: widget.areaId,
+          ticketId: ticketId,
         );
-        _fetchSlots(); // Refresh
+        await ActiveReservationStorage().save(reservation);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message), backgroundColor: Colors.green),
+        );
+        _fetchSlots();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Booking gagal.'), backgroundColor: Colors.red),
+          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
         );
       }
     }

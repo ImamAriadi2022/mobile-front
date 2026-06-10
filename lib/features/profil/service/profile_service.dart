@@ -3,11 +3,17 @@ import '../../../core/network/api_service.dart';
 
 /// ProfileData — Model data profil pengguna.
 class ProfileData {
+  final String userId;
   final String name;
   final String email;
   final String phoneNumber;
 
-  ProfileData({required this.name, required this.email, required this.phoneNumber});
+  ProfileData({
+    required this.userId,
+    required this.name,
+    required this.email,
+    required this.phoneNumber,
+  });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
     // Response dari GET /users/profile bisa langsung atau dibungkus {success, data: {...}}
@@ -15,6 +21,7 @@ class ProfileData {
         ? json['data'] as Map<String, dynamic>
         : json;
     return ProfileData(
+      userId: src['userId'] ?? '',
       name: src['name'] ?? 'User',
       email: src['email'] ?? 'No Email',
       phoneNumber: src['phoneNumber'] ?? 'No Phone Number',
