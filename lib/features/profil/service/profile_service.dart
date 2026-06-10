@@ -26,20 +26,40 @@ class ProfileData {
 ///
 /// Menangani GET /users/profile dan PUT /users/profile.
 /// Untuk kendaraan, gunakan VehicleService.
+class UpdateProfileResult {
+  final bool success;
+  final String message;
+
+  UpdateProfileResult({required this.success, required this.message});
+}
+
 class ProfileService {
   final ApiService _apiService = ApiService();
 
-  Future<bool> updateProfile(String name, String email, String phoneNumber) async {
+  Future<UpdateProfileResult> updateProfile(String name, String email, String phoneNumber) async {
     try {
       final response = await _apiService.put(
         '/users/profile',
         body: {'name': name, 'email': email, 'phoneNumber': phoneNumber},
         requireAuth: true,
       );
-      return response.statusCode == 200 || response.statusCode == 201;
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        return UpdateProfileResult(
+          success: true,
+          message: body['message'] ?? 'Profil berhasil diperbarui.',
+        );
+      }
+      final body = jsonDecode(response.body);
+      return UpdateProfileResult(
+        success: false,
+        message: body['message'] ?? 'Gagal menyimpan profil.',
+      );
     } catch (e) {
-      print('Update profile error: $e');
-      return false;
+      return UpdateProfileResult(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
     }
   }
 

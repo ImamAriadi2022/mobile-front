@@ -159,7 +159,9 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                       title: 'Edit Profil',
                       subtitle: 'Ubah Informasi Profil Anda',
                       onTap: () => Navigator.pushNamed(
-                          context, AppRoutes.editProfil),
+                          context, AppRoutes.editProfil).then((_) {
+                        _loadProfile();
+                      }),
                     ),
                     SettingsRowItemWidget(
                       icon: Icons.directions_car_outlined,

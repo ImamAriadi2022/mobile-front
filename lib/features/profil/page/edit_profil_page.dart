@@ -45,19 +45,19 @@ class _EditProfilPageState extends State<EditProfilPage> {
   Future<void> _saveProfile() async {
     setState(() => _isSaving = true);
     final service = ProfileService();
-    final success = await service.updateProfile(
+    final result = await service.updateProfile(
       _namaCtrl.text.trim(),
       _emailCtrl.text.trim(),
       _teleponCtrl.text.trim(),
     );
     if (mounted) {
       setState(() => _isSaving = false);
-      if (success) {
+      if (result.success) {
         _showSuccess();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal menyimpan profil.'),
+          SnackBar(
+            content: Text(result.message),
             backgroundColor: Colors.red,
           ),
         );
@@ -324,11 +324,20 @@ class _EditProfilPageState extends State<EditProfilPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                         ),
-                        child: Text(_isSaving ? 'Menyimpan...' : 'Simpan Perubahan',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600)),
+                        child: _isSaving
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : const Text('Simpan Perubahan',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600)),
                       ),
                     ),
                     const SizedBox(height: 20),
