@@ -34,6 +34,20 @@ class VehicleData {
 class ProfileService {
   final ApiService _apiService = ApiService();
 
+  Future<bool> updateProfile(String name, String email, String phoneNumber) async {
+    try {
+      final response = await _apiService.put(
+        '/users/profile',
+        body: {'name': name, 'email': email, 'phoneNumber': phoneNumber},
+        requireAuth: true,
+      );
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('Update profile error: $e');
+      return false;
+    }
+  }
+
   Future<ProfileData?> getProfile() async {
     try {
       final response = await _apiService.get('/users/profile', requireAuth: true);

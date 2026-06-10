@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../service/profile_service.dart';
 
 class EditProfilPage extends StatefulWidget {
   const EditProfilPage({super.key});
@@ -9,13 +10,61 @@ class EditProfilPage extends StatefulWidget {
 }
 
 class _EditProfilPageState extends State<EditProfilPage> {
-  final _namaCtrl = TextEditingController(text: 'Imam Ariadi');
-  final _emailCtrl =
-      TextEditingController(text: 'imamariadi775@gmail.com');
-  final _teleponCtrl = TextEditingController(text: '085788322061');
+  final _namaCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _teleponCtrl = TextEditingController();
   final _platCtrl = TextEditingController(text: 'D 12345 FE');
   final _merekCtrl = TextEditingController(text: 'Honda');
   final _modelCtrl = TextEditingController(text: 'Civic');
+  bool _isLoading = true;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final service = ProfileService();
+    final profile = await service.getProfile();
+    final vehicles = await service.getVehicles();
+    if (mounted) {
+      setState(() {
+        _namaCtrl.text = profile?.name ?? '';
+        _emailCtrl.text = profile?.email ?? '';
+        _teleponCtrl.text = profile?.phoneNumber ?? '';
+        if (vehicles.isNotEmpty) {
+          _platCtrl.text = vehicles.first.plateNumber;
+          _merekCtrl.text = vehicles.first.vehicleType;
+        }
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    setState(() => _isSaving = true);
+    final service = ProfileService();
+    final success = await service.updateProfile(
+      _namaCtrl.text.trim(),
+      _emailCtrl.text.trim(),
+      _teleponCtrl.text.trim(),
+    );
+    if (mounted) {
+      setState(() => _isSaving = false);
+      if (success) {
+        _showSuccess();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal menyimpan profil.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   InputDecoration _inputDeco(String label) {
     return InputDecoration(
@@ -131,7 +180,9 @@ class _EditProfilPageState extends State<EditProfilPage> {
             ),
 
             Expanded(
-              child: SingleChildScrollView(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -309,14 +360,14 @@ class _EditProfilPageState extends State<EditProfilPage> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _showSuccess,
+                        onPressed: _isSaving ? null : _saveProfile,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.accent,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                         ),
-                        child: const Text('Simpan Perubahan',
-                            style: TextStyle(
+                        child: Text(_isSaving ? 'Menyimpan...' : 'Simpan Perubahan',
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600)),

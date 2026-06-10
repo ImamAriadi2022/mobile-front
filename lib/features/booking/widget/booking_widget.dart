@@ -40,12 +40,17 @@ class _BookingWidgetState extends State<BookingWidget> {
     
     if (mounted) {
       setState(() {
-        _allParking = areas.map((a) => ParkingItemData(
-          id: a.id,
-          name: a.name,
-          occupancyPercent: 0, // We don't have this in API yet, use 0
-          availableSlotLabel: '${a.totalSlot} Total Slot', // Or modify according to API
-        )).toList();
+        _allParking = areas.map((a) {
+          final total = a.totalSlot;
+          final available = a.availableSlots;
+          final occupancy = total > 0 ? ((total - available) / total * 100) : 0.0;
+          return ParkingItemData(
+            id: a.id,
+            name: a.name,
+            occupancyPercent: occupancy,
+            availableSlotLabel: '$available/$total Kosong',
+          );
+        }).toList();
         _isLoading = false;
       });
     }

@@ -4,17 +4,25 @@ import '../../../core/network/api_service.dart';
 class ParkingArea {
   final String id;
   final String name;
-  final String location;
+  final String address;
   final int totalSlot;
+  final int availableSlots;
 
-  ParkingArea({required this.id, required this.name, required this.location, required this.totalSlot});
+  ParkingArea({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.totalSlot,
+    required this.availableSlots,
+  });
 
   factory ParkingArea.fromJson(Map<String, dynamic> json) {
     return ParkingArea(
       id: json['id'] ?? json['_id'] ?? '',
       name: json['name'] ?? 'Unknown Area',
-      location: json['location'] ?? 'Unknown Location',
-      totalSlot: json['slot'] ?? 0,
+      address: json['address'] ?? json['location'] ?? 'Unknown Location',
+      totalSlot: json['totalSlots'] ?? json['totalSlot'] ?? json['slot'] ?? 0,
+      availableSlots: json['availableSlots'] ?? json['availableSlot'] ?? 0,
     );
   }
 }
@@ -30,8 +38,8 @@ class ParkingSlot {
   factory ParkingSlot.fromJson(Map<String, dynamic> json) {
     return ParkingSlot(
       id: json['id'] ?? json['_id'] ?? '',
-      slotNumber: json['slotNumber'] ?? '',
-      status: json['status'] ?? 'available',
+      slotNumber: json['slotName'] ?? json['slotNumber'] ?? '',
+      status: json['appStatus'] ?? json['status'] ?? 'available',
       vehicleType: json['vehicleType'] ?? 'mobil',
     );
   }

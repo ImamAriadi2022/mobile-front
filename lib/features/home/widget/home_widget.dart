@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/date_utils.dart';
+import '../../booking/service/booking_service.dart';
+import '../../profil/service/profile_service.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/user_header_widget.dart';
 import '../../public_widget/search_bar_widget.dart';
@@ -26,25 +29,62 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   // ── State ────────────────────────────────────────────────────────────────
   int _navIndex = 0;
+  bool _isLoading = true;
+  String? _error;
+  List<ParkingItemData> _parkingList = [];
+  String _userName = 'User';
+  String _greeting = 'Selamat Datang';
 
-  // ── Data (akan digantikan ViewModel/Repository) ──────────────────────────
-  final List<ParkingItemData> _parkingList = const [
-    ParkingItemData(
-      name: 'Jurusan Teknik Elektro Universitas Lampung',
-      occupancyPercent: 78,
-      availableSlotLabel: '4/5 Kosong',
-    ),
-    ParkingItemData(
-      name: 'Mall Boemi Kedaton',
-      occupancyPercent: 81,
-      availableSlotLabel: '635/1384 Kosong',
-    ),
-    ParkingItemData(
-      name: 'Lampung City Mall',
-      occupancyPercent: 81,
-      availableSlotLabel: '635/1384 Kosong',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchAreas();
+    _loadProfile();
+  }
+
+  void _loadProfile() {
+    _greeting = greetingFromHour(context);
+    ProfileService().getProfile().then((profile) {
+      if (mounted && profile != null) {
+        setState(() => _userName = profile.name);
+      }
+    });
+  }
+
+  Future<void> _fetchAreas() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    final service = BookingService();
+    final areas = await service.getAreas();
+
+    if (!mounted) return;
+
+    if (areas.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _error = 'Gagal memuat data parkir.';
+      });
+      return;
+    }
+
+    setState(() {
+      _parkingList = areas.map((a) {
+        final total = a.totalSlot;
+        final available = a.availableSlots;
+        final occupancy = total > 0 ? ((total - available) / total * 100) : 0.0;
+        return ParkingItemData(
+          id: a.id,
+          name: a.name,
+          occupancyPercent: occupancy,
+          availableSlotLabel: '$available/$total Kosong',
+        );
+      }).toList();
+      _isLoading = false;
+    });
+  }
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
@@ -86,8 +126,8 @@ class _HomeWidgetState extends State<HomeWidget> {
               children: [
                 // ① Header pengguna
                 UserHeaderWidget(
-                  name: 'Imam Ariadi',
-                  greeting: 'Selamat Pagi',
+                  name: _userName,
+                  greeting: _greeting,
                 ),
                 const SizedBox(height: 16),
 
@@ -113,23 +153,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
                 const SizedBox(height: 12),
 
-                // ⑥ Daftar parkir
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: _parkingList
-                          .map((item) => ParkingListItemWidget(
-                                item: item,
-                                onTap: () => Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.detailBooking,
-                                  arguments: item.id,
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                  ),
+                // ⑥ Daftar parkir / loading / error / empty
+                _buildParkingSection(),
                 const SizedBox(height: 16),
               ],
             ),
@@ -143,6 +168,95 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   // ── Private Builders ───────────────────────────────────────────────────────
+
+  Widget _buildParkingSection() {
+    if (_isLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: CircularProgressIndicator(color: AppColors.accent),
+          ),
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.borderColor),
+          ),
+          child: Column(
+            children: [
+              const Icon(Icons.cloud_off_rounded,
+                  color: AppColors.textSecondary, size: 40),
+              const SizedBox(height: 12),
+              Text(
+                _error!,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 13),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: ElevatedButton(
+                  onPressed: _fetchAreas,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.cardBg,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: AppColors.accent),
+                    ),
+                  ),
+                  child: const Text('Coba Lagi',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_parkingList.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'Belum ada gedung parkir tersedia.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: _parkingList
+            .map((item) => ParkingListItemWidget(
+                  item: item,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.detailBooking,
+                    arguments: item.id,
+                  ),
+                ))
+            .toList(),
+      ),
+    );
+  }
 
   Widget _buildStatusCards() {
     return SingleChildScrollView(

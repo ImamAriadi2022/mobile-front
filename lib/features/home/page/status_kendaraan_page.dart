@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../public_widget/bottom_nav_bar.dart';
@@ -16,8 +17,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   late Animation<double> _glowAnim;
   int _navIndex = 2;
 
-  // Timer simulation
   int _seconds = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -28,10 +29,14 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     _glowAnim = Tween<double>(begin: 0.3, end: 0.8).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _seconds++);
+    });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _ctrl.dispose();
     super.dispose();
   }
@@ -157,7 +162,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                         const SizedBox(height: 10),
                         _buildInfoBox(
                           'Waktu yang dihabiskan',
-                          '03 : 10 : 32 Detik',
+                          _formatTime(_seconds),
                           fontSize: 22,
                           fullWidth: true,
                         ),

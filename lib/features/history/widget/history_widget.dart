@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
+import '../../../core/utils/date_utils.dart';
+import '../../profil/service/profile_service.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/user_header_widget.dart';
 import 'history_card_widget.dart';
@@ -44,6 +46,19 @@ class HistoryWidget extends StatefulWidget {
 class _HistoryWidgetState extends State<HistoryWidget> {
   // ── State ────────────────────────────────────────────────────────────────
   int _navIndex = 3;
+  String _userName = 'User';
+  String _greeting = 'Selamat Datang';
+
+  @override
+  void initState() {
+    super.initState();
+    _greeting = greetingFromHour(context);
+    ProfileService().getProfile().then((profile) {
+      if (mounted && profile != null) {
+        setState(() => _userName = profile.name);
+      }
+    });
+  }
 
   // ── Data ─────────────────────────────────────────────────────────────────
   final List<_HistoryItem> _history = List.generate(
@@ -82,8 +97,8 @@ class _HistoryWidgetState extends State<HistoryWidget> {
       children: [
         // ① Header pengguna
         UserHeaderWidget(
-          name: 'Imam Ariadi',
-          greeting: 'Selamat Pagi',
+          name: _userName,
+          greeting: _greeting,
         ),
         const SizedBox(height: 12),
 
