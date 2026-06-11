@@ -88,7 +88,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                 const SizedBox(height: 24),
 
                 // ① Avatar
-                const ProfileAvatarWidget(),
+                ProfileAvatarWidget(photoUrl: _profileData?.photoUrl),
                 const SizedBox(height: 12),
 
                 // ② Nama & keterangan

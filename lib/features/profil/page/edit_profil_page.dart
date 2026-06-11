@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../service/profile_service.dart';
@@ -18,6 +20,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
   final _teleponCtrl = TextEditingController();
   bool _isLoading = true;
   bool _isSaving = false;
+  String? _photoUrl;
   List<Vehicle> _vehicles = [];
 
   @override
@@ -36,9 +39,61 @@ class _EditProfilPageState extends State<EditProfilPage> {
         _namaCtrl.text = profile?.name ?? '';
         _emailCtrl.text = profile?.email ?? '';
         _teleponCtrl.text = profile?.phoneNumber ?? '';
+        _photoUrl = profile?.photoUrl;
         _vehicles = vehicles;
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _pickAndUploadPhoto() async {
+    final picker = ImagePicker();
+    try {
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      if (pickedFile == null) return;
+
+      setState(() => _isSaving = true);
+      
+      final bytes = await pickedFile.readAsBytes();
+      final name = pickedFile.name;
+      
+      final service = ProfileService();
+      final result = await service.uploadPhoto(bytes, name);
+      
+      if (mounted) {
+        setState(() => _isSaving = false);
+        if (result.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadProfile();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSaving = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal memilih foto: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -47,7 +102,6 @@ class _EditProfilPageState extends State<EditProfilPage> {
     final service = ProfileService();
     final result = await service.updateProfile(
       _namaCtrl.text.trim(),
-      _emailCtrl.text.trim(),
       _teleponCtrl.text.trim(),
     );
     if (mounted) {
@@ -188,41 +242,67 @@ class _EditProfilPageState extends State<EditProfilPage> {
                   children: [
                     const SizedBox(height: 8),
                     // Avatar
-                    Stack(
-                      children: [
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: AppColors.cardBg2,
-                            shape: BoxShape.circle,
-                            border:
-                                Border.all(color: AppColors.accent, width: 2),
+                    GestureDetector(
+                      onTap: _isSaving ? null : _pickAndUploadPhoto,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 90,
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: AppColors.cardBg2,
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: AppColors.accent, width: 2),
+                            ),
+                            child: _photoUrl != null && _photoUrl!.isNotEmpty
+                                ? ClipOval(
+                                    child: CachedNetworkImage(
+                                      imageUrl: _photoUrl!,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => const Center(
+                                        child: SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.accent,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.person,
+                                              color: Colors.white70, size: 54),
+                                    ),
+                                  )
+                                : const Icon(Icons.person,
+                                    color: Colors.white70, size: 54),
                           ),
-                          child: const Icon(Icons.person,
-                              color: Colors.white70, size: 54),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardBg,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.borderColor),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.camera_alt_outlined,
-                              color: AppColors.accent, size: 14),
-                          SizedBox(width: 4),
-                          Text('Ubah Foto',
-                              style: TextStyle(
-                                  color: AppColors.accent, fontSize: 12)),
-                        ],
+                    GestureDetector(
+                      onTap: _isSaving ? null : _pickAndUploadPhoto,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.cardBg,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.borderColor),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.camera_alt_outlined,
+                                color: AppColors.accent, size: 14),
+                            SizedBox(width: 4),
+                            Text('Ubah Foto',
+                                style: TextStyle(
+                                    color: AppColors.accent, fontSize: 12)),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -238,12 +318,19 @@ class _EditProfilPageState extends State<EditProfilPage> {
                       decoration: _inputDeco('Nama Lengkap'),
                     ),
                     const SizedBox(height: 14),
-                    _buildFieldLabel('Email*'),
+                    _buildFieldLabel('Email (tidak dapat diubah)'),
                     const SizedBox(height: 6),
                     TextField(
                       controller: _emailCtrl,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDeco('Email'),
+                      readOnly: true,
+                      style: const TextStyle(color: Colors.white54),
+                      decoration: _inputDeco('Email').copyWith(
+                        suffixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Colors.white38,
+                          size: 18,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 14),
                     _buildFieldLabel('No Telp*'),

@@ -65,4 +65,33 @@ class ApiService {
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.delete(url, headers: headers);
   }
+
+  Future<http.Response> multipartPost(
+    String endpoint, {
+    required List<int> fileBytes,
+    required String fileName,
+    String fieldName = 'image',
+    bool requireAuth = false,
+  }) async {
+    final url = Uri.parse('$baseUrl$endpoint');
+    final request = http.MultipartRequest('POST', url);
+
+    if (requireAuth) {
+      final token = await getToken();
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+    }
+    request.headers['Accept'] = 'application/json';
+
+    final multipartFile = http.MultipartFile.fromBytes(
+      fieldName,
+      fileBytes,
+      filename: fileName,
+    );
+    request.files.add(multipartFile);
+
+    final streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
+  }
 }
