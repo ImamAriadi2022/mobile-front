@@ -1,6 +1,6 @@
-# Update 0022
+# Update 0025
 
-Date: 2026-06-11 13:36:30
+Date: 2026-06-11 13:43:00
 Task: Audit and Verify Profile Photo Upload Feature
 
 ---
@@ -9,7 +9,7 @@ Task: Audit and Verify Profile Photo Upload Feature
 
 ## Task Summary
 
-Tugas ini bertujuan untuk melakukan audit menyeluruh terhadap fitur upload foto profil (menggunakan endpoint backend `POST /users/profile/photo`), mendeteksi adanya bug/ketiadaan integrasi, memperbaiki masalah tersebut agar fitur upload foto profil dapat bekerja pada deployment PWA Flutter Web di Vercel, dan menyinkronkannya dengan endpoint backend.
+Tugas ini bertujuan untuk melakukan audit menyeluruh terhadap fitur upload foto profil (menggunakan endpoint backend `POST /users/profile/photo`), mendeteksi adanya bug/ketiadaan integrasi, memperbaiki masalah tersebut agar fitur upload foto profil dapat bekerja pada deployment PWA Flutter Web di Vercel, dan menyinkronkannya dengan endpoint backend ke seluruh antarmuka pengguna (UI).
 
 ---
 
@@ -29,6 +29,9 @@ Tugas ini bertujuan untuk melakukan audit menyeluruh terhadap fitur upload foto 
   - Membungkus Avatar dan tombol "Ubah Foto" dengan `GestureDetector` agar dapat merespons interaksi tap.
   - Mengimplementasikan method `_pickAndUploadPhoto` untuk memilih gambar menggunakan `image_picker`, membacanya dalam bentuk array byte, lalu mengunggahnya ke backend menggunakan `ProfileService`.
   - Merender gambar profil pengguna secara dinamis menggunakan `CachedNetworkImage`.
+* Mengupdate `UserHeaderWidget` (`lib/features/public_widget/user_header_widget.dart`) agar dapat menerima parameter opsional `photoUrl` dan menampilkan foto profil pengguna menggunakan `CachedNetworkImage` alih-alih ikon bawaan statis.
+* Mengupdate `HomeWidget` (`lib/features/home/widget/home_widget.dart`) untuk memuat `photoUrl` pengguna dan meneruskannya ke `UserHeaderWidget` di halaman dashboard.
+* Mengupdate `HistoryWidget` (`lib/features/history/widget/history_widget.dart`) untuk memuat `photoUrl` pengguna dan meneruskannya ke `UserHeaderWidget` di halaman riwayat.
 
 ### Removed
 * Tidak ada file atau dependensi yang dihapus.
@@ -39,7 +42,7 @@ Tugas ini bertujuan untuk melakukan audit menyeluruh terhadap fitur upload foto 
 
 ```txt
 docs/analysis/0024-profile-photo-audit.md
-update/0022-profile-photo-upload-feature.md
+update/0025-profile-photo-upload-feature.md
 ```
 
 ---
@@ -53,6 +56,9 @@ lib/features/profil/service/profile_service.dart
 lib/features/profil/widget/profile_avatar_widget.dart
 lib/features/profil/widget/profil_widget.dart
 lib/features/profil/page/edit_profil_page.dart
+lib/features/public_widget/user_header_widget.dart
+lib/features/home/widget/home_widget.dart
+lib/features/history/widget/history_widget.dart
 ```
 
 ---
@@ -60,7 +66,7 @@ lib/features/profil/page/edit_profil_page.dart
 ## Files Removed
 
 ```txt
-None
+update/0022-profile-photo-upload-feature.md
 ```
 
 ---
@@ -94,6 +100,7 @@ None
 * **Cross-Platform Compatibility**: Untuk mendukung Flutter Web secara aman, kami menghindari ketergantungan pada `dart:io` dan manipulasi file path lokal yang akan memicu runtime error `Unsupported operation`. Pemilihan file dikelola oleh `image_picker` yang mengembalikan `XFile`, dan data gambar diunggah menggunakan `http.MultipartFile.fromBytes` via byte array memory (`Uint8List`).
 * **Caching & Performance**: Menggunakan library `cached_network_image` untuk melakukan caching otomatis pada browser atau media penyimpanan lokal sehingga tidak memicu download berulang kali ke server CDN Google Cloud Storage.
 * **Multipart Request**: Method `multipartPost` di `ApiService` dikonfigurasi untuk menyertakan Bearer Token autentikasi di header secara aman bersamaan dengan payload `multipart/form-data`.
+* **Universal UI Sync**: Dengan menyuplai `photoUrl` ke `UserHeaderWidget`, foto profil terbaru disinkronkan secara instan di seluruh layar dashboard utama (`HomeWidget`) dan layar riwayat (`HistoryWidget`).
 
 ---
 
@@ -101,7 +108,7 @@ None
 
 ### User Experience
 * Pengguna sekarang dapat memilih dan mengunggah foto profil baru dari galeri/sistem file secara langsung.
-* Perubahan foto profil langsung terefleksi di UI halaman Edit Profil dan Halaman Profil Utama setelah upload berhasil tanpa perlu reload manual atau log out.
+* Perubahan foto profil langsung terefleksi di UI halaman Edit Profil, Halaman Profil Utama, Dashboard, dan Halaman Riwayat setelah upload berhasil tanpa perlu reload manual atau log out.
 
 ### Performance
 * Menggunakan `CachedNetworkImage` meningkatkan efisiensi load gambar dari CDN storage dan mengurangi latensi visual dengan adanya loading progress indicator.
@@ -167,6 +174,6 @@ None
 5. Mengimplementasikan fungsi `uploadPhoto` di `ProfileService`.
 6. Memperbarui widget `ProfileAvatarWidget` agar dapat memuat foto profil secara dinamis menggunakan `CachedNetworkImage`.
 7. Menghubungkan visual avatar dan tombol "Ubah Foto" di `EditProfilPage` dengan fungsionalitas unggah baru.
-8. Memvalidasi bahwa foto profil diperbarui secara asinkron di UI begitu proses upload selesai.
-9. Memastikan kepatuhan terhadap analisis statis Flutter (`No issues found!`).
-10. Membuat laporan audit lengkap di `/docs/analysis/0024-profile-photo-audit.md` dan arsip update di `/update/0022-profile-photo-upload-feature.md`.
+8. Memperbarui `UserHeaderWidget` agar merender foto profil pengguna di layar utama dan layar riwayat.
+9. Memvalidasi bahwa foto profil diperbarui secara asinkron di seluruh bagian UI begitu proses upload selesai.
+10. Membuat laporan audit lengkap di `/docs/analysis/0024-profile-photo-audit.md` dan arsip update di `/update/0025-profile-photo-upload-feature.md`.

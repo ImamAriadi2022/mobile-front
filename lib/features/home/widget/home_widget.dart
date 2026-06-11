@@ -34,6 +34,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<ParkingItemData> _parkingList = [];
   String _userName = 'User';
   String _greeting = 'Selamat Datang';
+  String? _photoUrl;
 
   @override
   void initState() {
@@ -46,7 +47,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     _greeting = greetingFromHour(context);
     ProfileService().getProfile().then((profile) {
       if (mounted && profile != null) {
-        setState(() => _userName = profile.name);
+        setState(() {
+          _userName = profile.name;
+          _photoUrl = profile.photoUrl;
+        });
       }
     });
   }
@@ -128,6 +132,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 UserHeaderWidget(
                   name: _userName,
                   greeting: _greeting,
+                  photoUrl: _photoUrl,
                 ),
                 const SizedBox(height: 16),
 

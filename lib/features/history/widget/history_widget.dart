@@ -30,6 +30,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
   int _navIndex = 3;
   String _userName = 'User';
   String _greeting = 'Selamat Datang';
+  String? _photoUrl;
   bool _isLoading = true;
   String? _errorMessage;
   List<ReservationHistory> _history = [];
@@ -56,7 +57,10 @@ class _HistoryWidgetState extends State<HistoryWidget> {
       }
 
       if (mounted) {
-        setState(() => _userName = profile.name);
+        setState(() {
+          _userName = profile.name;
+          _photoUrl = profile.photoUrl;
+        });
       }
 
       // Fetch history and areas in parallel to resolve areaId -> areaName
@@ -137,6 +141,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         UserHeaderWidget(
           name: _userName,
           greeting: _greeting,
+          photoUrl: _photoUrl,
         ),
         const SizedBox(height: 12),
 
