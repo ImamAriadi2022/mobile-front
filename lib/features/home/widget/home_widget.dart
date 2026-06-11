@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 import '../../booking/service/booking_service.dart';
 import '../../profil/service/profile_service.dart';
 import '../../public_widget/bottom_nav_bar.dart';
@@ -91,7 +92,17 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   // ── Handlers ───────────────────────────────────────────────────────────────
-  void _onNavTap(int idx) {
+  void _onNavTap(int idx) async {
+    if (idx == 1) {
+      final ticket = await ActiveTicketStorage().load();
+      if (ticket == null || ticket.ticketCode.isEmpty) {
+        if (mounted) {
+          Navigator.pushNamed(context, AppRoutes.welcomeScan);
+        }
+        return;
+      }
+    }
+
     setState(() => _navIndex = idx);
     switch (idx) {
       case 1:
@@ -147,8 +158,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                 // ④ Search bar (read-only, navigasi ke booking)
                 SearchBarWidget(
                   readOnly: true,
-                  onTap: () =>
-                      Navigator.pushNamed(context, AppRoutes.booking),
+                  onTap: () async {
+                    final ticket = await ActiveTicketStorage().load();
+                    if (ticket == null || ticket.ticketCode.isEmpty) {
+                      if (mounted) {
+                        Navigator.pushNamed(context, AppRoutes.welcomeScan);
+                      }
+                    } else {
+                      if (mounted) {
+                        Navigator.pushNamed(context, AppRoutes.booking);
+                      }
+                    }
+                  },
                 ),
                 const SizedBox(height: 20),
 
@@ -252,11 +273,22 @@ class _HomeWidgetState extends State<HomeWidget> {
         children: _parkingList
             .map((item) => ParkingListItemWidget(
                   item: item,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.detailBooking,
-                    arguments: item.id,
-                  ),
+                  onTap: () async {
+                    final ticket = await ActiveTicketStorage().load();
+                    if (ticket == null || ticket.ticketCode.isEmpty) {
+                      if (mounted) {
+                        Navigator.pushNamed(context, AppRoutes.welcomeScan);
+                      }
+                    } else {
+                      if (mounted) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.detailBooking,
+                          arguments: item.id,
+                        );
+                      }
+                    }
+                  },
                 ))
             .toList(),
       ),

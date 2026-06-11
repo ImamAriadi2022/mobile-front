@@ -80,7 +80,7 @@ class _LoginWidgetState extends State<LoginWidget>
       builder: (_) => const _LoginSuccessSheet(),
     ).then((_) {
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     });
   }
 

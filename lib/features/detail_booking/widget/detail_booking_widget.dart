@@ -40,6 +40,17 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   @override
   void initState() {
     super.initState();
+    _checkTicketAndFetch();
+  }
+
+  Future<void> _checkTicketAndFetch() async {
+    final ticket = await ActiveTicketStorage().load();
+    if (ticket == null || ticket.ticketCode.isEmpty) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
+      }
+      return;
+    }
     _fetchSlots();
   }
 
