@@ -99,16 +99,16 @@ class _RegisterWidgetState extends State<RegisterWidget>
     }
 
     final authService = AuthService();
-    final success = await authService.register(name, email, phone, password, vehicle);
+    final error = await authService.register(name, email, phone, password, vehicle);
 
     if (!mounted) return;
     setState(() => _isLoading = false);
     
-    if (success) {
+    if (error == null) {
       _showSuccessDialog();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pendaftaran gagal. Silakan coba lagi.'), backgroundColor: Colors.red),
+        SnackBar(content: Text(error), backgroundColor: Colors.red),
       );
     }
   }

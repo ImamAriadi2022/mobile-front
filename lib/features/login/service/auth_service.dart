@@ -4,7 +4,7 @@ import '../../../core/network/api_service.dart';
 class AuthService {
   final ApiService _apiService = ApiService();
 
-  Future<bool> login(String email, String password) async {
+  Future<String?> login(String email, String password) async {
     try {
       final response = await _apiService.post(
         '/auth/login',
@@ -16,17 +16,19 @@ class AuthService {
         final token = body['data']?['token'];
         if (token != null) {
           await _apiService.setToken(token);
-          return true;
+          return null;
         }
       }
-      return false;
+
+      final body = jsonDecode(response.body);
+      return body['message'] ?? 'Login gagal. Periksa email dan password.';
     } catch (e) {
       print('Login error: $e');
-      return false;
+      return 'Terjadi kesalahan. Periksa koneksi Anda.';
     }
   }
 
-  Future<bool> register(String name, String email, String phone, String password, String plateNumber) async {
+  Future<String?> register(String name, String email, String phone, String password, String plateNumber) async {
     try {
       final response = await _apiService.post(
         '/auth/register',
@@ -41,12 +43,14 @@ class AuthService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+        return null;
       }
-      return false;
+
+      final body = jsonDecode(response.body);
+      return body['message'] ?? 'Pendaftaran gagal. Silakan coba lagi.';
     } catch (e) {
       print('Register error: $e');
-      return false;
+      return 'Terjadi kesalahan jaringan. Periksa koneksi Anda.';
     }
   }
 

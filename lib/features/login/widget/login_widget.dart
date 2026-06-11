@@ -55,19 +55,16 @@ class _LoginWidgetState extends State<LoginWidget>
     final password = _passCtrl.text;
     
     final authService = AuthService();
-    final success = await authService.login(email, password);
+    final error = await authService.login(email, password);
 
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (success) {
+    if (error == null) {
       _showSuccessDialog();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login gagal. Periksa email dan password.'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(error), backgroundColor: Colors.red),
       );
     }
   }
