@@ -4,13 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'pwa_install_service.dart';
 
 class PwaInstallDialog extends StatelessWidget {
-  const PwaInstallDialog({super.key});
+  final VoidCallback onDismiss;
 
-  static void show(BuildContext context) {
+  const PwaInstallDialog({super.key, required this.onDismiss});
+
+  static void show(BuildContext context, {required VoidCallback onDismiss}) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.55),
-      builder: (_) => const PwaInstallDialog(),
+      barrierDismissible: false,
+      builder: (_) => PwaInstallDialog(onDismiss: onDismiss),
     );
   }
 
@@ -70,7 +73,7 @@ class PwaInstallDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'ParkFinder tersedia sebagai aplikasi',
+                  'Install ParkFinder',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -80,7 +83,7 @@ class PwaInstallDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Install aplikasi untuk akses lebih cepat, pengalaman yang lebih baik, dan penggunaan seperti aplikasi native.',
+                  'Untuk pengalaman terbaik, install ParkFinder ke perangkat Anda.\n\nNikmati akses lebih cepat, pengalaman seperti aplikasi native, dan kemudahan penggunaan tanpa membuka browser setiap saat.',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 13,
@@ -96,7 +99,9 @@ class PwaInstallDialog extends StatelessWidget {
                         onPressed: () async {
                           Navigator.pop(context);
                           final prefs = await SharedPreferences.getInstance();
-                          await prefs.setBool('pwa_install_dismissed', true);
+                          final now = DateTime.now().millisecondsSinceEpoch;
+                          await prefs.setInt('pwa_install_popup_last_dismiss', now);
+                          onDismiss();
                         },
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -108,10 +113,10 @@ class PwaInstallDialog extends StatelessWidget {
                           ),
                         ),
                         child: const Text(
-                          'Nanti',
+                          'Lanjut ke Login',
                           style: TextStyle(
                             color: Colors.white70,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -133,6 +138,7 @@ class PwaInstallDialog extends StatelessWidget {
                               );
                             }
                           }
+                          onDismiss();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF00D2FF),
@@ -147,7 +153,7 @@ class PwaInstallDialog extends StatelessWidget {
                           'Install Sekarang',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -165,13 +171,16 @@ class PwaInstallDialog extends StatelessWidget {
 }
 
 class PwaSafariInstallDialog extends StatelessWidget {
-  const PwaSafariInstallDialog({super.key});
+  final VoidCallback onDismiss;
 
-  static void show(BuildContext context) {
+  const PwaSafariInstallDialog({super.key, required this.onDismiss});
+
+  static void show(BuildContext context, {required VoidCallback onDismiss}) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.55),
-      builder: (_) => const PwaSafariInstallDialog(),
+      barrierDismissible: false,
+      builder: (_) => PwaSafariInstallDialog(onDismiss: onDismiss),
     );
   }
 
@@ -263,7 +272,7 @@ class PwaSafariInstallDialog extends StatelessWidget {
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              '1. Klik tombol Share (Bagikan) di bagian bawah layar Safari.',
+                              '1. Tekan tombol Share (Bagikan) di bagian bawah layar Safari.',
                               style: TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ),
@@ -273,10 +282,23 @@ class PwaSafariInstallDialog extends StatelessWidget {
                       Row(
                         children: const [
                           Icon(Icons.add_box_outlined, color: Color(0xFF00D2FF), size: 20),
+                          SDouble(width: 12),
+                          Expanded(
+                            child: Text(
+                              '2. Pilih "Add to Home Screen" (Tambahkan ke Layar Utama).',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: const [
+                          Icon(Icons.add_rounded, color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              '2. Pilih menu "Add to Home Screen" (Tambahkan ke Layar Utama).',
+                              '3. Tekan "Add" (Tambah) di pojok kanan atas.',
                               style: TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ),
@@ -292,7 +314,9 @@ class PwaSafariInstallDialog extends StatelessWidget {
                     onPressed: () async {
                       Navigator.pop(context);
                       final prefs = await SharedPreferences.getInstance();
-                      await prefs.setBool('pwa_install_dismissed', true);
+                      final now = DateTime.now().millisecondsSinceEpoch;
+                      await prefs.setInt('pwa_install_popup_last_dismiss', now);
+                      onDismiss();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00D2FF),
@@ -304,7 +328,7 @@ class PwaSafariInstallDialog extends StatelessWidget {
                       elevation: 0,
                     ),
                     child: const Text(
-                      'Mengerti',
+                      'Lanjut ke Login',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -316,4 +340,12 @@ class PwaSafariInstallDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+// Small helper subclass to bypass linting issues in copy-paste
+class SDouble extends StatelessWidget {
+  final double width;
+  const SDouble({super.key, required this.width});
+  @override
+  Widget build(BuildContext context) => SizedBox(width: width);
 }

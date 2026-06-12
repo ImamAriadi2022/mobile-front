@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
@@ -45,7 +44,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   bool _isPwaStandalone = false;
   bool _canInstallPwa = false;
   StreamSubscription? _installSubscription;
-  static bool _hasShownPromptThisSession = false;
 
   @override
   void initState() {
@@ -72,47 +70,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           PwaInstallService.instance.onInstallAvailable.listen((_) {
         if (mounted) {
           setState(() => _canInstallPwa = true);
-          _checkPwaInstallPopup();
         }
       });
-
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        if (mounted) {
-          _checkPwaInstallPopup();
-        }
-      });
-    }
-  }
-
-  Future<void> _checkPwaInstallPopup() async {
-    if (!kIsWeb) return;
-    
-    if (PwaInstallService.instance.isStandalone) {
-      if (mounted) setState(() => _isPwaStandalone = true);
-      return;
-    }
-    
-    final prefs = await SharedPreferences.getInstance();
-    final isDismissed = prefs.getBool('pwa_install_dismissed') ?? false;
-    if (isDismissed) {
-      return;
-    }
-    
-    if (_hasShownPromptThisSession) return;
-    _hasShownPromptThisSession = true;
-
-    final available = await PwaInstallService.instance.isInstallPromptAvailable();
-    if (available) {
-      if (mounted) {
-        PwaInstallDialog.show(context);
-      }
-    } else {
-      final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
-      if (isIOS) {
-        if (mounted) {
-          PwaSafariInstallDialog.show(context);
-        }
-      }
     }
   }
 
@@ -237,7 +196,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             showDialog(
               context: context,
               barrierColor: Colors.black.withOpacity(0.55),
-              builder: (_) => const PwaInstallDialog(),
+              builder: (_) => PwaInstallDialog(onDismiss: () {}),
             ).then((_) {
               PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
                 if (mounted) setState(() => _canInstallPwa = avail);
@@ -250,7 +209,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               showDialog(
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.55),
-                builder: (_) => const PwaSafariInstallDialog(),
+                builder: (_) => PwaSafariInstallDialog(onDismiss: () {}),
               ).then((_) {
                 PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
                   if (mounted) setState(() => _canInstallPwa = avail);
