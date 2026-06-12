@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
+import '../../profil/service/profile_service.dart';
 import '../../welcome/page/welcome_page.dart';
 
 class SplashScreenWidget extends StatefulWidget {
@@ -120,7 +122,19 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     }
   }
 
-  void _goToHome(BuildContext context) {
+  void _goToHome(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+    if (token != null) {
+      // Validate token by fetching profile
+      final profile = await ProfileService().getProfile();
+      if (profile != null && mounted) {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+        return;
+      }
+    }
+
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 420),

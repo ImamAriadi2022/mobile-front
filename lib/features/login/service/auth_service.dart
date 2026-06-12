@@ -1,5 +1,7 @@
 import 'dart:convert';
 import '../../../core/network/api_service.dart';
+import '../../../core/storage/active_ticket_storage.dart';
+import '../../../core/storage/active_reservation_storage.dart';
 
 class AuthService {
   final ApiService _apiService = ApiService();
@@ -61,6 +63,8 @@ class AuthService {
       print('Logout error: $e');
     } finally {
       await _apiService.clearToken();
+      await ActiveTicketStorage().clear();
+      await ActiveReservationStorage().clear();
     }
   }
 }

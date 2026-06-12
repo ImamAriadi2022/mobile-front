@@ -56,7 +56,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
     final auth = AuthService();
     await auth.logout();
     if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
 

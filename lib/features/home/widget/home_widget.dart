@@ -5,6 +5,8 @@ import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
 import '../../../core/storage/active_ticket_storage.dart';
+import '../../../core/storage/active_reservation_storage.dart';
+import '../../welcome_scan/service/scan_service.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
 import '../../booking/service/booking_service.dart';
@@ -46,6 +48,8 @@ class _HomeWidgetState extends State<HomeWidget> {
   bool _canInstallPwa = false;
   StreamSubscription? _installSubscription;
   bool _hasActiveTicket = false;
+  TicketData? _activeTicket;
+  ActiveReservation? _activeReservation;
 
   @override
   void initState() {
@@ -58,9 +62,12 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> _checkActiveTicket() async {
     final ticket = await ActiveTicketStorage().load();
+    final reservation = await ActiveReservationStorage().load();
     if (mounted) {
       setState(() {
+        _activeTicket = ticket;
         _hasActiveTicket = ticket != null && ticket.ticketCode.isNotEmpty;
+        _activeReservation = reservation;
       });
     }
   }
@@ -254,17 +261,37 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   Widget _buildTicketStatusBanner() {
+    String titleText = '⚠ Tiket Belum Aktif';
+    String descText = 'Untuk melakukan booking slot parkir, silakan scan tiket masuk terlebih dahulu.';
+    bool isSuccess = false;
+    bool showScanButton = true;
+
+    if (_activeTicket != null && _activeTicket!.ticketCode.isNotEmpty) {
+      final st = _activeTicket!.status.toLowerCase();
+      if (st == 'completed' || st == 'checked_out' || st == 'inactive') {
+        titleText = '⚠ Tiket Tidak Aktif';
+        descText = 'Tiket Anda sudah checkout atau tidak aktif. Silakan scan tiket baru.';
+        showScanButton = true;
+        isSuccess = false;
+      } else {
+        titleText = '✓ Tiket Aktif';
+        descText = 'Anda dapat melakukan booking slot parkir.';
+        isSuccess = true;
+        showScanButton = false;
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: _hasActiveTicket 
+          color: isSuccess 
               ? const Color(0xFF00D2FF).withOpacity(0.08) 
               : const Color(0xFFEF5350).withOpacity(0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: _hasActiveTicket 
+            color: isSuccess 
                 ? const Color(0xFF00D2FF).withOpacity(0.25) 
                 : const Color(0xFFEF5350).withOpacity(0.25),
             width: 1.2,
@@ -275,16 +302,16 @@ class _HomeWidgetState extends State<HomeWidget> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: _hasActiveTicket 
+                color: isSuccess 
                     ? const Color(0xFF00D2FF).withOpacity(0.15) 
                     : const Color(0xFFEF5350).withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                _hasActiveTicket 
+                isSuccess 
                     ? Icons.check_circle_outline_rounded 
                     : Icons.warning_amber_rounded,
-                color: _hasActiveTicket ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                color: isSuccess ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
                 size: 24,
               ),
             ),
@@ -294,18 +321,16 @@ class _HomeWidgetState extends State<HomeWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _hasActiveTicket ? '✓ Tiket Aktif' : '⚠ Tiket Belum Aktif',
+                    titleText,
                     style: TextStyle(
-                      color: _hasActiveTicket ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                      color: isSuccess ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _hasActiveTicket 
-                        ? 'Anda dapat melakukan booking slot parkir.' 
-                        : 'Untuk melakukan booking slot parkir, silakan scan tiket masuk terlebih dahulu.',
+                    descText,
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.7),
                       fontSize: 12,
@@ -315,7 +340,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ],
               ),
             ),
-            if (!_hasActiveTicket) ...[
+            if (showScanButton) ...[
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: () {
@@ -522,43 +547,56 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   Widget _buildStatusCards() {
+    List<Widget> cards = [];
+
+    if (!_hasActiveTicket) {
+      cards.add(
+        const StatusCardWidget(
+          title: 'Status Tiket\nBelum Aktif',
+          cardImage: StatusCardImage.tiket,
+          subtitle: 'Silakan scan tiket masuk Anda',
+          width: 140,
+        ),
+      );
+    } else {
+      cards.add(
+        const StatusCardWidget(
+          title: 'Status Tiket\nAktif',
+          cardImage: StatusCardImage.tiket,
+          subtitle: 'Tiket berhasil diverifikasi',
+          width: 140,
+        ),
+      );
+
+      cards.add(const SizedBox(width: 10));
+
+      if (_activeReservation == null) {
+        cards.add(
+          const StatusCardWidget(
+            title: 'Status Booking\nBelum Booking',
+            cardImage: StatusCardImage.waiting,
+            subtitle: 'Pilih gedung parkir untuk booking',
+            width: 150,
+          ),
+        );
+      } else {
+        cards.add(
+          StatusCardWidget(
+            title: 'Status Booking\nAktif',
+            cardImage: StatusCardImage.waiting,
+            subtitle: 'Slot ${_activeReservation!.slotName.isNotEmpty ? _activeReservation!.slotName : "-"}\nMenunggu kedatangan',
+            width: 160,
+          ),
+        );
+      }
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        children: [
-          StatusCardWidget(
-            title: 'Status Tiket\nAktif',
-            cardImage: StatusCardImage.tiket,
-            subtitle: 'Diaktifkan Sejak\n01:43:02',
-            width: 130,
-          ),
-          const SizedBox(width: 10),
-          StatusCardWidget(
-            title: 'Status Booking\nMenunggu Aktivasi',
-            cardImage: StatusCardImage.waiting,
-            subtitle: 'Slot A4 – Lantai 1\nAktivasi dalam 15 menit',
-            width: 148,
-          ),
-          const SizedBox(width: 10),
-          StatusCardWidget(
-            title: 'Parkir Aktif\nLantai 1 - Zona A- Slot A3',
-            cardImage: StatusCardImage.car,
-            subtitle: '01:43:02',
-            width: 140,
-            actions: [
-              CardActionTextWidget(
-                label: 'Lihat Detail',
-                onTap: () {},
-              ),
-              CardActionTextWidget(
-                label: 'Akhiri Sesi',
-                onTap: _showEndSessionDialog,
-                isDestructive: true,
-              ),
-            ],
-          ),
-        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: cards,
       ),
     );
   }
