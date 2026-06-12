@@ -173,13 +173,13 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             left: 0,
             right: 0,
             bottom: 0,
-            height: 210 + bottomPad,
+            height: 265 + bottomPad,
             child: Container(color: Colors.black.withOpacity(0.55)),
           ),
           // Kiri
           Positioned(
             top: topPad + 64,
-            bottom: 210 + bottomPad,
+            bottom: 265 + bottomPad,
             left: 0,
             width: _sideMargin(context),
             child: Container(color: Colors.black.withOpacity(0.55)),
@@ -187,7 +187,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
           // Kanan
           Positioned(
             top: topPad + 64,
-            bottom: 210 + bottomPad,
+            bottom: 265 + bottomPad,
             right: 0,
             width: _sideMargin(context),
             child: Container(color: Colors.black.withOpacity(0.55)),
@@ -240,6 +240,38 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 13),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          'Langkah 1: Scan tiket yang diperoleh dari gerbang masuk.',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 6),
+                        Text(
+                          'Langkah 2: Setelah tiket berhasil diverifikasi, Anda dapat melakukan booking slot parkir.',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -394,7 +426,112 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
+              // Step Guidance Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF132136).withOpacity(0.55),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFF00D2FF).withOpacity(0.25),
+                    width: 1.2,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: Color(0xFF00D2FF),
+                          size: 18,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Langkah Aktivasi Sesi',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 22,
+                          height: 22,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF00D2FF),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Text(
+                            '1',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Masukkan kode tiket yang diperoleh dari gerbang masuk ke kolom di bawah.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 22,
+                          height: 22,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF00D2FF),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Text(
+                            '2',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Setelah tiket berhasil diverifikasi, Anda dapat melakukan booking slot parkir.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
 
               // Input Card
               Container(

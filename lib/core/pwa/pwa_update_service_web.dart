@@ -21,6 +21,7 @@ class PwaUpdateService {
       // ignore: unnecessary_null_comparison
       if (sw != null) {
         sw.ready.then((registration) {
+          // ignore: unnecessary_null_comparison
           if (registration != null) {
             final waiting = js_util.getProperty(registration, 'waiting');
             if (waiting != null) {
@@ -40,6 +41,7 @@ class PwaUpdateService {
       // ignore: unnecessary_null_comparison
       if (sw != null) {
         sw.getRegistration().then((registration) {
+          // ignore: unnecessary_null_comparison
           if (registration != null) {
             js_util.callMethod(registration, 'update', []);
           }

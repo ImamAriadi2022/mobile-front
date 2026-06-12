@@ -15,6 +15,7 @@ import '../../public_widget/search_bar_widget.dart';
 import '../../public_widget/section_title_widget.dart';
 import '../../public_widget/parking_list_item_widget.dart';
 import '../../public_widget/end_session_dialog_widget.dart';
+import '../../public_widget/no_ticket_dialog.dart';
 import 'hero_banner_widget.dart';
 import 'status_card_widget.dart';
 
@@ -44,6 +45,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   bool _isPwaStandalone = false;
   bool _canInstallPwa = false;
   StreamSubscription? _installSubscription;
+  bool _hasActiveTicket = false;
 
   @override
   void initState() {
@@ -51,6 +53,16 @@ class _HomeWidgetState extends State<HomeWidget> {
     _fetchAreas();
     _loadProfile();
     _initPwaInstall();
+    _checkActiveTicket();
+  }
+
+  Future<void> _checkActiveTicket() async {
+    final ticket = await ActiveTicketStorage().load();
+    if (mounted) {
+      setState(() {
+        _hasActiveTicket = ticket != null && ticket.ticketCode.isNotEmpty;
+      });
+    }
   }
 
   @override
@@ -128,7 +140,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       final ticket = await ActiveTicketStorage().load();
       if (ticket == null || ticket.ticketCode.isEmpty) {
         if (mounted) {
-          Navigator.pushNamed(context, AppRoutes.welcomeScan);
+          NoTicketDialog.show(context);
         }
         return;
       }
@@ -137,7 +149,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() => _navIndex = idx);
     switch (idx) {
       case 1:
-        Navigator.pushNamed(context, AppRoutes.booking);
+        Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
         break;
       case 3:
         Navigator.pushNamed(context, AppRoutes.history);
@@ -241,6 +253,95 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  Widget _buildTicketStatusBanner() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _hasActiveTicket 
+              ? const Color(0xFF00D2FF).withOpacity(0.08) 
+              : const Color(0xFFEF5350).withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _hasActiveTicket 
+                ? const Color(0xFF00D2FF).withOpacity(0.25) 
+                : const Color(0xFFEF5350).withOpacity(0.25),
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _hasActiveTicket 
+                    ? const Color(0xFF00D2FF).withOpacity(0.15) 
+                    : const Color(0xFFEF5350).withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                _hasActiveTicket 
+                    ? Icons.check_circle_outline_rounded 
+                    : Icons.warning_amber_rounded,
+                color: _hasActiveTicket ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _hasActiveTicket ? '✓ Tiket Aktif' : '⚠ Tiket Belum Aktif',
+                    style: TextStyle(
+                      color: _hasActiveTicket ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _hasActiveTicket 
+                        ? 'Anda dapat melakukan booking slot parkir.' 
+                        : 'Untuk melakukan booking slot parkir, silakan scan tiket masuk terlebih dahulu.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 12,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (!_hasActiveTicket) ...[
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.welcomeScan).then((_) => _checkActiveTicket());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEF5350),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Scan Tiket',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
@@ -268,6 +369,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                   const SizedBox(height: 12),
                 ],
 
+                // Ticket Status Banner
+                _buildTicketStatusBanner(),
+                const SizedBox(height: 16),
+
                 // ② Hero banner
                 const HeroBannerWidget(),
                 const SizedBox(height: 16),
@@ -283,11 +388,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                     final ticket = await ActiveTicketStorage().load();
                     if (ticket == null || ticket.ticketCode.isEmpty) {
                       if (mounted) {
-                        Navigator.pushNamed(context, AppRoutes.welcomeScan);
+                        NoTicketDialog.show(context);
                       }
                     } else {
                       if (mounted) {
-                        Navigator.pushNamed(context, AppRoutes.booking);
+                        Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
                       }
                     }
                   },
@@ -398,7 +503,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     final ticket = await ActiveTicketStorage().load();
                     if (ticket == null || ticket.ticketCode.isEmpty) {
                       if (mounted) {
-                        Navigator.pushNamed(context, AppRoutes.welcomeScan);
+                        NoTicketDialog.show(context);
                       }
                     } else {
                       if (mounted) {
@@ -406,7 +511,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           context,
                           AppRoutes.detailBooking,
                           arguments: item.id,
-                        );
+                        ).then((_) => _checkActiveTicket());
                       }
                     }
                   },
