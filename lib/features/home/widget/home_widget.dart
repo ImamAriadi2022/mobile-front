@@ -268,16 +268,21 @@ class _HomeWidgetState extends State<HomeWidget> {
 
     if (_activeTicket != null && _activeTicket!.ticketCode.isNotEmpty) {
       final st = _activeTicket!.status.toLowerCase();
-      if (st == 'completed' || st == 'checked_out' || st == 'inactive') {
-        titleText = '⚠ Tiket Tidak Aktif';
-        descText = 'Tiket Anda sudah checkout atau tidak aktif. Silakan scan tiket baru.';
-        showScanButton = true;
-        isSuccess = false;
-      } else {
+      if (st == 'active') {
         titleText = '✓ Tiket Aktif';
         descText = 'Anda dapat melakukan booking slot parkir.';
         isSuccess = true;
         showScanButton = false;
+      } else if (st == 'pending' || st == 'claimed' || st == '') {
+        titleText = '⚠ Tiket Belum Aktif';
+        descText = 'Tiket Anda sudah diverifikasi namun belum aktif. Silakan scan tiket parkir terlebih dahulu.';
+        showScanButton = true;
+        isSuccess = false;
+      } else {
+        titleText = '⚠ Tiket Tidak Aktif';
+        descText = 'Tiket Anda sudah checkout, kedaluwarsa, atau tidak valid. Silakan scan tiket baru.';
+        showScanButton = true;
+        isSuccess = false;
       }
     }
 

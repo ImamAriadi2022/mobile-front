@@ -205,7 +205,10 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                               Text(
                                 widget.ticketData?.status == 'active'
                                     ? 'Aktif'
-                                    : widget.ticketData?.status ?? 'Aktif',
+                                    : widget.ticketData?.status != null &&
+                                            widget.ticketData!.status.isNotEmpty
+                                        ? widget.ticketData!.status
+                                        : 'Aktif',
                                 style: TextStyle(
                                   color: widget.ticketData?.status == 'active'
                                       ? AppColors.green

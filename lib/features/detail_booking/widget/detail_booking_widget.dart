@@ -45,7 +45,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
   Future<void> _checkTicketAndFetch() async {
     final ticket = await ActiveTicketStorage().load();
-    if (ticket == null || ticket.ticketCode.isEmpty) {
+    if (ticket == null || ticket.ticketCode.isEmpty || ticket.status != 'active') {
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
       }
@@ -196,6 +196,21 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     final activeTicket = await ActiveTicketStorage().load();
     final ticketId = activeTicket?.ticketCode ?? 'unknown';
 
+    if (activeTicket == null || activeTicket.status != 'active') {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Tiket Anda belum aktif untuk melakukan booking. Silakan scan tiket parkir terlebih dahulu.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 4),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
+      }
+      return;
+    }
+
     final bookingService = BookingService();
     final result = await bookingService.createReservation(slot.id ?? '', ticketId, name, plateNumber);
 
@@ -217,7 +232,11 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         _fetchSlots();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
         );
       }
     }

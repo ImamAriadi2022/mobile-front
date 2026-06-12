@@ -37,7 +37,7 @@ class _BookingWidgetState extends State<BookingWidget> {
 
   Future<void> _checkTicketAndFetch() async {
     final ticket = await ActiveTicketStorage().load();
-    if (ticket == null || ticket.ticketCode.isEmpty) {
+    if (ticket == null || ticket.ticketCode.isEmpty || ticket.status != 'active') {
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
       }
