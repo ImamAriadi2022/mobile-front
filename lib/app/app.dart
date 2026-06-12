@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
           onError: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFF0D1628),
-        fontFamily: 'Roboto',
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF0D1628),

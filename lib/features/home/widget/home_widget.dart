@@ -7,6 +7,7 @@ import '../../../core/utils/date_utils.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import '../../welcome_scan/service/scan_service.dart';
+import '../../access/service/access_service.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
 import '../../booking/service/booking_service.dart';
@@ -61,12 +62,17 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   Future<void> _checkActiveTicket() async {
+    final accessService = AccessService();
+    final apiTicket = await accessService.getActiveTicket();
+    if (apiTicket != null) {
+      await ActiveTicketStorage().save(apiTicket);
+    }
     final ticket = await ActiveTicketStorage().load();
     final reservation = await ActiveReservationStorage().load();
     if (mounted) {
       setState(() {
         _activeTicket = ticket;
-        _hasActiveTicket = ticket != null && ticket.ticketCode.isNotEmpty;
+        _hasActiveTicket = ticket != null && ticket.ticketCode.isNotEmpty && ticket.status == 'active';
         _activeReservation = reservation;
       });
     }

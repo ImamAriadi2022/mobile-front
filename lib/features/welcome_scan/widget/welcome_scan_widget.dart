@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/storage/active_ticket_storage.dart';
+import '../../access/service/access_service.dart';
 import '../service/scan_service.dart';
 
 class WelcomeScanWidget extends StatefulWidget {
@@ -25,16 +25,19 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
   bool _isLoading = false;
   String? _errorMessage;
   bool _torchOn = false;
+  bool _useCamera = true;
 
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
+    try {
       _cameraCtrl = MobileScannerController(
         detectionSpeed: DetectionSpeed.noDuplicates,
         facing: CameraFacing.back,
         torchEnabled: false,
       );
+    } catch (_) {
+      _useCamera = false;
     }
     _scanLineCtrl = AnimationController(
       vsync: this,
@@ -75,12 +78,15 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     if (!mounted) return;
 
     if (result != null) {
-      await ActiveTicketStorage().save(result);
+      final accessService = AccessService();
+      final activeTicket = await accessService.getActiveTicket();
+      final ticketData = activeTicket ?? result;
+      await ActiveTicketStorage().save(ticketData);
       if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.scanBerhasil,
-        arguments: result,
+        arguments: ticketData,
       );
     } else {
       setState(() {
@@ -115,12 +121,15 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     if (!mounted) return;
 
     if (result != null) {
-      await ActiveTicketStorage().save(result);
+      final accessService = AccessService();
+      final activeTicket = await accessService.getActiveTicket();
+      final ticketData = activeTicket ?? result;
+      await ActiveTicketStorage().save(ticketData);
       if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.scanBerhasil,
-        arguments: result,
+        arguments: ticketData,
       );
     } else {
       setState(() {
@@ -140,8 +149,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return _buildWebLayout(context);
+    if (!_useCamera || _cameraCtrl == null) {
+      return _buildManualLayout(context);
     }
 
     final topPad = MediaQuery.of(context).padding.top;
@@ -299,6 +308,17 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                       ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => setState(() => _useCamera = false),
+                    child: const Text(
+                      'Masukkan Kode Manual',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -344,7 +364,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     );
   }
 
-  Widget _buildWebLayout(BuildContext context) {
+  Widget _buildManualLayout(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -409,7 +429,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
               const SizedBox(height: 24),
 
               const Text(
-                'Pindai Tiket Parkir (Web/PWA)',
+                'Verifikasi Tiket',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
@@ -419,7 +439,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
               ),
               const SizedBox(height: 8),
               const Text(
-                'Karena batasan kamera pada browser PWA, silakan masukkan kode tiket parkir Anda secara manual untuk melanjutkan booking.',
+                'Kamera tidak tersedia. Silakan masukkan kode tiket parkir Anda secara manual untuk melanjutkan booking.',
                 style: TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 14,
@@ -607,11 +627,37 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              TextButton.icon(
+                onPressed: () {
+                  setState(() => _useCamera = true);
+                  _initCamera();
+                },
+                icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                label: const Text('Gunakan Kamera'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.accent,
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _initCamera() {
+    if (_cameraCtrl != null) return;
+    try {
+      _cameraCtrl = MobileScannerController(
+        detectionSpeed: DetectionSpeed.noDuplicates,
+        facing: CameraFacing.back,
+        torchEnabled: false,
+      );
+    } catch (_) {
+      _useCamera = false;
+    }
+    if (mounted) setState(() {});
   }
 
   double _sideMargin(BuildContext context) {

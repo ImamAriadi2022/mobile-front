@@ -5,6 +5,7 @@ import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../../app/app_routes.dart';
+import '../../access/service/access_service.dart';
 import '../../welcome_scan/service/scan_service.dart';
 import '../service/parking_service.dart';
 
@@ -44,6 +45,11 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   Future<void> _loadActiveTicket() async {
+    final accessService = AccessService();
+    final apiTicket = await accessService.getActiveTicket();
+    if (apiTicket != null) {
+      await ActiveTicketStorage().save(apiTicket);
+    }
     final ticket = await ActiveTicketStorage().load();
     if (mounted) setState(() => _activeTicket = ticket);
   }
