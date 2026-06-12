@@ -1,8 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
 import '../../../core/storage/active_ticket_storage.dart';
+import '../../../core/pwa/pwa_install_service.dart';
+import '../../../core/pwa/pwa_install_dialog.dart';
 import '../../booking/service/booking_service.dart';
 import '../../profil/service/profile_service.dart';
 import '../../public_widget/bottom_nav_bar.dart';
@@ -37,11 +42,78 @@ class _HomeWidgetState extends State<HomeWidget> {
   String _greeting = 'Selamat Datang';
   String? _photoUrl;
 
+  bool _isPwaStandalone = false;
+  bool _canInstallPwa = false;
+  StreamSubscription? _installSubscription;
+  static bool _hasShownPromptThisSession = false;
+
   @override
   void initState() {
     super.initState();
     _fetchAreas();
     _loadProfile();
+    _initPwaInstall();
+  }
+
+  @override
+  void dispose() {
+    _installSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initPwaInstall() {
+    if (kIsWeb) {
+      _isPwaStandalone = PwaInstallService.instance.isStandalone;
+      PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
+        if (mounted) setState(() => _canInstallPwa = avail);
+      });
+
+      _installSubscription =
+          PwaInstallService.instance.onInstallAvailable.listen((_) {
+        if (mounted) {
+          setState(() => _canInstallPwa = true);
+          _checkPwaInstallPopup();
+        }
+      });
+
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted) {
+          _checkPwaInstallPopup();
+        }
+      });
+    }
+  }
+
+  Future<void> _checkPwaInstallPopup() async {
+    if (!kIsWeb) return;
+    
+    if (PwaInstallService.instance.isStandalone) {
+      if (mounted) setState(() => _isPwaStandalone = true);
+      return;
+    }
+    
+    final prefs = await SharedPreferences.getInstance();
+    final isDismissed = prefs.getBool('pwa_install_dismissed') ?? false;
+    if (isDismissed) {
+      return;
+    }
+    
+    if (_hasShownPromptThisSession) return;
+    _hasShownPromptThisSession = true;
+
+    final available = await PwaInstallService.instance.isInstallPromptAvailable();
+    if (available) {
+      if (mounted) {
+        PwaInstallDialog.show(context);
+      }
+    } else {
+      final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+      if (isIOS) {
+        if (mounted) {
+          PwaSafariInstallDialog.show(context);
+        }
+      }
+    }
   }
 
   void _loadProfile() {
@@ -129,6 +201,87 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  Widget _buildInstallIndicator() {
+    if (_isPwaStandalone) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.green.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.green.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 14),
+            SizedBox(width: 6),
+            Text(
+              'Aplikasi Terinstal',
+              style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+    if (!_canInstallPwa && !isIOS) {
+      return const SizedBox.shrink();
+    }
+
+    return GestureDetector(
+      onTap: () async {
+        final available = await PwaInstallService.instance.isInstallPromptAvailable();
+        if (available) {
+          if (mounted) {
+            showDialog(
+              context: context,
+              barrierColor: Colors.black.withOpacity(0.55),
+              builder: (_) => const PwaInstallDialog(),
+            ).then((_) {
+              PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
+                if (mounted) setState(() => _canInstallPwa = avail);
+              });
+            });
+          }
+        } else {
+          if (isIOS) {
+            if (mounted) {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withOpacity(0.55),
+                builder: (_) => const PwaSafariInstallDialog(),
+              ).then((_) {
+                PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
+                  if (mounted) setState(() => _canInstallPwa = avail);
+                });
+              });
+            }
+          }
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF00D2FF).withOpacity(0.15),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFF00D2FF).withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.download_for_offline_rounded, color: Color(0xFF00D2FF), size: 14),
+            SizedBox(width: 6),
+            Text(
+              'Install Aplikasi',
+              style: TextStyle(color: Color(0xFF00D2FF), fontSize: 12, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
@@ -146,6 +299,15 @@ class _HomeWidgetState extends State<HomeWidget> {
                   photoUrl: _photoUrl,
                 ),
                 const SizedBox(height: 16),
+
+                // PWA Install Status Indicator
+                if (kIsWeb) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildInstallIndicator(),
+                  ),
+                  const SizedBox(height: 12),
+                ],
 
                 // ② Hero banner
                 const HeroBannerWidget(),
