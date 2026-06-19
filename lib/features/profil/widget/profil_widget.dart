@@ -70,6 +70,9 @@ class _ProfilWidgetState extends State<ProfilWidget> {
       case 1:
         Navigator.pushReplacementNamed(context, AppRoutes.booking);
         break;
+      case 2:
+        Navigator.pushNamed(context, AppRoutes.statusKendaraan);
+        break;
       case 3:
         Navigator.pushReplacementNamed(context, AppRoutes.history);
         break;

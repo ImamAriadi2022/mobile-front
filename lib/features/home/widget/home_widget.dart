@@ -18,7 +18,6 @@ import '../../public_widget/search_bar_widget.dart';
 import '../../public_widget/section_title_widget.dart';
 import '../../public_widget/parking_list_item_widget.dart';
 import '../../public_widget/end_session_dialog_widget.dart';
-import '../../public_widget/no_ticket_dialog.dart';
 import 'hero_banner_widget.dart';
 import 'status_card_widget.dart';
 
@@ -149,20 +148,13 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) async {
-    if (idx == 1) {
-      final ticket = await ActiveTicketStorage().load();
-      if (ticket == null || ticket.ticketCode.isEmpty) {
-        if (mounted) {
-          NoTicketDialog.show(context);
-        }
-        return;
-      }
-    }
-
     setState(() => _navIndex = idx);
     switch (idx) {
       case 1:
         Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
+        break;
+      case 2:
+        Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 3:
         Navigator.pushNamed(context, AppRoutes.history);
@@ -420,17 +412,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                 // ④ Search bar (read-only, navigasi ke booking)
                 SearchBarWidget(
                   readOnly: true,
-                  onTap: () async {
-                    final ticket = await ActiveTicketStorage().load();
-                    if (ticket == null || ticket.ticketCode.isEmpty) {
-                      if (mounted) {
-                        NoTicketDialog.show(context);
-                      }
-                    } else {
-                      if (mounted) {
-                        Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
-                      }
-                    }
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
                   },
                 ),
                 const SizedBox(height: 20),
@@ -535,21 +518,12 @@ class _HomeWidgetState extends State<HomeWidget> {
         children: _parkingList
             .map((item) => ParkingListItemWidget(
                   item: item,
-                  onTap: () async {
-                    final ticket = await ActiveTicketStorage().load();
-                    if (ticket == null || ticket.ticketCode.isEmpty) {
-                      if (mounted) {
-                        NoTicketDialog.show(context);
-                      }
-                    } else {
-                      if (mounted) {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.detailBooking,
-                          arguments: item.id,
-                        ).then((_) => _checkActiveTicket());
-                      }
-                    }
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.detailBooking,
+                      arguments: item.id,
+                    ).then((_) => _checkActiveTicket());
                   },
                 ))
             .toList(),

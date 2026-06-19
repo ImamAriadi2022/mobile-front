@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/storage/active_ticket_storage.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/parking_list_item_widget.dart';
 import '../../public_widget/search_bar_widget.dart';
@@ -32,17 +31,6 @@ class _BookingWidgetState extends State<BookingWidget> {
   @override
   void initState() {
     super.initState();
-    _checkTicketAndFetch();
-  }
-
-  Future<void> _checkTicketAndFetch() async {
-    final ticket = await ActiveTicketStorage().load();
-    if (ticket == null || ticket.ticketCode.isEmpty || ticket.status != 'active') {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
-      }
-      return;
-    }
     _fetchAreas();
   }
 
@@ -82,6 +70,9 @@ class _BookingWidgetState extends State<BookingWidget> {
     switch (idx) {
       case 0:
         Navigator.pushReplacementNamed(context, AppRoutes.home);
+        break;
+      case 2:
+        Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 3:
         Navigator.pushNamed(context, AppRoutes.history);

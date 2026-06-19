@@ -8,6 +8,7 @@ class ActiveReservation {
   final String slotName;
   final String areaId;
   final String ticketId;
+  final String startTime;
 
   ActiveReservation({
     required this.reservationId,
@@ -16,6 +17,7 @@ class ActiveReservation {
     this.slotName = '',
     this.areaId = '',
     this.ticketId = '',
+    this.startTime = '',
   });
 
   factory ActiveReservation.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class ActiveReservation {
       slotName: json['slotName'] ?? '',
       areaId: json['areaId'] ?? '',
       ticketId: json['ticketId'] ?? '',
+      startTime: json['startTime'] ?? '',
     );
   }
 
@@ -37,6 +40,7 @@ class ActiveReservation {
       'slotName': slotName,
       'areaId': areaId,
       'ticketId': ticketId,
+      'startTime': startTime,
     };
   }
 }

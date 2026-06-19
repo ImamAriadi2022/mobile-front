@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../app/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -30,14 +31,18 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
   @override
   void initState() {
     super.initState();
-    try {
-      _cameraCtrl = MobileScannerController(
-        detectionSpeed: DetectionSpeed.noDuplicates,
-        facing: CameraFacing.back,
-        torchEnabled: false,
-      );
-    } catch (_) {
+    if (kIsWeb) {
       _useCamera = false;
+    } else {
+      try {
+        _cameraCtrl = MobileScannerController(
+          detectionSpeed: DetectionSpeed.noDuplicates,
+          facing: CameraFacing.back,
+          torchEnabled: false,
+        );
+      } catch (_) {
+        _useCamera = false;
+      }
     }
     _scanLineCtrl = AnimationController(
       vsync: this,

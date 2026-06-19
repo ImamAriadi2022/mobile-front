@@ -11,6 +11,7 @@ import 'parking_slot_map_widget.dart';
 import '../../booking/service/booking_service.dart';
 import '../../profil/service/profile_service.dart';
 import '../../profil/service/vehicle_service.dart';
+import '../../public_widget/no_ticket_dialog.dart';
 
 /// DetailBookingWidget: Composer untuk halaman peta slot parkir.
 ///
@@ -40,17 +41,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   @override
   void initState() {
     super.initState();
-    _checkTicketAndFetch();
-  }
-
-  Future<void> _checkTicketAndFetch() async {
-    final ticket = await ActiveTicketStorage().load();
-    if (ticket == null || ticket.ticketCode.isEmpty || ticket.status != 'active') {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
-      }
-      return;
-    }
     _fetchSlots();
   }
 
@@ -103,6 +93,9 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     switch (idx) {
       case 0:
         Navigator.pushReplacementNamed(context, AppRoutes.home);
+        break;
+      case 2:
+        Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 3:
         Navigator.pushNamed(context, AppRoutes.history);
@@ -199,14 +192,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     if (activeTicket == null || activeTicket.status != 'active') {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tiket Anda belum aktif untuk melakukan booking. Silakan scan tiket parkir terlebih dahulu.'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 4),
-          ),
-        );
-        Navigator.pushReplacementNamed(context, AppRoutes.welcomeScan);
+        NoTicketDialog.show(context);
       }
       return;
     }
@@ -224,6 +210,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
           slotName: slot.label,
           areaId: widget.areaId,
           ticketId: ticketId,
+          startTime: DateTime.now().toIso8601String(),
         );
         await ActiveReservationStorage().save(reservation);
         ScaffoldMessenger.of(context).showSnackBar(
