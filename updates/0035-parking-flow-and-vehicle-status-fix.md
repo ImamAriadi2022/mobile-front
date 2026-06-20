@@ -41,6 +41,7 @@ Laporan ini mendokumentasikan perbaikan alur pengguna (parking flow) untuk melih
 | `GET` | `/areas/{id}/slots` | Memperoleh tata letak peta slot parkir per lantai secara publik |
 | `GET` | `/users/profile` | Membaca profil pengguna nyata untuk melacak userId & foto profil |
 | `GET` | `/users/vehicles` | Mengambil data kendaraan aktif pengguna (nomor plat nomor asli & tipe kendaraan) |
+| `GET` | `/users/{userId}/reservations` | Mengambil data reservasi langsung dari backend sebagai Source of Truth untuk status kendaraan |
 | `POST` | `/reservations` | Membuat pemesanan slot parkir baru (memerlukan tiket aktif) |
 | `POST` | `/access/verify` | Memverifikasi tiket melalui pemindaian QR Code (mengirim payload `qrCode` real) |
 | `GET` | `/access/activeTicket` | Memeriksa tiket aktif yang saat ini dimiliki pengguna dari backend |
@@ -80,3 +81,6 @@ Laporan ini mendokumentasikan perbaikan alur pengguna (parking flow) untuk melih
 
 ### C. Server Pengembangan (Dev Run)
 * Server dev web aktif melayani di port `8080` (`http://0.0.0.0:8080`) untuk pratinjau lokal yang responsif.
+
+### D. Catatan Kompilasi APK (Android)
+* Percobaan kompilasi APK (`flutter build apk`) pada environment Codespace dibatasi karena ketidaktersediaan Android SDK (`No Android SDK found`). Namun, seluruh source code telah diselaraskan agar kompatibel dan bebas dari syntax error saat dibangun ke semua target platform.

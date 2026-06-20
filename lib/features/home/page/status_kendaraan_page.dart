@@ -10,6 +10,9 @@ import '../../welcome_scan/service/scan_service.dart';
 import '../service/parking_service.dart';
 import '../../profil/service/vehicle_service.dart';
 import '../../profil/model/vehicle.dart';
+import '../../profil/service/profile_service.dart';
+import '../../history/service/history_service.dart';
+import '../../history/model/reservation_history.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
   const StatusKendaraanPage({super.key});
@@ -58,8 +61,43 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     }
     final ticket = await ActiveTicketStorage().load();
 
-    // Load active reservation from local storage
-    final reservation = await ActiveReservationStorage().load();
+    // Sync active reservation state from API (Source of Truth)
+    ActiveReservation? reservation = await ActiveReservationStorage().load();
+    try {
+      final profile = await ProfileService().getProfile();
+      if (profile != null) {
+        final historyList = await HistoryService().getHistory(profile.userId);
+        // Find reservation with status 'active' or 'pending'
+        ReservationHistory? activeResFromApi;
+        for (final r in historyList) {
+          if (r.status == 'active' || r.status == 'pending') {
+            activeResFromApi = r;
+            break;
+          }
+        }
+
+        if (activeResFromApi != null) {
+          reservation = ActiveReservation(
+            reservationId: activeResFromApi.reservationId,
+            status: activeResFromApi.status,
+            slotId: activeResFromApi.slotId,
+            slotName: activeResFromApi.slotName,
+            areaId: activeResFromApi.areaId,
+            ticketId: activeResFromApi.ticketId,
+            startTime: activeResFromApi.timestamps.created ?? '',
+          );
+          await ActiveReservationStorage().save(reservation);
+        } else {
+          // If backend says no active/pending reservation exists, clear local storage
+          if (reservation != null) {
+            await ActiveReservationStorage().clear();
+            reservation = null;
+          }
+        }
+      }
+    } catch (e) {
+      print('Sync active reservation error: $e');
+    }
 
     // Load vehicle data from API
     final vehicleService = VehicleService();

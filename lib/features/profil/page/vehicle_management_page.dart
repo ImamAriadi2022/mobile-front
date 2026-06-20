@@ -98,7 +98,7 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
     }
 
     try {
-      final newVehicle = await _service.addVehicle(
+      final result = await _service.addVehicle(
         plateNumber: plateNumber,
         vehicleType: vehicleType,
       );
@@ -107,25 +107,25 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       }
 
-      if (newVehicle != null) {
+      if (result.success) {
         // Refresh list dari backend (bukan hanya tambah lokal)
         await _loadVehicles();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Kendaraan berhasil ditambahkan.'),
+            SnackBar(
+              content: Text(result.message),
               backgroundColor: AppColors.green,
-              duration: Duration(seconds: 3),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Gagal menambahkan kendaraan. Coba lagi.'),
+            SnackBar(
+              content: Text(result.message),
               backgroundColor: AppColors.red,
-              duration: Duration(seconds: 4),
+              duration: const Duration(seconds: 4),
             ),
           );
         }
@@ -675,7 +675,7 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
     setState(() => _isSubmitting = true);
     await widget.onAdd(
       _plateCtrl.text.trim().toUpperCase(),
-      _selectedType,
+      _selectedType.toLowerCase(),
     );
     // Bottom sheet sudah di-pop oleh parent (_handleAddVehicle)
   }

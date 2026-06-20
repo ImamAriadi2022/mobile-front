@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,10 +25,6 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
 
   StreamSubscription? _installSubscription;
   bool _didCheckPwa = false;
-
-  static const String _cdnBaseUrl =
-      'https://storage.googleapis.com/parkfinderbucket';
-  static const String _logoPath = '/foto/logo.png';
 
   @override
   void initState() {
@@ -156,93 +151,10 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
   }
 
   Widget _buildLogo() {
-    final imageUrl = '$_cdnBaseUrl$_logoPath';
-
-    if (kIsWeb) {
-      return Image.network(
-        imageUrl,
-        width: 250,
-        fit: BoxFit.contain,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          }
-          return SizedBox(
-            width: 48,
-            height: 48,
-            child: Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  AppColors.accent.withOpacity(0.25),
-                ),
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.error_outline_rounded,
-                color: AppColors.accent,
-                size: 44,
-              ),
-              const SizedBox(height: 6),
-              Flexible(
-                child: Text(
-                  error.toString(),
-                  style: TextStyle(color: AppColors.accent, fontSize: 12),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
+    return Image.asset(
+      'lib/assets/logo.png',
       width: 250,
       fit: BoxFit.contain,
-      placeholder: (context, url) => SizedBox(
-        width: 48,
-        height: 48,
-        child: Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              AppColors.accent.withOpacity(0.25),
-            ),
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              color: AppColors.accent,
-              size: 44,
-            ),
-            const SizedBox(height: 6),
-            Flexible(
-              child: Text(
-                error.toString(),
-                style: TextStyle(color: AppColors.accent, fontSize: 12),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../core/theme/app_colors.dart';
 import '../widget/splash_screen_widget.dart';
 
 class SplashScreenPage extends StatelessWidget {
@@ -8,7 +8,7 @@ class SplashScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SplashScreenWidget(),
       ),
