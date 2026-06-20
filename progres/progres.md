@@ -1,8 +1,8 @@
 # Progres Project ParkFinder — Mobile App & PWA
 
 ## 📊 Estimasi Progress Proyek
-- **Selesai (Completed)**: **~65%** (12 dari 18 Bagian/Halaman Utama telah terintegrasi API & Fungsional)
-- **Sisa Pekerjaan (Remaining)**: **~35%** (6 Bagian/Halaman membutuhkan perbaikan integrasi API, penambahan alur pasca booking, atau pembersihan data dummy)
+- **Selesai (Completed)**: **~75%** (13 dari 18 Bagian/Halaman Utama telah terintegrasi API & Fungsional)
+- **Sisa Pekerjaan (Remaining)**: **~25%** (5 Bagian/Halaman membutuhkan perbaikan integrasi API, atau pembersihan data dummy)
 
 ---
 
@@ -23,6 +23,7 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 - [x] `/pengaturan` (PengaturanPage) — Manajemen notifikasi & toggle tema/sound
 - [x] `/home` (HomePage) — Daftar parkir terdekat sudah terintegrasi dinamis dari API `GET /areas`
 - [x] `/status-kendaraan` (StatusKendaraanPage) — Durasi/elapsed timer parkir aktif berjalan bertambah secara real-time (sinkron menggunakan timestamp `claimedAt` atau waktu reservasi)
+- [x] **Alur Pasca Booking (Fungsionalitas & UI)** — Fitur setelah reservasi berhasil dibuat hingga pengguna sampai di lokasi slot (lihat `referensi alur/`) - **SELESAI (TASK 0044)**
 
 ### 2. Halaman & Alur yang Masih Perlu Perbaikan / Pengembangan (⚠️ Belum Selesai)
 - [ ] `/animasi-scan` (AnimasiScanPage) — Data daftar status masih hardcoded (3 item statis)
@@ -30,20 +31,19 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 - [ ] `/scan-berhasil` (ScanBerhasilPage) — Kode tiket yang ditampilkan masih hardcoded, belum dinamis sesuai hasil scan kamera
 - [ ] `/history` (HistoryPage) — Riwayat reservasi parkir masih berupa data hardcoded (8 item)
 - [ ] `/edit-profil` (EditProfilPage) — Form edit profil belum memanggil API untuk menyimpan data (baru sebatas `Navigator.pop`)
-- [ ] **Alur Pasca Booking (Fungsionalitas & UI)** — Fitur setelah reservasi berhasil dibuat hingga pengguna sampai di lokasi slot (lihat `referensi alur/`)
 
 ---
 
 ## 🛠️ Daftar Tugas Sisa Pekerjaan (ToDo List)
 
-Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 35%):
+Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 25%):
 
 ### 🚨 Alur Pasca Booking (Terbaru - TASK 0044)
-- [ ] **Panduan Menuju Slot Parkir**: Menampilkan rute/petunjuk arah visual dari gerbang masuk menuju slot yang di-booking.
-- [ ] **Tombol "Saya Sudah Sampai"**: Tombol konfirmasi ketika pengguna telah menempati slot parkir untuk mengaktifkan sesi parkir secara penuh.
-- [ ] **Notifikasi Keberhasilan**: Tampilkan pesan/banner pemberitahuan *"Selamat, Anda sudah berhasil mengaktifkan slot parkir xxx"* setelah menekan tombol sampai.
-- [ ] **Pilihan "Ganti Slot"**: Sediakan tombol/opsi mengganti slot di bawah tombol "Saya Sudah Sampai".
-- [ ] **Pilihan "Batalkan Reservasi"**: Sediakan opsi pembatalan booking sebelum pengguna menekan tombol sudah sampai.
+- [x] **Panduan Menuju Slot Parkir**: Menampilkan rute/petunjuk arah visual dari gerbang masuk menuju slot yang di-booking.
+- [x] **Tombol "Saya Sudah Sampai"**: Tombol konfirmasi ketika pengguna telah menempati slot parkir untuk mengaktifkan sesi parkir secara penuh.
+- [x] **Notifikasi Keberhasilan**: Tampilkan pesan/banner pemberitahuan *"Selamat, Anda sudah berhasil mengaktifkan slot parkir xxx"* setelah menekan tombol sampai.
+- [x] **Pilihan "Ganti Slot"**: Sediakan tombol/opsi mengganti slot di bawah tombol "Saya Sudah Sampai".
+- [x] **Pilihan "Batalkan Reservasi"**: Sediakan opsi pembatalan booking sebelum pengguna menekan tombol sudah sampai.
 
 ### Integrasi Scanner & Verifikasi Tiket
 - [ ] **Alur Scanner (`/halaman-scan` & `/welcome-scan`)**:
@@ -110,7 +110,7 @@ graph TD
     D -->|flutter analyze & test| E[Fase 4: Final PWA Build & Deploy]
 ```
 
-1. **Fase 1: Implementasi Alur Pasca Booking (TASK 0044 - Prioritas Baru)**  
+1. **Fase 1: Implementasi Alur Pasca Booking (TASK 0044 - SELESAI)**  
    Menambahkan panduan navigasi slot, tombol kedatangan, notifikasi sukses aktif, fitur ganti slot, dan pembatalan reservasi.
 2. **Fase 2: Perbaikan Alur Scan & Verifikasi Tiket**  
    Menyelesaikan masalah parser scanner agar tiket yang di-scan kamera menghasilkan ticket ID yang sah untuk digunakan pada saat booking slot.

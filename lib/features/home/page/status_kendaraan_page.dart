@@ -13,6 +13,7 @@ import '../../profil/model/vehicle.dart';
 import '../../profil/service/profile_service.dart';
 import '../../history/service/history_service.dart';
 import '../../history/model/reservation_history.dart';
+import '../../booking/service/booking_service.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
   const StatusKendaraanPage({super.key});
@@ -33,6 +34,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   ActiveReservation? _activeReservation;
   bool _isCancelling = false;
   bool _isLoading = true;
+  bool _isArriving = false;
+  bool _isSwapping = false;
 
   // Vehicle data from API
   String _plateNumber = '';
@@ -217,8 +220,34 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     setState(() => _isCancelling = true);
 
     final service = ParkingService();
-    CancelResult result;
 
+    // Check if reservation is active/arrived to complete it
+    if (_activeReservation != null &&
+        (_activeReservation!.status == 'active' ||
+            _activeReservation!.status == 'arrived')) {
+      final result = await service.completeReservation(_activeReservation!.reservationId);
+      if (!mounted) return;
+      setState(() => _isCancelling = false);
+
+      if (result.success) {
+        _timer?.cancel();
+        await ActiveTicketStorage().clear();
+        await ActiveReservationStorage().clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      } else {
+        _showErrorDialog(result.message);
+      }
+      return;
+    }
+
+    // Default cancel behavior
+    CancelResult result;
     if (_activeReservation != null) {
       result = await service.cancelReservation(_activeReservation!.reservationId);
     } else if (_activeTicket != null) {
@@ -232,14 +261,12 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     }
 
     if (!mounted) return;
-
     setState(() => _isCancelling = false);
 
     if (result.success) {
       _timer?.cancel();
       await ActiveTicketStorage().clear();
       await ActiveReservationStorage().clear();
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
@@ -248,21 +275,25 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
       );
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.cardBg,
-          title: const Text('Gagal', style: TextStyle(color: Colors.white)),
-          content: Text(result.message, style: const TextStyle(color: AppColors.textSecondary)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
-            ),
-          ],
-        ),
-      );
+      _showErrorDialog(result.message);
     }
+  }
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        title: const Text('Gagal', style: TextStyle(color: Colors.white)),
+        content: Text(msg, style: const TextStyle(color: AppColors.textSecondary)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -392,7 +423,470 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     final displayVehicleType = _vehicleType.isNotEmpty
         ? _vehicleType.toUpperCase()
         : 'KENDARAAN';
+    final reservationStatus = _activeReservation?.status ?? 'pending';
 
+    // If reservation status is pending, show the routing/navigation, "Saya Sudah Sampai", "Ganti Slot", and "Batalkan Reservasi"
+    if (_activeReservation != null && reservationStatus == 'pending') {
+      return _buildPendingReservationView(slotName, areaName);
+    }
+
+    return _buildActiveOrArrivedView(slotName, areaName, displayVehicleType);
+  }
+
+  Widget _buildPendingReservationView(String slotName, String areaName) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          const Text(
+            'Menunggu Kedatangan',
+            style: TextStyle(color: AppColors.accent, fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+
+          // Panduan menuju slot parkir (route map)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.borderColor),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Panduan Menuju Slot Parkir Anda',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Ikuti petunjuk arah di bawah ini untuk mencapai slot.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'lib/assets/denah_pesan_park.png',
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 180,
+                          color: const Color(0xFF132136),
+                          child: const Center(
+                            child: Icon(Icons.map_outlined, color: Colors.white38, size: 48),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Reservation Info Box
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildInfoBox(
+                        'Lokasi Parkir',
+                        areaName.isNotEmpty ? areaName : '—',
+                        icon: Icons.location_on_outlined,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _buildInfoBox(
+                        'Slot Parkir',
+                        slotName.isNotEmpty ? slotName : '—',
+                        icon: Icons.local_parking_rounded,
+                        fontSize: 20,
+                        isHighlighted: true,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                if (_plateNumber.isNotEmpty)
+                  _buildInfoBox(
+                    'Kendaraan / Plat Nomor',
+                    '$_vehicleType - $_plateNumber'.toUpperCase(),
+                    icon: Icons.badge_outlined,
+                    fontSize: 15,
+                    fullWidth: true,
+                  ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Actions
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                // 1. Saya Sudah Sampai button
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: ElevatedButton(
+                    onPressed: _isArriving ? null : _onArriveAtSlot,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: _isArriving
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Text(
+                            'Saya Sudah Sampai',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // 2. Ganti Slot button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    onPressed: _isSwapping ? null : _showSwapSlotDialog,
+                    icon: const Icon(Icons.swap_horiz_rounded, size: 20, color: AppColors.accent),
+                    label: const Text(
+                      'Ganti Slot Parkir',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.accent,
+                      side: const BorderSide(color: AppColors.accent),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // 3. Batalkan Reservasi button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: TextButton.icon(
+                    onPressed: _isCancelling ? null : _onKeluarParkir,
+                    icon: const Icon(Icons.cancel_outlined, size: 20, color: Colors.redAccent),
+                    label: const Text(
+                      'Batalkan Reservasi',
+                      style: TextStyle(color: Colors.redAccent, fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: Colors.redAccent, width: 1),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onArriveAtSlot() async {
+    if (_activeReservation == null) return;
+    setState(() => _isArriving = true);
+
+    final service = ParkingService();
+    final result = await service.arriveReservation(_activeReservation!.reservationId);
+
+    if (!mounted) return;
+    setState(() => _isArriving = false);
+
+    if (result.success) {
+      // Update local reservation status to active
+      final updatedRes = ActiveReservation(
+        reservationId: _activeReservation!.reservationId,
+        status: 'active',
+        slotId: _activeReservation!.slotId,
+        slotName: _activeReservation!.slotName,
+        areaId: _activeReservation!.areaId,
+        ticketId: _activeReservation!.ticketId,
+        startTime: DateTime.now().toIso8601String(), // Start timer from arrival timestamp
+      );
+      await ActiveReservationStorage().save(updatedRes);
+
+      // Show success notification dialog
+      _showArriveSuccessDialog(_activeReservation!.slotName);
+
+      // Reload
+      await _loadAllData();
+    } else {
+      _showErrorDialog(result.message);
+    }
+  }
+
+  void _showArriveSuccessDialog(String slotName) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF0D2040),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'lib/assets/notifikasi_aktif.png',
+                height: 120,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: Colors.green,
+                  size: 80,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Aktivasi Berhasil!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Selamat, Anda sudah berhasil mengaktifkan slot parkir $slotName.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.7),
+                  fontSize: 14,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Tutup',
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showSwapSlotDialog() async {
+    if (_activeReservation == null) return;
+
+    setState(() => _isSwapping = true);
+
+    final bookingService = BookingService();
+    final allSlots = await bookingService.getSlots(_activeReservation!.areaId);
+
+    if (!mounted) return;
+    setState(() => _isSwapping = false);
+
+    // Filter available slots
+    final availableSlots = allSlots.where((s) => s.status.toLowerCase() == 'available' && s.id != _activeReservation!.slotId).toList();
+
+    if (availableSlots.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.cardBg,
+          title: const Text('Ganti Slot', style: TextStyle(color: Colors.white)),
+          content: const Text('Maaf, tidak ada slot parkir kosong lain yang tersedia saat ini.', style: TextStyle(color: AppColors.textSecondary)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        ParkingSlot? selectedSlot;
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFF0D2040),
+              title: const Text(
+                'Pilih Slot Baru',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'lib/assets/popup_book.png',
+                      height: 80,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Silakan pilih salah satu slot parkir kosong di bawah ini:',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    ),
+                    const SizedBox(height: 16),
+                    Flexible(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.borderColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButtonFormField<ParkingSlot>(
+                          dropdownColor: const Color(0xFF0D2040),
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                            border: InputBorder.none,
+                          ),
+                          hint: const Text('Pilih Slot', style: TextStyle(color: Colors.white30)),
+                          value: selectedSlot,
+                          items: availableSlots.map((slot) {
+                            return DropdownMenuItem<ParkingSlot>(
+                              value: slot,
+                              child: Text(
+                                slot.slotNumber,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            setDialogState(() {
+                              selectedSlot = val;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+                ),
+                ElevatedButton(
+                  onPressed: selectedSlot == null
+                      ? null
+                      : () {
+                          Navigator.pop(ctx);
+                          _onSwapSlot(selectedSlot!.id, selectedSlot!.slotNumber);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accent,
+                  ),
+                  child: const Text('Ganti Slot', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _onSwapSlot(String newSlotId, String newSlotName) async {
+    if (_activeReservation == null) return;
+
+    setState(() => _isSwapping = true);
+
+    final service = ParkingService();
+    final result = await service.swapReservation(_activeReservation!.reservationId, newSlotId);
+
+    if (!mounted) return;
+    setState(() => _isSwapping = false);
+
+    if (result.success) {
+      // Update local reservation details
+      final updatedRes = ActiveReservation(
+        reservationId: _activeReservation!.reservationId,
+        status: _activeReservation!.status,
+        slotId: newSlotId,
+        slotName: newSlotName,
+        areaId: _activeReservation!.areaId,
+        ticketId: _activeReservation!.ticketId,
+        startTime: _activeReservation!.startTime,
+      );
+      await ActiveReservationStorage().save(updatedRes);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Berhasil ganti slot ke $newSlotName!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      await _loadAllData();
+    } else {
+      _showErrorDialog(result.message);
+    }
+  }
+
+  Widget _buildActiveOrArrivedView(String slotName, String areaName, String displayVehicleType) {
     return SingleChildScrollView(
       child: Column(
         children: [

@@ -45,6 +45,89 @@ class ParkingService {
       return CancelResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
     }
   }
+
+  Future<ActionResult> arriveReservation(String reservationId) async {
+    try {
+      final response = await _apiService.post(
+        '/reservations/$reservationId/arrive',
+        body: {},
+        requireAuth: true,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        return ActionResult(
+          success: json['success'] == true,
+          message: json['message'] ?? 'Kedatangan berhasil dikonfirmasi.',
+        );
+      }
+      final json = jsonDecode(response.body);
+      return ActionResult(
+        success: false,
+        message: json['message'] ?? 'Gagal mengonfirmasi kedatangan.',
+      );
+    } catch (e) {
+      return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
+    }
+  }
+
+  Future<ActionResult> completeReservation(String reservationId) async {
+    try {
+      final response = await _apiService.post(
+        '/reservations/$reservationId/complete',
+        body: {},
+        requireAuth: true,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        return ActionResult(
+          success: json['success'] == true,
+          message: json['message'] ?? 'Sesi parkir berhasil diselesaikan.',
+        );
+      }
+      final json = jsonDecode(response.body);
+      return ActionResult(
+        success: false,
+        message: json['message'] ?? 'Gagal menyelesaikan sesi parkir.',
+      );
+    } catch (e) {
+      return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
+    }
+  }
+
+  Future<ActionResult> swapReservation(String reservationId, String newSlotId) async {
+    try {
+      var response = await _apiService.patch(
+        '/reservations/$reservationId/swap',
+        body: {'newSlotId': newSlotId},
+        requireAuth: true,
+      );
+
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _apiService.post(
+          '/reservations/$reservationId/swap',
+          body: {'newSlotId': newSlotId},
+          requireAuth: true,
+        );
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        return ActionResult(
+          success: json['success'] == true,
+          message: json['message'] ?? 'Slot parkir berhasil diganti.',
+        );
+      }
+      final json = jsonDecode(response.body);
+      return ActionResult(
+        success: false,
+        message: json['message'] ?? 'Gagal mengganti slot parkir.',
+      );
+    } catch (e) {
+      return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
+    }
+  }
 }
 
 class CancelResult {
@@ -52,4 +135,11 @@ class CancelResult {
   final String message;
 
   CancelResult({required this.success, required this.message});
+}
+
+class ActionResult {
+  final bool success;
+  final String message;
+
+  ActionResult({required this.success, required this.message});
 }
