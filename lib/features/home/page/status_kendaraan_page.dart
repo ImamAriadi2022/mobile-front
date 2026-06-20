@@ -1056,7 +1056,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                         ),
                       )
                     : const Text(
-                        'Keluar Parkir',
+                        'Selesai Parkir',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,

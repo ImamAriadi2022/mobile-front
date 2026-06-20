@@ -87,9 +87,8 @@ class ParkingService {
 
   Future<ActionResult> completeReservation(String reservationId) async {
     try {
-      final response = await _apiService.post(
+      final response = await _apiService.patch(
         '/reservations/$reservationId/complete',
-        body: {},
         requireAuth: true,
       );
 
