@@ -9,6 +9,7 @@ class ProfileData {
   final String email;
   final String phoneNumber;
   final String? photoUrl;
+  final String role;
 
   ProfileData({
     required this.userId,
@@ -16,6 +17,7 @@ class ProfileData {
     required this.email,
     required this.phoneNumber,
     this.photoUrl,
+    this.role = 'user',
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class ProfileData {
       email: src['email'] ?? 'No Email',
       phoneNumber: src['phoneNumber'] ?? 'No Phone Number',
       photoUrl: src['photoUrl'],
+      role: src['role'] ?? 'user',
     );
   }
 }

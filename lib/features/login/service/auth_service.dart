@@ -2,9 +2,11 @@ import 'dart:convert';
 import '../../../core/network/api_service.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
+import '../../../core/storage/role_storage.dart';
 
 class AuthService {
   final ApiService _apiService = ApiService();
+  final RoleStorage _roleStorage = RoleStorage();
 
   Future<String?> login(String email, String password) async {
     try {
@@ -16,8 +18,17 @@ class AuthService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = jsonDecode(response.body);
         final token = body['data']?['token'];
+        final role = body['data']?['user']?['role'] as String?;
+
         if (token != null) {
           await _apiService.setToken(token);
+
+          if (role == null || role != 'user') {
+            await _apiService.clearToken();
+            return 'Aplikasi ini khusus untuk pengguna parkir. Admin/Super Admin silakan gunakan Web Admin Panel.';
+          }
+
+          await _roleStorage.save(role);
           return null;
         }
       }
@@ -45,6 +56,22 @@ class AuthService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        final body = jsonDecode(response.body);
+        final token = body['data']?['token'];
+        final role = body['data']?['user']?['role'] as String?;
+
+        if (token != null) {
+          await _apiService.setToken(token);
+
+          if (role == null || role != 'user') {
+            await _apiService.clearToken();
+            return 'Aplikasi ini khusus untuk pengguna parkir. Admin/Super Admin silakan gunakan Web Admin Panel.';
+          }
+
+          await _roleStorage.save(role);
+          await _apiService.clearToken();
+        }
+
         return null;
       }
 
@@ -65,6 +92,7 @@ class AuthService {
       await _apiService.clearToken();
       await ActiveTicketStorage().clear();
       await ActiveReservationStorage().clear();
+      await _roleStorage.clear();
     }
   }
 }

@@ -11,6 +11,7 @@ import '../../access/service/access_service.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
 import '../../booking/service/booking_service.dart';
+import '../../login/service/auth_service.dart';
 import '../../profil/service/profile_service.dart';
 import '../../public_widget/bottom_nav_bar.dart';
 import '../../public_widget/user_header_widget.dart';
@@ -102,13 +103,35 @@ class _HomeWidgetState extends State<HomeWidget> {
   void _loadProfile() {
     _greeting = greetingFromHour(context);
     ProfileService().getProfile().then((profile) {
-      if (mounted && profile != null) {
+      if (!mounted) return;
+      if (profile != null) {
+        if (profile.role != 'user') {
+          _forceLogout();
+          return;
+        }
         setState(() {
           _userName = profile.name;
           _photoUrl = profile.photoUrl;
         });
       }
     });
+  }
+
+  Future<void> _forceLogout() async {
+    await AuthService().logout();
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Aplikasi ini khusus untuk pengguna parkir. Silakan gunakan Web Admin Panel.'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ),
+    );
   }
 
   Future<void> _fetchAreas() async {
