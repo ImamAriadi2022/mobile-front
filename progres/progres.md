@@ -60,6 +60,44 @@ Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 35%):
 
 ---
 
+## 🔗 Dokumentasi API Backend (Referensi Alur Booking)
+
+1. **Reservasi Booking (POST)**
+   - **Endpoint**: `/reservations`
+   - **Payload**:
+     ```json
+     {
+         "ticketId": "v1woiGoTjIxd4whmd2gt",
+         "slotId": "3QHzrYhMBlPtpJ0xklOe"
+     }
+     ```
+
+2. **Konfirmasi Kedatangan/Arrive (POST)**
+   - **Endpoint**: `/reservations/{reservationId}/arrive`
+
+3. **Selesai Parkir/Complete (POST)**
+   - **Endpoint**: `/reservations/{reservationId}/complete`
+
+4. **Dapatkan Riwayat Reservasi User (GET)**
+   - **Endpoint**: `/users/{userId}/reservations`
+
+5. **Dapatkan Detail Reservasi by ID (GET)**
+   - **Endpoint**: `/reservations/{reservationId}`
+
+6. **Batalkan Reservasi (POST)**
+   - **Endpoint**: `/reservations/{reservationId}/cancel`
+
+7. **Ganti/Swap Slot (POST/PATCH)**
+   - **Endpoint**: `/reservations/{reservationId}/swap`
+   - **Payload**:
+     ```json
+     {
+         "newSlotId": "hxEQBIQsLPFHxXdelqU8"
+     }
+     ```
+
+---
+
 ## 🚀 Roadmap Alur Pengembangan ke Depan
 
 Untuk menyelesaikan proyek secara efisien, alur pengerjaan direkomendasikan berjalan dalam urutan fase berikut:
