@@ -20,7 +20,7 @@ class TicketData {
 
   factory TicketData.fromJson(Map<String, dynamic> json) {
     return TicketData(
-      ticketCode: json['ticketId'] ?? json['ticketCode'] ?? json['code'] ?? '',
+      ticketCode: json['ticketId'] ?? json['ticketCode'] ?? json['code'] ?? json['id'] ?? '',
       status: json['status'] ?? '',
       vehicleType: json['vehicleType'] ?? '',
       areaId: json['areaId'] ?? '',
@@ -32,6 +32,7 @@ class TicketData {
   Map<String, dynamic> toJson() {
     return {
       'ticketId': ticketCode,
+      'id': ticketCode,
       'status': status,
       'vehicleType': vehicleType,
       'areaId': areaId,
