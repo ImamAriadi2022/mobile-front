@@ -1,8 +1,8 @@
 # Progres Project ParkFinder — Mobile App & PWA
 
 ## 📊 Estimasi Progress Proyek
-- **Selesai (Completed)**: **~60%** (10 dari 17 Halaman Utama telah terintegrasi API)
-- **Sisa Pekerjaan (Remaining)**: **~40%** (7 Halaman membutuhkan perbaikan integrasi API, sinkronisasi alur, atau penghapusan data dummy)
+- **Selesai (Completed)**: **~70%** (12 dari 17 Halaman Utama telah terintegrasi API)
+- **Sisa Pekerjaan (Remaining)**: **~30%** (5 Halaman membutuhkan perbaikan integrasi API, sinkronisasi alur, atau penghapusan data dummy)
 
 ---
 
@@ -21,13 +21,13 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 - [x] `/detail-booking` (DetailBookingPage) — Pemilihan lantai, visualisasi grid slot, reservasi slot (`POST /reservations`)
 - [x] `/profil` (ProfilPage) — Profil user aktif (`GET /users/profile`), kendaraan, dan statistik
 - [x] `/pengaturan` (PengaturanPage) — Manajemen notifikasi & toggle tema/sound
+- [x] `/home` (HomePage) — Daftar parkir terdekat sudah terintegrasi dinamis dari API `GET /areas`
+- [x] `/status-kendaraan` (StatusKendaraanPage) — Durasi/elapsed timer parkir aktif berjalan bertambah secara real-time (sinkron menggunakan timestamp `claimedAt` atau waktu reservasi)
 
 ### 2. Halaman yang Masih Perlu Perbaikan (⚠️ Butuh Sentuhan API / Data Masih Dummy)
 - [ ] `/animasi-scan` (AnimasiScanPage) — Data daftar status masih hardcoded (3 item statis)
 - [ ] `/halaman-scan` (HalamanScanPage) — Penyelarasan API `POST /access/verify` (backend mengharapkan `qrCode`, mobile saat ini mengirim `ticketId`)
 - [ ] `/scan-berhasil` (ScanBerhasilPage) — Kode tiket yang ditampilkan masih hardcoded, belum dinamis sesuai hasil scan kamera
-- [ ] `/home` (HomePage) — Daftar parkir terdekat masih dummy (3 item hardcoded)
-- [ ] `/status-kendaraan` (StatusKendaraanPage) — Durasi/elapsed timer parkir aktif masih macet/stuck dan tidak bertambah secara real-time
 - [ ] `/history` (HistoryPage) — Riwayat reservasi parkir masih berupa data hardcoded (8 item)
 - [ ] `/edit-profil` (EditProfilPage) — Form edit profil belum memanggil API untuk menyimpan data (baru sebatas `Navigator.pop`)
 
@@ -35,7 +35,7 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 
 ## 🛠️ Daftar Tugas Sisa Pekerjaan (ToDo List)
 
-Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 40%):
+Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 30%):
 
 ### Integrasi Scanner & Verifikasi Tiket
 - [ ] **Alur Scanner (`/halaman-scan` & `/welcome-scan`)**:
@@ -45,9 +45,9 @@ Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 40%):
   - Ganti kode tiket dan area parkir hardcoded dengan parameter dinamis hasil scan yang dikirimkan dari halaman sebelumnya.
 
 ### Halaman Dashboard & Status Aktif
-- [ ] **Daftar Parkir di Home (`/home`)**:
+- [x] **Daftar Parkir di Home (`/home`)**:
   - Ganti data dummy list parkir terdekat dengan memanggil API `GET /areas`.
-- [ ] **Timer Parkir Aktif (`/status-kendaraan`)**:
+- [x] **Timer Parkir Aktif (`/status-kendaraan`)**:
   - Buat logic pembaruan timer (misalnya menggunakan `Timer.periodic`) untuk melakukan increment durasi parkir secara berkala (real-time).
 
 ### Profil, Riwayat, & Fitur Lainnya
@@ -72,7 +72,7 @@ graph TD
 
 1. **Fase 1: Perbaikan Alur Scan & Verifikasi Tiket (Paling Kritis)**  
    Menyelesaikan masalah parser scanner agar tiket yang di-scan kamera menghasilkan ticket ID yang sah untuk digunakan pada saat booking slot.
-2. **Fase 2: Sinkronisasi Real-time Dashboard**  
+2. **Fase 2: Sinkronisasi Real-time Dashboard (SELESAI - TASK 0043)**  
    Menghubungkan `/home` dengan daftar area riil dan mengaktifkan fungsionalitas timer pada halaman status kendaraan aktif.
 3. **Fase 3: Pembersihan Sisa Data Dummy (Profil & Riwayat)**  
    Mengganti sisa-sisa data dummy di `/history` dan menghubungkan form `/edit-profil` dengan endpoint update database.

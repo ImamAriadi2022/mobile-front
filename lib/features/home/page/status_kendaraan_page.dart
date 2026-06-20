@@ -145,8 +145,18 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         _activeTicket!.ticketCode.isNotEmpty &&
         (_activeTicket!.status == 'active' ||
             _activeTicket!.status == 'claimed')) {
-      // Fallback: start from 0 if no startTime available
-      _elapsedSeconds = 0;
+      // Fallback: use claimedAt timestamp if available, otherwise start from 0
+      if (_activeTicket!.claimedAt.isNotEmpty) {
+        try {
+          final claimedTime = DateTime.parse(_activeTicket!.claimedAt);
+          _elapsedSeconds = DateTime.now().difference(claimedTime).inSeconds;
+          if (_elapsedSeconds < 0) _elapsedSeconds = 0;
+        } catch (_) {
+          _elapsedSeconds = 0;
+        }
+      } else {
+        _elapsedSeconds = 0;
+      }
     } else {
       return; // No active session, don't start timer
     }

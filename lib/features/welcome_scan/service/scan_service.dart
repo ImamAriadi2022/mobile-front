@@ -8,6 +8,7 @@ class TicketData {
   final String areaId;
   final String areaName;
   final String bindingId;
+  final String claimedAt;
 
   TicketData({
     required this.ticketCode,
@@ -16,6 +17,7 @@ class TicketData {
     this.areaId = '',
     this.areaName = '',
     this.bindingId = '',
+    this.claimedAt = '',
   });
 
   factory TicketData.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class TicketData {
       areaId: json['areaId'] ?? '',
       areaName: json['areaName'] ?? '',
       bindingId: json['bindingId'] ?? '',
+      claimedAt: json['claimedAt'] ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class TicketData {
       'areaId': areaId,
       'areaName': areaName,
       'bindingId': bindingId,
+      'claimedAt': claimedAt,
     };
   }
 }
