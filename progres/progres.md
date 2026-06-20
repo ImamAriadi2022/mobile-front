@@ -1,8 +1,8 @@
 # Progres Project ParkFinder — Mobile App & PWA
 
 ## 📊 Estimasi Progress Proyek
-- **Selesai (Completed)**: **~70%** (12 dari 17 Halaman Utama telah terintegrasi API)
-- **Sisa Pekerjaan (Remaining)**: **~30%** (5 Halaman membutuhkan perbaikan integrasi API, sinkronisasi alur, atau penghapusan data dummy)
+- **Selesai (Completed)**: **~65%** (12 dari 18 Bagian/Halaman Utama telah terintegrasi API & Fungsional)
+- **Sisa Pekerjaan (Remaining)**: **~35%** (6 Bagian/Halaman membutuhkan perbaikan integrasi API, penambahan alur pasca booking, atau pembersihan data dummy)
 
 ---
 
@@ -24,18 +24,26 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 - [x] `/home` (HomePage) — Daftar parkir terdekat sudah terintegrasi dinamis dari API `GET /areas`
 - [x] `/status-kendaraan` (StatusKendaraanPage) — Durasi/elapsed timer parkir aktif berjalan bertambah secara real-time (sinkron menggunakan timestamp `claimedAt` atau waktu reservasi)
 
-### 2. Halaman yang Masih Perlu Perbaikan (⚠️ Butuh Sentuhan API / Data Masih Dummy)
+### 2. Halaman & Alur yang Masih Perlu Perbaikan / Pengembangan (⚠️ Belum Selesai)
 - [ ] `/animasi-scan` (AnimasiScanPage) — Data daftar status masih hardcoded (3 item statis)
 - [ ] `/halaman-scan` (HalamanScanPage) — Penyelarasan API `POST /access/verify` (backend mengharapkan `qrCode`, mobile saat ini mengirim `ticketId`)
 - [ ] `/scan-berhasil` (ScanBerhasilPage) — Kode tiket yang ditampilkan masih hardcoded, belum dinamis sesuai hasil scan kamera
 - [ ] `/history` (HistoryPage) — Riwayat reservasi parkir masih berupa data hardcoded (8 item)
 - [ ] `/edit-profil` (EditProfilPage) — Form edit profil belum memanggil API untuk menyimpan data (baru sebatas `Navigator.pop`)
+- [ ] **Alur Pasca Booking (Fungsionalitas & UI)** — Fitur setelah reservasi berhasil dibuat hingga pengguna sampai di lokasi slot (lihat `referensi alur/`)
 
 ---
 
 ## 🛠️ Daftar Tugas Sisa Pekerjaan (ToDo List)
 
-Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 30%):
+Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 35%):
+
+### 🚨 Alur Pasca Booking (Terbaru - TASK 0044)
+- [ ] **Panduan Menuju Slot Parkir**: Menampilkan rute/petunjuk arah visual dari gerbang masuk menuju slot yang di-booking.
+- [ ] **Tombol "Saya Sudah Sampai"**: Tombol konfirmasi ketika pengguna telah menempati slot parkir untuk mengaktifkan sesi parkir secara penuh.
+- [ ] **Notifikasi Keberhasilan**: Tampilkan pesan/banner pemberitahuan *"Selamat, Anda sudah berhasil mengaktifkan slot parkir xxx"* setelah menekan tombol sampai.
+- [ ] **Pilihan "Ganti Slot"**: Sediakan tombol/opsi mengganti slot di bawah tombol "Saya Sudah Sampai".
+- [ ] **Pilihan "Batalkan Reservasi"**: Sediakan opsi pembatalan booking sebelum pengguna menekan tombol sudah sampai.
 
 ### Integrasi Scanner & Verifikasi Tiket
 - [ ] **Alur Scanner (`/halaman-scan` & `/welcome-scan`)**:
@@ -43,12 +51,6 @@ Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 30%):
   - Tangkap data hasil verifikasi (`ticketId` dan `areaName` dari backend) dan kirim sebagai argumen saat navigasi.
 - [ ] **Halaman Hasil Scan (`/scan-berhasil`)**:
   - Ganti kode tiket dan area parkir hardcoded dengan parameter dinamis hasil scan yang dikirimkan dari halaman sebelumnya.
-
-### Halaman Dashboard & Status Aktif
-- [x] **Daftar Parkir di Home (`/home`)**:
-  - Ganti data dummy list parkir terdekat dengan memanggil API `GET /areas`.
-- [x] **Timer Parkir Aktif (`/status-kendaraan`)**:
-  - Buat logic pembaruan timer (misalnya menggunakan `Timer.periodic`) untuk melakukan increment durasi parkir secara berkala (real-time).
 
 ### Profil, Riwayat, & Fitur Lainnya
 - [ ] **Penyimpanan Profil (`/edit-profil`)**:
@@ -64,16 +66,16 @@ Untuk menyelesaikan proyek secara efisien, alur pengerjaan direkomendasikan berj
 
 ```mermaid
 graph TD
-    A[Fase 1: Integrasi Alur Scan] -->|Perbaikan Verifikasi & Payload| B(Fase 2: Real-time Timer & Data Home)
-    B -->|Timer Dinamis & List Areas API| C(Fase 3: Riwayat & Edit Profil)
+    A[Fase 1: Alur Pasca Booking] -->|Panduan, Konfirmasi, Batalkan/Ganti Slot| B(Fase 2: Integrasi Scanner & Hasil Scan)
+    B -->|Sinkronisasi API & Payload| C(Fase 3: Riwayat & Edit Profil)
     C -->|API History & Update Profil| D{Validasi Akhir & QA}
     D -->|flutter analyze & test| E[Fase 4: Final PWA Build & Deploy]
 ```
 
-1. **Fase 1: Perbaikan Alur Scan & Verifikasi Tiket (Paling Kritis)**  
+1. **Fase 1: Implementasi Alur Pasca Booking (TASK 0044 - Prioritas Baru)**  
+   Menambahkan panduan navigasi slot, tombol kedatangan, notifikasi sukses aktif, fitur ganti slot, dan pembatalan reservasi.
+2. **Fase 2: Perbaikan Alur Scan & Verifikasi Tiket**  
    Menyelesaikan masalah parser scanner agar tiket yang di-scan kamera menghasilkan ticket ID yang sah untuk digunakan pada saat booking slot.
-2. **Fase 2: Sinkronisasi Real-time Dashboard (SELESAI - TASK 0043)**  
-   Menghubungkan `/home` dengan daftar area riil dan mengaktifkan fungsionalitas timer pada halaman status kendaraan aktif.
 3. **Fase 3: Pembersihan Sisa Data Dummy (Profil & Riwayat)**  
    Mengganti sisa-sisa data dummy di `/history` dan menghubungkan form `/edit-profil` dengan endpoint update database.
 4. **Fase 4: Finalisasi PWA & Build**  
