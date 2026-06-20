@@ -83,10 +83,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     if (!mounted) return;
 
     if (result != null) {
-      final accessService = AccessService();
-      final activeTicket = await accessService.getActiveTicket();
-      final ticketData = activeTicket ?? result;
-      await ActiveTicketStorage().save(ticketData);
+      final ticketData = await _resolveActiveTicket(result);
       if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
@@ -105,6 +102,28 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
         ),
       );
     }
+  }
+
+  Future<TicketData> _resolveActiveTicket(TicketData verifyResult) async {
+    const maxRetries = 3;
+    const retryDelay = Duration(milliseconds: 500);
+    final accessService = AccessService();
+
+    for (int i = 0; i < maxRetries; i++) {
+      final activeTicket = await accessService.getActiveTicket();
+      if (activeTicket != null) {
+        debugPrint('[Scan] Active ticket found on retry ${i + 1}: status=${activeTicket.status}');
+        await ActiveTicketStorage().save(activeTicket);
+        return activeTicket;
+      }
+      if (i < maxRetries - 1) {
+        await Future.delayed(retryDelay);
+      }
+    }
+
+    debugPrint('[Scan] No active ticket after $maxRetries retries, using verify result: status=${verifyResult.status}');
+    await ActiveTicketStorage().save(verifyResult);
+    return verifyResult;
   }
 
   Future<void> _onDetect(BarcodeCapture capture) async {
@@ -126,10 +145,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     if (!mounted) return;
 
     if (result != null) {
-      final accessService = AccessService();
-      final activeTicket = await accessService.getActiveTicket();
-      final ticketData = activeTicket ?? result;
-      await ActiveTicketStorage().save(ticketData);
+      final ticketData = await _resolveActiveTicket(result);
       if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,

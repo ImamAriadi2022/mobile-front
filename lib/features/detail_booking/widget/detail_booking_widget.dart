@@ -189,7 +189,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     final activeTicket = await ActiveTicketStorage().load();
     final ticketId = activeTicket?.ticketCode ?? 'unknown';
 
-    if (activeTicket == null || activeTicket.status != 'active') {
+    if (activeTicket == null) {
       if (mounted) {
         setState(() => _isLoading = false);
         NoTicketDialog.show(context);
