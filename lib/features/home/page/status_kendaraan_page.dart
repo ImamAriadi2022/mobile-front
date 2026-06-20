@@ -53,13 +53,16 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   Future<void> _loadAllData() async {
     setState(() => _isLoading = true);
 
-    // Load active ticket from API first, then from storage
+    // Load active ticket from local storage first for instant responsiveness
+    var ticket = await ActiveTicketStorage().load();
+
+    // Then check and sync with backend API in the background
     final accessService = AccessService();
     final apiTicket = await accessService.getActiveTicket();
     if (apiTicket != null) {
       await ActiveTicketStorage().save(apiTicket);
+      ticket = apiTicket;
     }
-    final ticket = await ActiveTicketStorage().load();
 
     // Sync active reservation state from API (Source of Truth)
     ActiveReservation? reservation = await ActiveReservationStorage().load();

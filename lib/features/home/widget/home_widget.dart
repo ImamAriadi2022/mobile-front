@@ -62,13 +62,29 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   Future<void> _checkActiveTicket() async {
+    // 1. Load from local storage first for instant responsiveness
+    var ticket = await ActiveTicketStorage().load();
+    var reservation = await ActiveReservationStorage().load();
+    if (mounted) {
+      setState(() {
+        _activeTicket = ticket;
+        _hasActiveTicket = ticket != null &&
+            ticket.ticketCode.isNotEmpty &&
+            (ticket.status == 'active' || ticket.status == 'claimed');
+        _activeReservation = reservation;
+      });
+    }
+
+    // 2. Fetch from API to synchronize with the server
     final accessService = AccessService();
     final apiTicket = await accessService.getActiveTicket();
     if (apiTicket != null) {
       await ActiveTicketStorage().save(apiTicket);
     }
-    final ticket = await ActiveTicketStorage().load();
-    final reservation = await ActiveReservationStorage().load();
+
+    // 3. Reload from storage to update UI with synced server data
+    ticket = await ActiveTicketStorage().load();
+    reservation = await ActiveReservationStorage().load();
     if (mounted) {
       setState(() {
         _activeTicket = ticket;

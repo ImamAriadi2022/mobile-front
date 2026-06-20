@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../../../core/network/api_service.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 import '../../welcome_scan/service/scan_service.dart';
 
 class AccessService {
@@ -14,10 +15,16 @@ class AccessService {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        if (json['data'] != null) {
-          return TicketData.fromJson(json['data']);
+        final ticket = json['data'] != null
+            ? TicketData.fromJson(json['data'])
+            : TicketData.fromJson(json);
+        
+        if (ticket.ticketCode.isNotEmpty) {
+          return ticket;
         }
-        return TicketData.fromJson(json);
+      } else if (response.statusCode == 404) {
+        // Server explicitly says no active ticket exists, sync local storage
+        await ActiveTicketStorage().clear();
       }
       return null;
     } catch (e) {
