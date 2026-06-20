@@ -72,7 +72,9 @@ class _HomeWidgetState extends State<HomeWidget> {
     if (mounted) {
       setState(() {
         _activeTicket = ticket;
-        _hasActiveTicket = ticket != null && ticket.ticketCode.isNotEmpty && ticket.status == 'active';
+        _hasActiveTicket = ticket != null &&
+            ticket.ticketCode.isNotEmpty &&
+            (ticket.status == 'active' || ticket.status == 'claimed');
         _activeReservation = reservation;
       });
     }
@@ -289,12 +291,12 @@ class _HomeWidgetState extends State<HomeWidget> {
 
     if (_activeTicket != null && _activeTicket!.ticketCode.isNotEmpty) {
       final st = _activeTicket!.status.toLowerCase();
-      if (st == 'active') {
+      if (st == 'active' || st == 'claimed') {
         titleText = '✓ Tiket Aktif';
         descText = 'Anda dapat melakukan booking slot parkir.';
         isSuccess = true;
         showScanButton = false;
-      } else if (st == 'pending' || st == 'claimed' || st == '') {
+      } else if (st == 'pending' || st == '') {
         titleText = '⚠ Tiket Belum Aktif';
         descText = 'Tiket Anda sudah diverifikasi namun belum aktif. Silakan scan tiket parkir terlebih dahulu.';
         showScanButton = true;

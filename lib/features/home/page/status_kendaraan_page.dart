@@ -138,7 +138,10 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
       } catch (_) {
         _elapsedSeconds = 0;
       }
-    } else if (_activeTicket != null && _activeTicket!.ticketCode.isNotEmpty && _activeTicket!.status == 'active') {
+    } else if (_activeTicket != null &&
+        _activeTicket!.ticketCode.isNotEmpty &&
+        (_activeTicket!.status == 'active' ||
+            _activeTicket!.status == 'claimed')) {
       // Fallback: start from 0 if no startTime available
       _elapsedSeconds = 0;
     } else {
@@ -168,7 +171,10 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     if (_activeReservation != null && _activeReservation!.reservationId.isNotEmpty) {
       return true;
     }
-    if (_activeTicket != null && _activeTicket!.ticketCode.isNotEmpty && _activeTicket!.status == 'active') {
+    if (_activeTicket != null &&
+        _activeTicket!.ticketCode.isNotEmpty &&
+        (_activeTicket!.status == 'active' ||
+            _activeTicket!.status == 'claimed')) {
       return true;
     }
     return false;
