@@ -39,8 +39,12 @@ class ParkingService {
         }
         return CancelResult(success: false, message: json['message'] ?? 'Gagal membatalkan reservasi.');
       }
-      final json = jsonDecode(response.body);
-      return CancelResult(success: false, message: json['message'] ?? 'Gagal terhubung ke server.');
+      try {
+        final json = jsonDecode(response.body);
+        return CancelResult(success: false, message: json['message'] ?? 'Gagal terhubung ke server.');
+      } catch (_) {
+        return CancelResult(success: false, message: 'Gagal terhubung ke server (Status ${response.statusCode}).');
+      }
     } catch (e) {
       return CancelResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
     }
@@ -48,24 +52,34 @@ class ParkingService {
 
   Future<ActionResult> arriveReservation(String reservationId) async {
     try {
-      final response = await _apiService.post(
+      final response = await _apiService.patch(
         '/reservations/$reservationId/arrive',
-        body: {},
         requireAuth: true,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final json = jsonDecode(response.body);
+          return ActionResult(
+            success: json['success'] == true,
+            message: json['message'] ?? 'Kedatangan berhasil dikonfirmasi.',
+          );
+        } catch (_) {
+          return ActionResult(success: true, message: 'Kedatangan berhasil dikonfirmasi.');
+        }
+      }
+      try {
         final json = jsonDecode(response.body);
         return ActionResult(
-          success: json['success'] == true,
-          message: json['message'] ?? 'Kedatangan berhasil dikonfirmasi.',
+          success: false,
+          message: json['message'] ?? 'Gagal mengonfirmasi kedatangan.',
+        );
+      } catch (_) {
+        return ActionResult(
+          success: false,
+          message: 'Gagal mengonfirmasi kedatangan (Status ${response.statusCode}).',
         );
       }
-      final json = jsonDecode(response.body);
-      return ActionResult(
-        success: false,
-        message: json['message'] ?? 'Gagal mengonfirmasi kedatangan.',
-      );
     } catch (e) {
       return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
     }
@@ -80,17 +94,28 @@ class ParkingService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final json = jsonDecode(response.body);
+          return ActionResult(
+            success: json['success'] == true,
+            message: json['message'] ?? 'Sesi parkir berhasil diselesaikan.',
+          );
+        } catch (_) {
+          return ActionResult(success: true, message: 'Sesi parkir berhasil diselesaikan.');
+        }
+      }
+      try {
         final json = jsonDecode(response.body);
         return ActionResult(
-          success: json['success'] == true,
-          message: json['message'] ?? 'Sesi parkir berhasil diselesaikan.',
+          success: false,
+          message: json['message'] ?? 'Gagal menyelesaikan sesi parkir.',
+        );
+      } catch (_) {
+        return ActionResult(
+          success: false,
+          message: 'Gagal menyelesaikan sesi parkir (Status ${response.statusCode}).',
         );
       }
-      final json = jsonDecode(response.body);
-      return ActionResult(
-        success: false,
-        message: json['message'] ?? 'Gagal menyelesaikan sesi parkir.',
-      );
     } catch (e) {
       return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
     }
@@ -113,17 +138,28 @@ class ParkingService {
       }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final json = jsonDecode(response.body);
+          return ActionResult(
+            success: json['success'] == true,
+            message: json['message'] ?? 'Slot parkir berhasil diganti.',
+          );
+        } catch (_) {
+          return ActionResult(success: true, message: 'Slot parkir berhasil diganti.');
+        }
+      }
+      try {
         final json = jsonDecode(response.body);
         return ActionResult(
-          success: json['success'] == true,
-          message: json['message'] ?? 'Slot parkir berhasil diganti.',
+          success: false,
+          message: json['message'] ?? 'Gagal mengganti slot parkir.',
+        );
+      } catch (_) {
+        return ActionResult(
+          success: false,
+          message: 'Gagal mengganti slot parkir (Status ${response.statusCode}).',
         );
       }
-      final json = jsonDecode(response.body);
-      return ActionResult(
-        success: false,
-        message: json['message'] ?? 'Gagal mengganti slot parkir.',
-      );
     } catch (e) {
       return ActionResult(success: false, message: 'Terjadi kesalahan: ${e.toString()}');
     }

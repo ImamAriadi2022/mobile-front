@@ -24,6 +24,7 @@ Di bawah ini adalah status integrasi seluruh route dan layar aplikasi:
 - [x] `/home` (HomePage) — Daftar parkir terdekat sudah terintegrasi dinamis dari API `GET /areas`
 - [x] `/status-kendaraan` (StatusKendaraanPage) — Durasi/elapsed timer parkir aktif berjalan bertambah secara real-time (sinkron menggunakan timestamp `claimedAt` atau waktu reservasi)
 - [x] **Alur Pasca Booking (Fungsionalitas & UI)** — Fitur setelah reservasi berhasil dibuat hingga pengguna sampai di lokasi slot (lihat `referensi alur/`) - **SELESAI (TASK 0044)**
+- [x] **Perbaikan Bug Arrive Method (PATCH)** — Mengatasi FormatException saat menekan tombol "Saya Sudah Sampai" - **SELESAI (TASK 0045)**
 
 ### 2. Halaman & Alur yang Masih Perlu Perbaikan / Pengembangan (⚠️ Belum Selesai)
 - [ ] `/animasi-scan` (AnimasiScanPage) — Data daftar status masih hardcoded (3 item statis)
@@ -44,6 +45,9 @@ Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 25%):
 - [x] **Notifikasi Keberhasilan**: Tampilkan pesan/banner pemberitahuan *"Selamat, Anda sudah berhasil mengaktifkan slot parkir xxx"* setelah menekan tombol sampai.
 - [x] **Pilihan "Ganti Slot"**: Sediakan tombol/opsi mengganti slot di bawah tombol "Saya Sudah Sampai".
 - [x] **Pilihan "Batalkan Reservasi"**: Sediakan opsi pembatalan booking sebelum pengguna menekan tombol sudah sampai.
+
+### 🚨 Perbaikan Bug (Terbaru - TASK 0045)
+- [x] **Fix Method Arrive (Saya Sudah Sampai)**: Ubah method HTTP dari `POST` menjadi `PATCH` pada endpoint `/reservations/{reservationId}/arrive` untuk mengatasi FormatException akibat response HTML 404.
 
 ### Integrasi Scanner & Verifikasi Tiket
 - [ ] **Alur Scanner (`/halaman-scan` & `/welcome-scan`)**:
@@ -72,7 +76,7 @@ Berikut adalah ceklis terperinci untuk menyelesaikan proyek (Target sisa 25%):
      }
      ```
 
-2. **Konfirmasi Kedatangan/Arrive (POST)**
+2. **Konfirmasi Kedatangan/Arrive (PATCH)**
    - **Endpoint**: `/reservations/{reservationId}/arrive`
 
 3. **Selesai Parkir/Complete (POST)**
