@@ -1,8 +1,63 @@
 # Progres Project ParkFinder — Mobile App & PWA
 
 ## 📊 Estimasi Progress Proyek
-- **Selesai (Completed)**: **~75%** (13 dari 18 Bagian/Halaman Utama telah terintegrasi API & Fungsional)
-- **Sisa Pekerjaan (Remaining)**: **~25%** (5 Bagian/Halaman membutuhkan perbaikan integrasi API, atau pembersihan data dummy)
+- **Selesai (Completed)**: **~80%** (Refactor arsitektur selesai + 13 dari 18 halaman terintegrasi API)
+- **Sisa Pekerjaan (Remaining)**: **~20%** (5 halaman masih butuh perbaikan data dummy/API)
+
+---
+
+## 🏗️ Refactor Arsitektur — SELESAI (TASK REFACTOR-01)
+
+**Status**: ✅ Selesai — `flutter analyze` 0 errors, 0 warnings/infos related to unused files.
+Seluruh folder dan file lama yang sudah tidak digunakan telah **berhasil dihapus** dengan aman tanpa merusak kompilasi aplikasi.
+
+### Yang Berubah:
+| Komponen | Sebelum | Sesudah |
+|----------|---------|---------|
+| State Management | `setState()` everywhere | **Provider** (`ChangeNotifier`) per feature |
+| Model & Service | Model di dalam file service | Model dipisah ke `models/` folder |
+| Shared Widgets | `features/public_widget/` | `shared/widgets/` + barrel export |
+| Token Storage | `ApiService.setToken/clearToken` | `TokenStorage` (SRP) |
+| TicketData | Definisi duplikat di 2 file | Satu definisi di `scan/models/ticket_data.dart` |
+| Routing | `app/app_routes.dart` | `core/routes/app_routes.dart` + `app_router.dart` |
+| Config | Hard-code URL | `core/config/app_config.dart` |
+| Constants | Magic strings | `core/constants/app_constants.dart` |
+
+### File Baru Dibuat:
+- `core/config/app_config.dart` — centralized base URL
+- `core/constants/app_constants.dart` — SharedPreferences keys & constants
+- `core/storage/token_storage.dart` — JWT token storage (SRP)
+- `core/routes/app_routes.dart` — route constants
+- `core/routes/app_router.dart` — route generator
+- `core/api/api_client.dart` — barrel export ApiClient
+- `features/auth/` — gabungan login + register + AuthProvider
+- `features/parking/models/parking_area.dart` — model terpisah
+- `features/parking/models/parking_slot.dart` — model terpisah
+- `features/parking/models/reservation_result.dart` — model terpisah
+- `features/parking/services/booking_service.dart` — service bersih
+- `features/parking/providers/parking_provider.dart` — Provider
+- `features/scan/models/ticket_data.dart` — model tunggal (eliminasi duplikasi)
+- `features/scan/services/scan_service.dart` — service bersih
+- `features/scan/providers/scan_provider.dart` — Provider
+- `features/profile/models/profile_data.dart` — model terpisah
+- `features/profile/models/vehicle.dart` — model terpisah
+- `features/profile/services/profile_service.dart` — service bersih
+- `features/profile/providers/profile_provider.dart` — Provider
+- `features/home/providers/home_provider.dart` — Provider
+- `features/history/providers/history_provider.dart` — Provider
+- `shared/widgets/primary_button.dart` — reusable button
+- `shared/widgets/loading_widget.dart` — reusable loading
+- `shared/widgets/empty_error_state.dart` — EmptyState + ErrorState
+- `shared/widgets/confirmation_dialog.dart` — reusable dialog
+- `shared/widgets/shared_widgets.dart` — barrel export
+
+### Provider yang Terdaftar di main.dart:
+- `AuthProvider` — login, register, logout
+- `HomeProvider` — daftar area & reservasi aktif
+- `ParkingProvider` — booking, slot, reservasi ops
+- `ScanProvider` — verifikasi QR tiket
+- `HistoryProvider` — riwayat reservasi
+- `ProfileProvider` — profil & kendaraan
 
 ---
 

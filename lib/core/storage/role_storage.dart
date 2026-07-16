@@ -1,7 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/app_constants.dart';
 
+/// RoleStorage — Penyimpanan role pengguna (user/admin).
+///
+/// Digunakan untuk menentukan akses setelah login.
 class RoleStorage {
-  static const String _key = 'user_role';
+  static const String _key = AppConstants.keyUserRole;
 
   Future<void> save(String role) async {
     final prefs = await SharedPreferences.getInstance();
@@ -20,6 +24,6 @@ class RoleStorage {
 
   Future<bool> isUser() async {
     final role = await load();
-    return role == 'user';
+    return role == AppConstants.roleUser;
   }
 }
