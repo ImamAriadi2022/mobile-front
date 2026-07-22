@@ -22,8 +22,12 @@ class UserHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 14, 24, 14),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.borderColor)),
+      ),
       child: Row(
         children: [
           // Avatar
@@ -33,7 +37,7 @@ class UserHeaderWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.cardBg2,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.accent, width: 2),
+              border: Border.all(color: AppColors.accent.withValues(alpha: .2)),
             ),
             child: photoUrl != null && photoUrl!.isNotEmpty
                 ? ClipOval(
@@ -51,10 +55,10 @@ class UserHeaderWidget extends StatelessWidget {
                         ),
                       ),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.person, color: Colors.white70, size: 28),
+                          const Icon(Icons.person, color: AppColors.accent, size: 28),
                     ),
                   )
-                : const Icon(Icons.person, color: Colors.white70, size: 28),
+                : const Icon(Icons.person, color: AppColors.accent, size: 28),
           ),
           const SizedBox(width: 12),
           // Nama & Greeting
@@ -64,7 +68,7 @@ class UserHeaderWidget extends StatelessWidget {
               Text(
                 name,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -84,12 +88,10 @@ class UserHeaderWidget extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: AppColors.cardBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.borderColor),
+                color: Colors.transparent,
               ),
               child: const Icon(Icons.notifications_outlined,
-                  color: Colors.white70, size: 22),
+                  color: AppColors.accent, size: 22),
             ),
           ),
         ],

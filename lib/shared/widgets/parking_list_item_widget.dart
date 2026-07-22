@@ -36,10 +36,10 @@ class ParkingListItemWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppColors.borderColor),
         ),
         child: Row(
@@ -54,7 +54,7 @@ class ParkingListItemWidget extends StatelessWidget {
                   Text(
                     item.name,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),

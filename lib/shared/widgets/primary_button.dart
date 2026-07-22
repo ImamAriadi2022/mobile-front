@@ -31,12 +31,12 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.cardBg,
-          disabledBackgroundColor: (backgroundColor ?? AppColors.cardBg).withValues(alpha: 0.5),
+          backgroundColor: backgroundColor ?? AppColors.primary,
+          disabledBackgroundColor: (backgroundColor ?? AppColors.primary).withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          side: const BorderSide(color: AppColors.accent),
+          elevation: 2,
         ),
         child: isLoading
             ? const SizedBox(

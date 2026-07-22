@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../widgets/welcome_widget.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -7,7 +8,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFF0D1628),
+      backgroundColor: AppColors.background,
       body: WelcomeWidget(),
     );
   }

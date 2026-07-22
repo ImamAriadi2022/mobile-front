@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../widgets/register_widget.dart';
 
 /// RegisterPage — Wrapper halaman untuk RegisterWidget.
@@ -8,7 +9,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFF0D1628),
+      backgroundColor: AppColors.background,
       body: RegisterWidget(),
     );
   }

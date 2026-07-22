@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../widgets/detail_booking_widget.dart';
 
 class DetailBookingPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class DetailBookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1628),
+      backgroundColor: AppColors.background,
       body: SafeArea(child: DetailBookingWidget(areaId: areaId)),
     );
   }

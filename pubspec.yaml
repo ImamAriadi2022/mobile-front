@@ -69,6 +69,13 @@ flutter:
     - lib/assets/notifikasi_aktif.png
     - lib/assets/denah_pesan_park.png
     - lib/assets/popup_book.png
+    - lib/assets/auth/
+    - lib/assets/welcome/
+    - lib/assets/home/
+    - lib/assets/parking/
+    - lib/assets/profile/
+    - lib/assets/scan/
+    - lib/assets/shared/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

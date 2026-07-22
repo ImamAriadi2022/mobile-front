@@ -54,7 +54,7 @@ class StatusCardWidget extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
               height: 1.35,

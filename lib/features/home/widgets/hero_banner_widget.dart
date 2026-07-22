@@ -16,7 +16,7 @@ class HeroBannerWidget extends StatelessWidget {
       height: 168,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: const Color(0xFF0A1828),
+        color: AppColors.primary,
         border: Border.all(color: AppColors.borderColor),
       ),
       child: ClipRRect(
@@ -31,7 +31,7 @@ class HeroBannerWidget extends StatelessWidget {
               errorBuilder: (_, __, ___) => Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF1A3A5C), Color(0xFF0D1628)],
+                    colors: [AppColors.primary, AppColors.accentDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),

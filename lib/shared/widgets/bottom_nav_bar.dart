@@ -14,27 +14,27 @@ class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      margin: EdgeInsets.zero,
+      padding: const EdgeInsets.fromLTRB(8, 10, 8, 12),
       decoration: BoxDecoration(
         color: AppColors.navBar,
-        borderRadius: BorderRadius.circular(32),
+        border: const Border(top: BorderSide(color: AppColors.borderColor)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: const Color(0xFF10213B).withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(0, Icons.home_rounded, 'Beranda'),
-          _buildNavItem(1, Icons.location_on_outlined, 'Parkir'),
-          _buildNavItem(2, Icons.directions_car_outlined, 'Kendaraan'),
+          _buildNavItem(0, Icons.home_outlined, 'Home'),
+          _buildNavItem(1, Icons.map_outlined, 'Area'),
+          _buildNavItem(2, Icons.directions_car_outlined, 'Parking'),
           _buildNavItem(3, Icons.history_rounded, 'History'),
-          _buildNavItem(4, Icons.person_outline_rounded, 'Profil'),
+          _buildNavItem(4, Icons.person_outline_rounded, 'Profile'),
         ],
       ),
     );
@@ -46,15 +46,17 @@ class AppBottomNavBar extends StatelessWidget {
       onTap: () => onTap(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.accent.withValues(alpha: 0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.transparent,
         ),
-        child: Icon(
-          icon,
-          color: isActive ? AppColors.accent : AppColors.textSecondary,
-          size: 24,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: isActive ? AppColors.orange : AppColors.accent, size: 24),
+            const SizedBox(height: 3),
+            Text(label, style: TextStyle(color: isActive ? AppColors.orange : AppColors.accent, fontSize: 10, fontWeight: isActive ? FontWeight.w600 : FontWeight.w400)),
+          ],
         ),
       ),
     );

@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFF0D1628),
+      backgroundColor: AppColors.background,
       body: SafeArea(child: HomeWidget()),
     );
   }
