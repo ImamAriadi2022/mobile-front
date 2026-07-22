@@ -2,6 +2,7 @@
 
 ## Selesai
 
+- **Build Web PWA & Export**: Berhasil mengompilasi Flutter ke PWA Release (`flutter build web --release`) dan mengekspor seluruh aset web (`index.html`, `main.dart.js`, `flutter_service_worker.js`, `manifest.json`, `assets/`, `canvaskit/`, `icons/`) ke direktori root `pwa/`.
 - **Penyesuaian Alur Tutorial & Onboarding**: Menghapus transisi tutorial lama yang berlebihan; alur dipusatkan sepenuhnya melalui Onboarding (`WelcomeWidget`) setelah login/register berhasil (`Splash` $\rightarrow$ `Login` $\rightarrow$ `Onboarding` $\rightarrow$ `Home`).
 - **Redesign Halaman Beranda (Home)**: Menyesuaikan 100% dengan `Dashboard Parkir.png` (UserHeaderWidget `Beranda` dengan ikon sakelar tema, search bar `Cari Gedung Parkir`, banner card `Parkir Aktif` deep navy blue dengan tombol orange `Tampilkan QR`, dan daftar kartu `Gedung Parkir` lengkap dengan badge `TERSEDIA`/`PENUH`).
 - **Redesign Area Parkir & Denah Slot**:
@@ -20,8 +21,8 @@
 
 ## Sedang dikerjakan
 
-- Review manual kode akhir.
+- Selesai.
 
 ## Tersisa
 
-- Verifikasi visual runtime saat Flutter SDK tersedia di environment eksekusi.
+- Tidak ada.

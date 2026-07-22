@@ -307,7 +307,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 22,
-                fontWeight: FontWeight.extrabold,
+                fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: 6),

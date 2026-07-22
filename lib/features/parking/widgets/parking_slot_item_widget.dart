@@ -115,7 +115,7 @@ class ParkingSlotItemWidget extends StatelessWidget {
                   style: TextStyle(
                     color: textCol,
                     fontSize: 16,
-                    fontWeight: FontWeight.extrabold,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
         ),

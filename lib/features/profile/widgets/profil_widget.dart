@@ -184,7 +184,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                                     label: 'Kendaraan Utama (Mobil)',
                                     value: _vehicles.isEmpty
                                         ? 'BE 1234 AB (Mobil)'
-                                        : '${_vehicles.first.plateNumber} (${_vehicles.first.brand})',
+                                        : '${_vehicles.first.plateNumber} (Mobil)',
                                     isDark: isDark,
                                     cardBg2: cardBg2,
                                     textPrimary: textPrimary,
