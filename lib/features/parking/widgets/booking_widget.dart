@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_text_styles.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import '../services/booking_service.dart';
 
-/// BookingWidget: Composer untuk halaman pencarian dan pemilihan gedung parkir.
 class BookingWidget extends StatefulWidget {
   const BookingWidget({super.key});
 
@@ -16,9 +15,12 @@ class BookingWidget extends StatefulWidget {
 class _BookingWidgetState extends State<BookingWidget> {
   final _searchCtrl = TextEditingController();
   int _navIndex = 1;
+  int _selectedFilterIndex = 0;
   bool _isLoading = true;
 
   List<ParkingItemData> _allParking = [];
+
+  final List<String> _filters = ['Semua', 'Terdekat', 'Populer', 'Baru'];
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class _BookingWidgetState extends State<BookingWidget> {
             id: a.id,
             name: a.name,
             occupancyPercent: occupancy,
-            availableSlotLabel: '$available/$total Kosong',
+            availableSlotLabel: '$available Slot Tersedia',
           );
         }).toList();
         _isLoading = false;
@@ -65,10 +67,10 @@ class _BookingWidgetState extends State<BookingWidget> {
         Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 3:
-        Navigator.pushNamed(context, AppRoutes.history);
+        Navigator.pushReplacementNamed(context, AppRoutes.history);
         break;
       case 4:
-        Navigator.pushNamed(context, AppRoutes.profil);
+        Navigator.pushReplacementNamed(context, AppRoutes.profil);
         break;
     }
   }
@@ -81,8 +83,14 @@ class _BookingWidgetState extends State<BookingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -91,102 +99,264 @@ class _BookingWidgetState extends State<BookingWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header
-                    const _BookingHeaderWidget(),
-                    const SizedBox(height: 12),
-
-                    // Denah Banner Template PNG
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Container(
-                        height: 140,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBg2,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.borderColor),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Image.asset(
-                                  'lib/assets/parking/denah_parkir.png',
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Center(
-                                    child: Icon(
-                                      Icons.map_rounded,
-                                      size: 60,
-                                      color: AppColors.accent.withValues(alpha: 0.4),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  color: Colors.black.withValues(alpha: 0.5),
-                                  child: const Text(
-                                    'Peta Denah Kawasan Parkir FT Unila',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    // Header Bar (Cari Lokasi Parkir)
+                    UserHeaderWidget(
+                      name: 'User',
+                      greeting: '',
+                      title: 'Cari Lokasi Parkir',
                     ),
                     const SizedBox(height: 16),
 
-                    // Search bar
+                    // Search Bar
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: SearchBarWidget(
                         controller: _searchCtrl,
+                        hintText: 'Cari gedung atau area...',
                         onChanged: (_) => setState(() {}),
                       ),
                     ),
                     const SizedBox(height: 16),
 
-                    const SectionTitleWidget(
-                      title: 'Pilihan Gedung & Area Parkir',
-                    ),
-                    const SizedBox(height: 12),
+                    // Filter Pills Horizontal Row
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: _filters.asMap().entries.map((entry) {
+                          final idx = entry.key;
+                          final label = entry.value;
+                          final isSelected = _selectedFilterIndex == idx;
 
-                    // Lista Gedung Parkir
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() => _selectedFilterIndex = idx);
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(0xFF1D4ED8)
+                                      : (isDark ? AppColors.cardBg2Dark : const Color(0xFFE0F2FE)),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  label,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : (isDark ? Colors.white70 : const Color(0xFF1E40AF)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // List Area Cards
                     _isLoading
                         ? const Center(
                             child: Padding(
                               padding: EdgeInsets.all(24),
-                              child: CircularProgressIndicator(color: AppColors.accent),
+                              child: CircularProgressIndicator(),
                             ),
                           )
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
-                              children: _filtered
-                                  .map(
-                                    (item) => ParkingListItemWidget(
-                                      item: item,
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          AppRoutes.detailBooking,
-                                          arguments: item.id,
-                                        );
-                                      },
+                              children: _filtered.asMap().entries.map((entry) {
+                                final index = entry.key;
+                                final item = entry.value;
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  decoration: BoxDecoration(
+                                    color: cardBg,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                                     ),
-                                  )
-                                  .toList(),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.detailBooking,
+                                        arguments: item.id,
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Header Image with Tag
+                                        Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                                              child: SizedBox(
+                                                height: 160,
+                                                width: double.infinity,
+                                                child: Image.asset(
+                                                  index == 0
+                                                      ? 'lib/assets/parking/denah_parkir.png'
+                                                      : 'lib/assets/home/dashboard_parkir.png',
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => Container(
+                                                    color: const Color(0xFFF1F5F9),
+                                                    child: const Icon(Icons.apartment_rounded, size: 60),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            if (index == 0)
+                                              Positioned(
+                                                top: 12,
+                                                right: 12,
+                                                child: Container(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF1D4ED8),
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  child: const Row(
+                                                    children: [
+                                                      Icon(Icons.verified_rounded, color: Colors.white, size: 14),
+                                                      SizedBox(width: 4),
+                                                      Text(
+                                                        'Mitra Utama',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 11,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+
+                                        // Body Details
+                                        Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    item.name,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: textPrimary,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xFFDBEAFE),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                    child: const Row(
+                                                      children: [
+                                                        Icon(Icons.star_rounded, color: Color(0xFF2563EB), size: 14),
+                                                        SizedBox(width: 2),
+                                                        Text(
+                                                          '4.9',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFF1E40AF),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    'Fakultas Teknik Unila, Gedung B',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: textSecondary,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 12),
+                                              const Divider(height: 1),
+                                              const SizedBox(height: 12),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 8,
+                                                        height: 8,
+                                                        decoration: const BoxDecoration(
+                                                          color: Color(0xFF10B981),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        item.availableSlotLabel,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF10B981),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.near_me_outlined, size: 14, color: Color(0xFF64748B)),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        '0.8 km',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: textSecondary,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ),
                     const SizedBox(height: 20),
@@ -195,47 +365,10 @@ class _BookingWidgetState extends State<BookingWidget> {
               ),
             ),
 
-            // Bottom Nav
+            // Bottom Navigation Bar
             AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _BookingHeaderWidget extends StatelessWidget {
-  const _BookingHeaderWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              'Cari Area Parkir',
-              style: AppTextStyles.heading2.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.borderColor),
-            ),
-            child: const Icon(
-              Icons.notifications_outlined,
-              color: AppColors.textSecondary,
-              size: 20,
-            ),
-          ),
-        ],
       ),
     );
   }

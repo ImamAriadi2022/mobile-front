@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_text_styles.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'profile_avatar_widget.dart';
 import 'stats_card_widget.dart';
@@ -9,12 +10,6 @@ import 'package:mobile_front/features/profile/models/vehicle.dart';
 import 'package:mobile_front/features/profile/models/profile_data.dart';
 import 'package:mobile_front/features/auth/services/auth_service.dart';
 
-/// ProfilWidget: Composer untuk halaman profil pengguna.
-///
-/// Tanggung jawab:
-/// - Mengelola state [_navIndex]
-/// - Menyusun widget: Avatar, nama, stats, info pribadi, pengaturan, tombol aksi
-/// - Menangani navigasi
 class ProfilWidget extends StatefulWidget {
   const ProfilWidget({super.key});
 
@@ -23,7 +18,6 @@ class ProfilWidget extends StatefulWidget {
 }
 
 class _ProfilWidgetState extends State<ProfilWidget> {
-  // ── State ────────────────────────────────────────────────────────────────
   int _navIndex = 4;
   bool _isLoading = true;
   ProfileData? _profileData;
@@ -58,7 +52,6 @@ class _ProfilWidgetState extends State<ProfilWidget> {
     }
   }
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
     setState(() => _navIndex = idx);
     switch (idx) {
@@ -77,209 +70,280 @@ class _ProfilWidgetState extends State<ProfilWidget> {
     }
   }
 
-  // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final cardBg = AppColors.getCardBg(context);
+    final cardBg2 = AppColors.getCardBg2(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
 
-                // ① Avatar
-                ProfileAvatarWidget(photoUrl: _profileData?.photoUrl),
-                const SizedBox(height: 12),
+    return Scaffold(
+      backgroundColor: scaffoldBg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // User Header
+            UserHeaderWidget(
+              name: _profileData?.name ?? 'User',
+              greeting: '',
+              title: 'ParkFinder',
+              photoUrl: _profileData?.photoUrl,
+            ),
 
-                // ② Nama & keterangan
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  Column(
-                    children: [
-                      Text(
-                        _profileData?.name ?? 'Nama Tidak Diketahui',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Member Aktif',
-                        style: TextStyle(
-                            color: AppColors.textSecondary, fontSize: 13),
-                      ),
-                      const SizedBox(height: 20),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
 
-                      // ③ Kartu statistik
-                      const StatsCardWidget(
-                        totalParkir: '0',
-                        parkirAktif: '0',
-                      ),
-                      const SizedBox(height: 16),
+                    // Avatar & Name Header
+                    ProfileAvatarWidget(photoUrl: _profileData?.photoUrl),
+                    const SizedBox(height: 12),
 
-                      // ④ Section informasi pribadi
-                      _ProfileSectionCardWidget(
-                        title: 'Informasi Pribadi',
+                    if (_isLoading)
+                      const CircularProgressIndicator()
+                    else
+                      Column(
                         children: [
-                          InfoRowItemWidget(
-                            icon: Icons.email_outlined,
-                            label: 'Email',
-                            value: _profileData?.email ?? '-',
+                          Text(
+                            _profileData?.name ?? 'Imam Ariadi',
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          InfoRowItemWidget(
-                            icon: Icons.phone_outlined,
-                            label: 'Nomor Telpon',
-                            value: _profileData?.phoneNumber ?? '-',
+                          const SizedBox(height: 4),
+                          Text(
+                            'Member sejak Januari 2026',
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 13,
+                            ),
                           ),
-                          InfoRowItemWidget(
-                            icon: Icons.directions_car_outlined,
-                            label: 'Kendaraan',
-                            value: _vehicles.isEmpty
-                                ? 'Belum ada kendaraan'
-                                : _vehicles.length == 1
-                                    ? _vehicles.first.plateNumber
-                                    : '${_vehicles.first.plateNumber} (+${_vehicles.length - 1} lainnya)',
-                            isLast: true,
+                          const SizedBox(height: 20),
+
+                          // Kartu Statistik
+                          const StatsCardWidget(
+                            totalParkir: '33',
+                            parkirAktif: '1',
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Section Informasi Pribadi
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: cardBg,
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(
+                                  color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Informasi Pribadi',
+                                    style: TextStyle(
+                                      color: textPrimary,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  _buildInfoCard(
+                                    icon: Icons.email_outlined,
+                                    label: 'Email',
+                                    value: _profileData?.email ?? 'imamariadi775@gmail.com',
+                                    isDark: isDark,
+                                    cardBg2: cardBg2,
+                                    textPrimary: textPrimary,
+                                    textSecondary: textSecondary,
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  _buildInfoCard(
+                                    icon: Icons.phone_outlined,
+                                    label: 'Nomor Telpon',
+                                    value: _profileData?.phoneNumber ?? '085788322061',
+                                    isDark: isDark,
+                                    cardBg2: cardBg2,
+                                    textPrimary: textPrimary,
+                                    textSecondary: textSecondary,
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  _buildInfoCard(
+                                    icon: Icons.directions_car_outlined,
+                                    label: 'Kendaraan Utama (Mobil)',
+                                    value: _vehicles.isEmpty
+                                        ? 'BE 1234 AB (Mobil)'
+                                        : '${_vehicles.first.plateNumber} (${_vehicles.first.brand})',
+                                    isDark: isDark,
+                                    cardBg2: cardBg2,
+                                    textPrimary: textPrimary,
+                                    textSecondary: textSecondary,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                const SizedBox(height: 14),
+                    const SizedBox(height: 20),
 
-                // ⑤ Section pengaturan
-                _ProfileSectionCardWidget(
-                  title: 'Pengaturan',
-                  children: [
-                    SettingsRowItemWidget(
-                      icon: Icons.edit_outlined,
-                      title: 'Edit Profil',
-                      subtitle: 'Ubah Informasi Profil Anda',
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.editProfil)
-                              .then((_) {
-                        _loadProfile();
-                      }),
-                    ),
-                    SettingsRowItemWidget(
-                      icon: Icons.directions_car_outlined,
-                      title: 'Manajemen Kendaraan',
-                      subtitle: 'Tambah & Hapus Kendaraan Anda',
-                      onTap: () => Navigator.pushNamed(
-                              context, AppRoutes.vehicleManagement)
-                          .then((_) {
-                        // Refresh profil setelah kembali dari vehicle management
-                        _loadProfile();
-                      }),
-                    ),
-                    SettingsRowItemWidget(
-                      icon: Icons.settings_outlined,
-                      title: 'Preferensi',
-                      subtitle: 'Ubah Pengaturan Personal Anda',
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.pengaturan),
-                      isLast: true,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // ⑥ Tombol aksi
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pushReplacementNamed(
-                              context, AppRoutes.home),
-                          style: OutlinedButton.styleFrom(
-                            side:
-                                const BorderSide(color: AppColors.borderColor),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
-                          ),
-                          child: const Text(
-                            'Kembali Ke Beranda',
-                            style: TextStyle(color: Colors.white),
+                    // Section Pengaturan & Akses
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: cardBg,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                           ),
                         ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Pengaturan',
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            SettingsRowItemWidget(
+                              icon: Icons.edit_outlined,
+                              title: 'Edit Profil',
+                              subtitle: 'Ubah Informasi Profil Anda',
+                              onTap: () =>
+                                  Navigator.pushNamed(context, AppRoutes.editProfil)
+                                      .then((_) => _loadProfile()),
+                            ),
+                            SettingsRowItemWidget(
+                              icon: Icons.directions_car_outlined,
+                              title: 'Manajemen Kendaraan',
+                              subtitle: 'Kelola Kendaraan Mobil Anda',
+                              onTap: () => Navigator.pushNamed(
+                                      context, AppRoutes.vehicleManagement)
+                                  .then((_) => _loadProfile()),
+                            ),
+                            SettingsRowItemWidget(
+                              icon: Icons.settings_outlined,
+                              title: 'Preferensi & Tema',
+                              subtitle: 'Ubah Pengaturan Tema (Light/Dark Mode)',
+                              onTap: () =>
+                                  Navigator.pushNamed(context, AppRoutes.pengaturan),
+                              isLast: true,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Button Keluar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: 52,
                         child: ElevatedButton(
                           onPressed: _doLogout,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.red,
+                            backgroundColor: const Color(0xFFEF4444),
+                            foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            elevation: 0,
                           ),
-                          child: const Text('Keluar',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
+                          child: const Text(
+                            'Keluar',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+
+            // Bottom Navigation Bar
+            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required bool isDark,
+    required Color cardBg2,
+    required Color textPrimary,
+    required Color textSecondary,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: cardBg2,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: Color(0xFFDBEAFE),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: const Color(0xFF1D4ED8), size: 20),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: textSecondary,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-
-        // ⑦ Bottom nav
-        AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
-      ],
-    );
-  }
-}
-
-// ── Private section card container ───────────────────────────────────────────
-
-class _ProfileSectionCardWidget extends StatelessWidget {
-  final String title;
-  final List<Widget> children;
-
-  const _ProfileSectionCardWidget({
-    required this.title,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.borderColor),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-              child: Text(
-                title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            ...children,
-          ],
-        ),
+        ],
       ),
     );
   }

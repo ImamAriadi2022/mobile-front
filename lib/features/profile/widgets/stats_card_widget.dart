@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 
-/// Widget feature-specific: Card statistik profil
-/// menampilkan total parkir dan parkir aktif secara berdampingan.
-///
-/// Hanya digunakan di: ProfilWidget.
 class StatsCardWidget extends StatelessWidget {
   final String totalParkir;
   final String parkirAktif;
@@ -17,20 +13,31 @@ class StatsCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final borderColor = AppColors.getBorderColor(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.borderColor),
+          color: cardBg,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _StatItem(value: totalParkir, label: 'Total Parkir'),
-            Container(width: 1, height: 40, color: AppColors.borderColor),
+            Container(width: 1, height: 44, color: borderColor),
             _StatItem(value: parkirAktif, label: 'Parkir Aktif'),
           ],
         ),
@@ -47,17 +54,27 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary = AppColors.getTextSecondary(context);
+
     return Column(
       children: [
         Text(
           value,
           style: const TextStyle(
-              color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+            color: Color(0xFF2563EB),
+            fontSize: 32,
+            fontWeight: FontWeight.extrabold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          style: TextStyle(
+            color: textSecondary,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );

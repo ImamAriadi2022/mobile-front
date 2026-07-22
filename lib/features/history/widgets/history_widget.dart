@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/utils/date_utils.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_text_styles.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/parking/models/parking_area.dart';
@@ -10,14 +10,6 @@ import '../models/reservation_history.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'history_card_widget.dart';
 
-/// HistoryWidget: Composer untuk halaman riwayat parkir.
-///
-/// Tanggung jawab:
-/// - Mengambil data profil untuk mendapatkan userId
-/// - Mengambil data riwayat reservasi & daerah parkir (areas) secara real-time dari backend
-/// - Mengelola state loading, empty, dan error
-/// - Menyusun widget: Header, judul, daftar riwayat dengan HistoryCardWidget
-/// - Menangani navigasi
 class HistoryWidget extends StatefulWidget {
   const HistoryWidget({super.key});
 
@@ -26,10 +18,9 @@ class HistoryWidget extends StatefulWidget {
 }
 
 class _HistoryWidgetState extends State<HistoryWidget> {
-  // ── State ────────────────────────────────────────────────────────────────
   int _navIndex = 3;
   String _userName = 'User';
-  String _greeting = 'Selamat Datang';
+  String _greeting = '';
   String? _photoUrl;
   bool _isLoading = true;
   String? _errorMessage;
@@ -39,11 +30,9 @@ class _HistoryWidgetState extends State<HistoryWidget> {
   @override
   void initState() {
     super.initState();
-    _greeting = greetingFromHour(context);
     _loadData();
   }
 
-  // ── Data Fetching ────────────────────────────────────────────────────────
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -63,7 +52,6 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         });
       }
 
-      // Fetch history and areas in parallel to resolve areaId -> areaName
       final results = await Future.wait([
         HistoryService().getHistory(profile.userId),
         BookingService().getAreas(),
@@ -91,7 +79,6 @@ class _HistoryWidgetState extends State<HistoryWidget> {
     }
   }
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
     setState(() => _navIndex = idx);
     switch (idx) {
@@ -105,85 +92,118 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 4:
-        Navigator.pushNamed(context, AppRoutes.profil);
+        Navigator.pushReplacementNamed(context, AppRoutes.profil);
         break;
     }
   }
 
-  // ── Formatting Utilities ─────────────────────────────────────────────────
   DateTime? _parseIso(String? isoStr) {
     if (isoStr == null || isoStr.isEmpty) return null;
     return DateTime.tryParse(isoStr)?.toLocal();
   }
 
   String _formatTime(DateTime? dateTime) {
-    if (dateTime == null) return '--:--';
+    if (dateTime == null) return '14:30';
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
   }
 
   String _formatDateIndo(DateTime? dateTime) {
-    if (dateTime == null) return '-';
+    if (dateTime == null) return '24 Okt 2026';
     final day = dateTime.day.toString().padLeft(2, '0');
     final months = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
       'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember'
+      'Jun',
+      'Jul',
+      'Ags',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
     final month = months[dateTime.month - 1];
     final year = dateTime.year;
     return '$day $month $year';
   }
 
-  // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // ① Header pengguna
-        UserHeaderWidget(
-          name: _userName,
-          greeting: _greeting,
-          photoUrl: _photoUrl,
-        ),
-        const SizedBox(height: 12),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final textPrimary = AppColors.getTextPrimary(context);
 
-        // ② Judul halaman
-        const Text(
-          'History',
-          style: TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 10),
+    return Scaffold(
+      backgroundColor: scaffoldBg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // User Header
+            UserHeaderWidget(
+              name: _userName,
+              greeting: '',
+              title: 'ParkFinder',
+              photoUrl: _photoUrl,
+            ),
+            const SizedBox(height: 16),
 
-        // ③ Konten utama (Loading, Error, Empty, atau List)
-        Expanded(
-          child: _buildMainContent(),
-        ),
+            // Riwayat Parkir Section Title Row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Riwayat Parkir',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textPrimary,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Filter',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.filter_list_rounded,
+                        size: 16,
+                        color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
 
-        // ④ Bottom nav
-        AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
-      ],
+            // Konten Utama
+            Expanded(
+              child: _buildMainContent(isDark, textPrimary),
+            ),
+
+            // Bottom Nav
+            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildMainContent() {
+  Widget _buildMainContent(bool isDark, Color textPrimary) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.borderAccent),
-        ),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null) {
@@ -193,22 +213,18 @@ class _HistoryWidgetState extends State<HistoryWidget> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, color: AppColors.red, size: 48),
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
               const SizedBox(height: 16),
               Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: TextStyle(color: textPrimary, fontSize: 14),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _loadData,
                 icon: const Icon(Icons.refresh),
                 label: const Text('Coba Lagi'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.borderColor,
-                  foregroundColor: Colors.white,
-                ),
               ),
             ],
           ),
@@ -225,14 +241,14 @@ class _HistoryWidgetState extends State<HistoryWidget> {
             children: [
               const Icon(
                 Icons.history_toggle_off,
-                color: AppColors.textSecondary,
+                color: Color(0xFF94A3B8),
                 size: 64,
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Belum ada riwayat parkir',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -241,26 +257,15 @@ class _HistoryWidgetState extends State<HistoryWidget> {
               const Text(
                 'Silakan lakukan reservasi slot parkir terlebih dahulu.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.booking);
                 },
-                icon: const Icon(Icons.local_parking),
+                icon: const Icon(Icons.local_parking_rounded),
                 label: const Text('Cari Slot Parkir'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.borderAccent,
-                  foregroundColor: AppColors.background,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
             ],
           ),
@@ -281,7 +286,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         final hinggaTime = _formatTime(dtHingga);
         final hinggaDate = _formatDateIndo(dtHingga);
 
-        final areaName = _areaNames[item.areaId] ?? 'Area Parkir';
+        final areaName = _areaNames[item.areaId] ?? 'Jurusan Teknik Elektro Unila';
         final slotLabel = '$areaName\n(Slot ${item.slotName})';
 
         return HistoryCardWidget(
@@ -291,7 +296,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
           tglHingga: hinggaDate,
           slotParkir: slotLabel,
           idTiket: item.ticketId,
-          kendaraan: item.plateNumber,
+          kendaraan: item.plateNumber.isNotEmpty ? item.plateNumber : 'Mobil',
           status: item.status,
         );
       },

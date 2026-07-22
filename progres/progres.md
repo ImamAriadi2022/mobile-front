@@ -2,17 +2,20 @@
 
 ## Selesai
 
-- Redesign presisi Halaman Masuk (`login_widget.dart`) mengacu 100% pada `Halaman Masuk.png`: Logo badge, judul Smart Parking FT, kartu putih rounded dengan shadow, field `Nama Pengguna/Email` & `Kata Sandi`, link `Lupa Sandi?`, tombol `MASUK` navy blue, link `Daftar Sekarang`, serta footer `Dikelola oleh ParkFinder Developer`.
-- Redesign presisi Halaman Daftar (`register_widget.dart`) mengacu 100% pada `Halaman Daftar.png`: Judul `Daftar Akun`, kartu putih rounded, 6 field input lengkap dengan ikon prefix, tombol `Daftar Sekarang →`, dan link `Masuk`.
-- Penyesuaian Alur Onboarding Tutorial: Dipindahkan ke alur **setelah login/register berhasil** (`Login` $\rightarrow$ `Onboarding` $\rightarrow$ `Home`).
-- Pembersihan & Restrukturisasi Aset Gambar PNG: Folder `assets/` di root dihapus dan seluruh gambar PNG dipindahkan ke subfolder `lib/assets/` (`lib/assets/welcome/`, `lib/assets/parking/`, `lib/assets/home/`, `lib/assets/scan/`, dll).
-- Sentralisasi Style & Theme System di `lib/shared/styles/`:
-  - `app_colors.dart` (Token warna Light & Dark Theme).
-  - `app_text_styles.dart` (Tipografi terpusat).
-  - `app_theme.dart` (ThemeData Light & Dark Mode).
-  - `theme_provider.dart` (State management toggle Light/Dark Mode dengan SharedPreferences persistence).
-- Integrasi `ThemeProvider` di `AppProviders` (`main.dart`), `MyApp` (`app.dart`), serta opsi sakelar tema di `settings_page.dart` dan Halaman Masuk/Daftar.
-- Redesign Dashboard Home, Denah Parkir, Peta Slot FT Unila, Status Parkir Aktif, Scanner QR, History, dan Profil Pengguna.
+- **Penyesuaian Alur Tutorial & Onboarding**: Menghapus transisi tutorial lama yang berlebihan; alur dipusatkan sepenuhnya melalui Onboarding (`WelcomeWidget`) setelah login/register berhasil (`Splash` $\rightarrow$ `Login` $\rightarrow$ `Onboarding` $\rightarrow$ `Home`).
+- **Redesign Halaman Beranda (Home)**: Menyesuaikan 100% dengan `Dashboard Parkir.png` (UserHeaderWidget `Beranda` dengan ikon sakelar tema, search bar `Cari Gedung Parkir`, banner card `Parkir Aktif` deep navy blue dengan tombol orange `Tampilkan QR`, dan daftar kartu `Gedung Parkir` lengkap dengan badge `TERSEDIA`/`PENUH`).
+- **Redesign Area Parkir & Denah Slot**:
+  - `BookingWidget` disesuaikan 100% dengan `Denah.png` (Cari Lokasi Parkir, pills filter `Semua`, `Terdekat`, `Populer`, `Baru`, dan daftar kartu lokasi parkir).
+  - `DetailBookingWidget` & `ParkingSlotItemWidget` disesuaikan 100% dengan `Peta Parkir FT Unila.png` (Header `Peta Parkir`, kotak legenda status, indikator slot `12/20`, denah slot 2 kolom dengan penanda arah MASUK/KELUAR, dan banner konfirmasi slot pilihan).
+- **Implementasi Dark & Light Mode Toggle After Login**:
+  - Menambahkan ikon sakelar tema (Matahari / Bulan) pada `UserHeaderWidget` yang hadir di semua halaman pasca-login (`Home`, `Area`, `Status`, `Riwayat`, `Profil`).
+  - Pengguna dapat beralih tema kapan saja dengan satu sentuhan.
+- **Perbaikan Kontras Warna & Masalah Teks Putih di Background Putih**:
+  - Memperbarui `app_colors.dart`, `stats_card_widget.dart`, `history_card_widget.dart`, `parking_slot_item_widget.dart`, `status_kendaraan_page.dart`, `history_widget.dart`, dan `profil_widget.dart` agar warna teks dan background menyesuaikan secara dinamis sesuai `Brightness` (Light/Dark Mode).
+  - Mengeliminasi seluruh teks putih di atas latar belakang putih di Halaman Parkir, Status, Riwayat, dan Profil.
+- **Batasan Tipe Kendaraan (Hanya Mobil)**:
+  - Membatasi seluruh input, formulir tambah/edit, dan tampilan kendaraan hanya untuk jenis **Mobil** (menghapus opsi motor/tipe lain sesuai permintaan).
+- Redesign presisi Halaman Masuk (`login_widget.dart`) & Halaman Daftar (`register_widget.dart`).
 - Dokumentasi audit UI di `docs/ui_redesign_audit.md`.
 
 ## Sedang dikerjakan

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_text_styles.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
@@ -11,7 +11,6 @@ import 'parking_slot_map_widget.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 
-/// DetailBookingWidget: Composer untuk halaman peta slot parkir.
 class DetailBookingWidget extends StatefulWidget {
   final String areaId;
 
@@ -25,7 +24,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   int _selectedFloorTab = 0;
   int _navIndex = 1;
   bool _isLoading = true;
-  bool _showVisualMap = false;
+  ParkingSlotData? _selectedSlot;
 
   List<ParkingSlotData> _leftSlots = [];
   List<ParkingSlotData> _rightSlots = [];
@@ -76,12 +75,17 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                 id: s.id, label: s.slotNumber, status: mapStatus(s.status)))
             .toList();
 
+        if (_leftSlots.isNotEmpty) {
+          _selectedSlot = _leftSlots.firstWhere(
+            (s) => s.status == SlotStatus.kosong,
+            orElse: () => _leftSlots.first,
+          );
+        }
+
         _isLoading = false;
       });
     }
   }
-
-  static const _floorTabs = ['Semua', 'Lantai 1', 'Lantai 2'];
 
   void _onNavTap(int idx) {
     setState(() => _navIndex = idx);
@@ -93,102 +97,288 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         Navigator.pushNamed(context, AppRoutes.statusKendaraan);
         break;
       case 3:
-        Navigator.pushNamed(context, AppRoutes.history);
+        Navigator.pushReplacementNamed(context, AppRoutes.history);
         break;
       case 4:
-        Navigator.pushNamed(context, AppRoutes.profil);
+        Navigator.pushReplacementNamed(context, AppRoutes.profil);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
+    final availableCount = _leftSlots.where((s) => s.status == SlotStatus.kosong).length +
+        _rightSlots.where((s) => s.status == SlotStatus.kosong).length;
+    final totalCount = _leftSlots.length + _rightSlots.length;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Column(
           children: [
-            // Custom app bar
-            _DetailAppBarWidget(
-              title: 'Peta Slot Parkir FT Unila',
-              onBack: () => Navigator.pop(context),
-              showVisualMap: _showVisualMap,
-              onToggleMap: () => setState(() => _showVisualMap = !_showVisualMap),
+            // App Bar Header
+            UserHeaderWidget(
+              name: 'User',
+              greeting: '',
+              title: 'Peta Parkir',
             ),
 
-            // Search bar
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: SearchBarWidget(
-                hintText: 'Cari slot (contoh: Lantai 1 Slot A4)',
-                readOnly: true,
-              ),
-            ),
-
-            // Floor tabs
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: _floorTabs.asMap().entries.map((e) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        right: e.key < _floorTabs.length - 1 ? 8 : 0),
-                    child: FloorTabWidget(
-                      label: e.value,
-                      isSelected: _selectedFloorTab == e.key,
-                      onTap: () => setState(() => _selectedFloorTab = e.key),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-
-            // Visual Map preview PNG vs Slot grid
-            if (_showVisualMap)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      'lib/assets/parking/peta_parkir_ft_unila.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Text(
-                          'Gambar Peta Denah Tidak Ditemukan',
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Area Title & Location Subtitle
+                    Text(
+                      'Teknik elektro universitas lampung',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: textPrimary,
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Sisi Timur, Lantai 1',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Status Legend Box
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          _buildLegendItem(const Color(0xFF22C55E), 'Tersedia', isDark),
+                          const SizedBox(width: 16),
+                          _buildLegendItem(const Color(0xFFDC2626), 'Terisi', isDark),
+                          const SizedBox(width: 16),
+                          _buildLegendItem(const Color(0xFF94A3B8), 'Pemeliharaan', isDark),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFEDD5),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.directions_car_filled_rounded, size: 14, color: Color(0xFFC2410C)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '$availableCount/$totalCount',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFC2410C),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Interactive Slot Map Container
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Left Column (A01 - A05)
+                          Expanded(
+                            child: Column(
+                              children: _leftSlots.map((slot) {
+                                return ParkingSlotItemWidget(
+                                  slot: slot,
+                                  isSelected: _selectedSlot?.id == slot.id,
+                                  onTap: () {
+                                    setState(() => _selectedSlot = slot);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+
+                          // Middle Road Divider with Arrows
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                const SizedBox(height: 36),
+                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                const SizedBox(height: 36),
+                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                const SizedBox(height: 36),
+                                const Text(
+                                  'MASUK\n↑',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1E40AF),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Right Column (B01 - B05)
+                          Expanded(
+                            child: Column(
+                              children: _rightSlots.map((slot) {
+                                return ParkingSlotItemWidget(
+                                  slot: slot,
+                                  isSelected: _selectedSlot?.id == slot.id,
+                                  onTap: () {
+                                    setState(() => _selectedSlot = slot);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Bottom Confirmation Banner Box
+                    if (_selectedSlot != null)
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF061E3D),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.info_outline_rounded,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Pilih Slot ini?',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Slot ${_selectedSlot!.label}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _handleSlotBooking(_selectedSlot!);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFF97316),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Pilih',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-              )
-            else ...[
-              // Zone header
-              const _ZoneHeaderWidget(zoneName: 'Zona A - Lantai 1'),
-              const SizedBox(height: 8),
-
-              // Peta slot parkir
-              Expanded(
-                child: _isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: AppColors.accent))
-                    : SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ParkingSlotMapWidget(
-                          leftSlots: _leftSlots,
-                          rightSlots: _rightSlots,
-                          onSlotTap: (slot) => _handleSlotBooking(slot),
-                        ),
-                      ),
               ),
-            ],
+            ),
 
-            // Bottom nav
+            // Bottom Navigation Bar
             AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label, bool isDark) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: isDark ? Colors.white70 : const Color(0xFF475569),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 
@@ -259,101 +449,5 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         );
       }
     }
-  }
-}
-
-class _DetailAppBarWidget extends StatelessWidget {
-  final String title;
-  final VoidCallback onBack;
-  final bool showVisualMap;
-  final VoidCallback onToggleMap;
-
-  const _DetailAppBarWidget({
-    required this.title,
-    required this.onBack,
-    required this.showVisualMap,
-    required this.onToggleMap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: onBack,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.borderColor),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: AppColors.textPrimary, size: 18),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTextStyles.heading3.copyWith(
-                fontSize: 16,
-                color: AppColors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 12),
-          GestureDetector(
-            onTap: onToggleMap,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: showVisualMap ? AppColors.accent : Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.borderColor),
-              ),
-              child: Icon(
-                showVisualMap ? Icons.grid_view_rounded : Icons.map_rounded,
-                color: showVisualMap ? Colors.white : AppColors.textPrimary,
-                size: 20,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ZoneHeaderWidget extends StatelessWidget {
-  final String zoneName;
-
-  const _ZoneHeaderWidget({required this.zoneName});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Icon(Icons.arrow_back_ios,
-              color: AppColors.textSecondary, size: 16),
-          Text(
-            zoneName,
-            style: AppTextStyles.cardTitle.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Icon(Icons.arrow_forward_ios,
-              color: AppColors.textSecondary, size: 16),
-        ],
-      ),
-    );
   }
 }

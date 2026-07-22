@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 
-/// Enum status slot parkir.
 enum SlotStatus { alatRusak, kosong, terisi, terpesan, pemeliharaan }
 
 extension SlotStatusExtension on SlotStatus {
-  Color get color {
+  Color get bgColor {
     switch (this) {
-      case SlotStatus.alatRusak:
-        return AppColors.red;
       case SlotStatus.kosong:
-        return AppColors.green;
+        return const Color(0xFF22C55E); // Green
       case SlotStatus.terisi:
-        return Colors.blue;
+        return const Color(0xFFDC2626); // Red
       case SlotStatus.terpesan:
-        return Colors.orange;
+        return const Color(0xFFEA580C); // Orange
       case SlotStatus.pemeliharaan:
-        return Colors.purple;
+      case SlotStatus.alatRusak:
+        return const Color(0xFFE2E8F0); // Light Grey
+    }
+  }
+
+  Color get textColor {
+    switch (this) {
+      case SlotStatus.kosong:
+      case SlotStatus.terisi:
+      case SlotStatus.terpesan:
+        return Colors.white;
+      case SlotStatus.pemeliharaan:
+      case SlotStatus.alatRusak:
+        return const Color(0xFF475569);
     }
   }
 
@@ -25,7 +35,7 @@ extension SlotStatusExtension on SlotStatus {
       case SlotStatus.alatRusak:
         return 'Alat Rusak';
       case SlotStatus.kosong:
-        return 'Kosong';
+        return 'Tersedia';
       case SlotStatus.terisi:
         return 'Terisi';
       case SlotStatus.terpesan:
@@ -34,22 +44,8 @@ extension SlotStatusExtension on SlotStatus {
         return 'Pemeliharaan';
     }
   }
-
-  IconData? get icon {
-    switch (this) {
-      case SlotStatus.terisi:
-        return Icons.directions_car;
-      case SlotStatus.kosong:
-        return Icons.local_parking;
-      case SlotStatus.terpesan:
-        return Icons.bookmark;
-      default:
-        return null;
-    }
-  }
 }
 
-/// Data model satu slot parkir.
 class ParkingSlotData {
   final String? id;
   final String label;
@@ -58,66 +54,72 @@ class ParkingSlotData {
   const ParkingSlotData({this.id, required this.label, required this.status});
 }
 
-/// Widget feature-specific: Satu item slot parkir dengan warna status,
-/// label slot, dan ikon kondisi.
-///
-/// Hanya digunakan di: DetailBookingWidget (via ParkingSlotMapWidget).
 class ParkingSlotItemWidget extends StatelessWidget {
   final ParkingSlotData slot;
-  final bool showIconOnLeft; // true = kolom kiri (ikon di kanan)
+  final bool showIconOnLeft;
+  final bool isSelected;
   final VoidCallback? onTap;
 
   const ParkingSlotItemWidget({
     super.key,
     required this.slot,
     this.showIconOnLeft = false,
+    this.isSelected = false,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = slot.status.color;
-    final icon = slot.status.icon;
-    final showIcon = icon != null &&
-        slot.status != SlotStatus.alatRusak &&
-        slot.status != SlotStatus.pemeliharaan;
+    final bg = slot.status.bgColor;
+    final textCol = slot.status.textColor;
 
     return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 6),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.cardBg,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withValues(alpha: 0.5)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (!showIconOnLeft && showIcon)
-                Icon(icon, color: color, size: 22)
-              else
-                const SizedBox(width: 22),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    slot.status.label,
-                    style: TextStyle(
-                        color: color, fontSize: 9, fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    slot.label,
-                    style: const TextStyle(
-                        color: Colors.white,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 64,
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(14),
+          border: isSelected
+              ? Border.all(color: Colors.white, width: 3)
+              : null,
+          boxShadow: [
+            BoxShadow(
+              color: bg.withValues(alpha: 0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Center(
+          child: slot.status == SlotStatus.pemeliharaan || slot.status == SlotStatus.alatRusak
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.build_rounded, size: 16, color: Color(0xFF475569)),
+                    const SizedBox(height: 2),
+                    Text(
+                      slot.label,
+                      style: TextStyle(
+                        color: textCol,
                         fontSize: 12,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  slot.label,
+                  style: TextStyle(
+                    color: textCol,
+                    fontSize: 16,
+                    fontWeight: FontWeight.extrabold,
                   ),
-                ],
-              ),
-            ],
-          ),
-        ));
+                ),
+        ),
+      ),
+    );
   }
 }
