@@ -19,7 +19,6 @@ class _PengaturanPageState extends State<PengaturanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(

@@ -8,7 +8,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
-import '../../welcome/pages/welcome_page.dart';
 
 class SplashScreenWidget extends StatefulWidget {
   const SplashScreenWidget({super.key});
@@ -100,7 +99,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
         PwaInstallDialog.show(
           context,
           onDismiss: () {
-            _goToHome(context);
+            _goToHome();
           },
         );
       }
@@ -111,7 +110,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
           PwaSafariInstallDialog.show(
             context,
             onDismiss: () {
-              _goToHome(context);
+              _goToHome();
             },
           );
         }
@@ -119,15 +118,13 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     }
   }
 
-  void _goToHome(BuildContext context) async {
+  void _goToHome() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token');
     if (token != null) {
-      // Validate token by fetching profile
       final profile = await ProfileService().getProfile();
       if (profile != null) {
         if (!mounted) return;
-        // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacementNamed(AppRoutes.home);
         return;
       }
@@ -162,7 +159,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
               bottom: 32,
               child: Center(
                 child: GestureDetector(
-                  onTap: () => _goToHome(context),
+                  onTap: () => _goToHome(),
                   child: Container(
                     width: 64,
                     height: 64,
