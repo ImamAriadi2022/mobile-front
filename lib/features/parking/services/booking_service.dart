@@ -174,8 +174,8 @@ class BookingService {
         );
       }
 
-      return _parseActionResult(
-          response, 'Slot parkir berhasil diganti.', 'Gagal mengganti slot parkir.');
+      return _parseActionResult(response, 'Slot parkir berhasil diganti.',
+          'Gagal mengganti slot parkir.');
     } catch (e) {
       return ActionResult.failure('Terjadi kesalahan: ${e.toString()}');
     }
@@ -203,8 +203,7 @@ class BookingService {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       return ActionResult.failure(json['message'] as String? ?? failMsg);
     } catch (_) {
-      return ActionResult.failure(
-          '$failMsg (Status ${response.statusCode})');
+      return ActionResult.failure('$failMsg (Status ${response.statusCode})');
     }
   }
 }

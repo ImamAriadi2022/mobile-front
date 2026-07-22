@@ -35,13 +35,14 @@ class _BookingWidgetState extends State<BookingWidget> {
   Future<void> _fetchAreas() async {
     final service = BookingService();
     final areas = await service.getAreas();
-    
+
     if (mounted) {
       setState(() {
         _allParking = areas.map((a) {
           final total = a.totalSlot;
           final available = a.availableSlots;
-          final occupancy = total > 0 ? ((total - available) / total * 100) : 0.0;
+          final occupancy =
+              total > 0 ? ((total - available) / total * 100) : 0.0;
           return ParkingItemData(
             id: a.id,
             name: a.name,
@@ -57,9 +58,7 @@ class _BookingWidgetState extends State<BookingWidget> {
   List<ParkingItemData> get _filtered {
     final q = _searchCtrl.text.toLowerCase();
     if (q.isEmpty) return _allParking;
-    return _allParking
-        .where((e) => e.name.toLowerCase().contains(q))
-        .toList();
+    return _allParking.where((e) => e.name.toLowerCase().contains(q)).toList();
   }
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -109,22 +108,23 @@ class _BookingWidgetState extends State<BookingWidget> {
 
               // ③ Daftar gedung parkir (filtered)
               Expanded(
-                child: _isLoading 
-                  ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: _filtered.length,
-                      itemBuilder: (context, i) => ParkingListItemWidget(
-                        item: _filtered[i],
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.detailBooking,
-                            arguments: _filtered[i].id,
-                          );
-                        },
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(color: Colors.white))
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _filtered.length,
+                        itemBuilder: (context, i) => ParkingListItemWidget(
+                          item: _filtered[i],
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.detailBooking,
+                              arguments: _filtered[i].id,
+                            );
+                          },
+                        ),
                       ),
-                    ),
               ),
             ],
           ),

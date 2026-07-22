@@ -89,8 +89,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       title: 'Pengingat Booking',
                       subtitle: '15 Menit Sebelum waktu',
                       value: _pengingatBooking,
-                      onChanged: (v) =>
-                          setState(() => _pengingatBooking = v),
+                      onChanged: (v) => setState(() => _pengingatBooking = v),
                     ),
                     const SizedBox(height: 8),
                     _buildToggleItem(
@@ -156,7 +155,8 @@ class _PengaturanPageState extends State<PengaturanPage> {
                               ],
                             ),
                           ),
-                          const Divider(color: AppColors.borderColor, height: 1),
+                          const Divider(
+                              color: AppColors.borderColor, height: 1),
                           Padding(
                             padding: const EdgeInsets.all(14),
                             child: Row(

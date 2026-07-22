@@ -195,7 +195,9 @@ class VehicleService {
       final json = jsonDecode(body);
       if (json is Map && json['message'] != null) {
         final msg = json['message'].toString();
-        if (msg.contains('already exists')) return 'Nomor kendaraan sudah terdaftar.';
+        if (msg.contains('already exists')) {
+          return 'Nomor kendaraan sudah terdaftar.';
+        }
         if (msg.contains('required')) return 'Jenis kendaraan wajib dipilih.';
         return msg;
       }

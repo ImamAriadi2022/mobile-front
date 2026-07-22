@@ -49,7 +49,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Gagal memuat data kendaraan. Periksa koneksi internet Anda.';
+          _errorMessage =
+              'Gagal memuat data kendaraan. Periksa koneksi internet Anda.';
           _isLoading = false;
         });
       }
@@ -174,7 +175,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.directions_car, color: AppColors.accent, size: 20),
+                  const Icon(Icons.directions_car,
+                      color: AppColors.accent, size: 20),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,13 +211,15 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Batal',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: const Text('Hapus', style: TextStyle(color: Colors.white)),
           ),
@@ -355,7 +359,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
               decoration: BoxDecoration(
                 color: AppColors.accent.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
+                border:
+                    Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
               ),
               child: const Icon(
                 Icons.add,
@@ -424,7 +429,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
             const SizedBox(height: 8),
             Text(
               _errorMessage ?? '',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -438,7 +444,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -493,7 +500,8 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -576,7 +584,6 @@ class _VehicleCard extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
-
               ],
             ),
           ),
@@ -632,7 +639,8 @@ class _SkeletonVehicleCard extends StatelessWidget {
     );
   }
 
-  Widget _shimmer({required double width, required double height, required double radius}) {
+  Widget _shimmer(
+      {required double width, required double height, required double radius}) {
     return Container(
       width: width,
       height: height,
@@ -661,7 +669,13 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
   String _selectedType = 'Mobil';
   bool _isSubmitting = false;
 
-  final List<String> _vehicleTypes = ['Mobil', 'Motor', 'Truk', 'Bus', 'Lainnya'];
+  final List<String> _vehicleTypes = [
+    'Mobil',
+    'Motor',
+    'Truk',
+    'Bus',
+    'Lainnya'
+  ];
 
   @override
   void dispose() {
@@ -758,7 +772,8 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+                  borderSide:
+                      const BorderSide(color: AppColors.accent, width: 1.5),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -766,7 +781,8 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.red, width: 1.5),
+                  borderSide:
+                      const BorderSide(color: AppColors.red, width: 1.5),
                 ),
               ),
               validator: (val) {
@@ -800,7 +816,8 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                   isExpanded: true,
                   dropdownColor: AppColors.cardBg2,
                   style: const TextStyle(color: Colors.white, fontSize: 15),
-                  icon: const Icon(Icons.expand_more, color: AppColors.textSecondary),
+                  icon: const Icon(Icons.expand_more,
+                      color: AppColors.textSecondary),
                   items: _vehicleTypes.map((type) {
                     return DropdownMenuItem(
                       value: type,
@@ -823,7 +840,8 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                 onPressed: _isSubmitting ? null : _submit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accent,
-                  disabledBackgroundColor: AppColors.accent.withValues(alpha: 0.4),
+                  disabledBackgroundColor:
+                      AppColors.accent.withValues(alpha: 0.4),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -834,7 +852,8 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : const Text(

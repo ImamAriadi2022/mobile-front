@@ -100,7 +100,8 @@ class PwaInstallDialog extends StatelessWidget {
                           Navigator.pop(context);
                           final prefs = await SharedPreferences.getInstance();
                           final now = DateTime.now().millisecondsSinceEpoch;
-                          await prefs.setInt('pwa_install_popup_last_dismiss', now);
+                          await prefs.setInt(
+                              'pwa_install_popup_last_dismiss', now);
                           onDismiss();
                         },
                         style: TextButton.styleFrom(
@@ -127,12 +128,14 @@ class PwaInstallDialog extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(context);
-                          final result = await PwaInstallService.instance.triggerInstall();
+                          final result =
+                              await PwaInstallService.instance.triggerInstall();
                           if (context.mounted) {
                             if (result == 'accepted') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Terima kasih telah menginstal ParkFinder!'),
+                                  content: Text(
+                                      'Terima kasih telah menginstal ParkFinder!'),
                                   backgroundColor: Colors.green,
                                 ),
                               );
@@ -268,12 +271,14 @@ class PwaSafariInstallDialog extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.ios_share_rounded, color: Color(0xFF00D2FF), size: 20),
+                          Icon(Icons.ios_share_rounded,
+                              color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               '1. Tekan tombol Share (Bagikan) di bagian bawah layar Safari.',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ),
                         ],
@@ -281,12 +286,14 @@ class PwaSafariInstallDialog extends StatelessWidget {
                       SizedBox(height: 12),
                       Row(
                         children: [
-                          Icon(Icons.add_box_outlined, color: Color(0xFF00D2FF), size: 20),
+                          Icon(Icons.add_box_outlined,
+                              color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               '2. Pilih "Add to Home Screen" (Tambahkan ke Layar Utama).',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ),
                         ],
@@ -294,12 +301,14 @@ class PwaSafariInstallDialog extends StatelessWidget {
                       SizedBox(height: 12),
                       Row(
                         children: [
-                          Icon(Icons.add_rounded, color: Color(0xFF00D2FF), size: 20),
+                          Icon(Icons.add_rounded,
+                              color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               '3. Tekan "Add" (Tambah) di pojok kanan atas.',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ),
                         ],
@@ -341,4 +350,3 @@ class PwaSafariInstallDialog extends StatelessWidget {
     );
   }
 }
-

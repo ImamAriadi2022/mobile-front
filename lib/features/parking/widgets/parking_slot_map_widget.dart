@@ -72,9 +72,7 @@ class _RoadDividerWidget extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 12),
             width: 1,
             height: 14,
-            color: i % 2 == 0
-                ? AppColors.textSecondary
-                : Colors.transparent,
+            color: i % 2 == 0 ? AppColors.textSecondary : Colors.transparent,
           ),
         ),
       ),

@@ -66,8 +66,7 @@ class EndSessionDialogWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 13),
                     ),
                     child: const Text('Ya, Keluar Sekarang',
-                        style:
-                            TextStyle(color: Colors.white, fontSize: 12)),
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
                   ),
                 ),
                 const SizedBox(width: 10),

@@ -83,43 +83,41 @@ class ParkingSlotItemWidget extends StatelessWidget {
         slot.status != SlotStatus.pemeliharaan;
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (!showIconOnLeft && showIcon)
-            Icon(icon, color: color, size: 22)
-          else
-            const SizedBox(width: 22),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.cardBg,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withValues(alpha: 0.5)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                slot.status.label,
-                style: TextStyle(
-                    color: color,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w600),
-              ),
-              Text(
-                slot.label,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
+              if (!showIconOnLeft && showIcon)
+                Icon(icon, color: color, size: 22)
+              else
+                const SizedBox(width: 22),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    slot.status.label,
+                    style: TextStyle(
+                        color: color, fontSize: 9, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    slot.label,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 }

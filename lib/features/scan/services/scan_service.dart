@@ -68,4 +68,3 @@ class ScanService {
 /// Widget lama memanggil `AccessService().getActiveTicket()`.
 /// Digabung ke dalam ScanService sebagai satu service domain scan.
 typedef AccessService = ScanService;
-

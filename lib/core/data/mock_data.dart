@@ -189,7 +189,14 @@ class MockDatabase {
     for (final zone in zones) {
       for (var num = 1; num <= 12; num++) {
         index++;
-        final statuses = ['available', 'available', 'available', 'occupied', 'booked', 'available'];
+        final statuses = [
+          'available',
+          'available',
+          'available',
+          'occupied',
+          'booked',
+          'available'
+        ];
         final status = statuses[index % statuses.length];
         slots.add({
           'id': '$areaId-$zone$num',
@@ -236,7 +243,9 @@ class MockDatabase {
         'status': 'completed',
         'timestamps': {
           'created': now.subtract(const Duration(hours: 5)).toIso8601String(),
-          'arrived': now.subtract(const Duration(hours: 4, minutes: 50)).toIso8601String(),
+          'arrived': now
+              .subtract(const Duration(hours: 4, minutes: 50))
+              .toIso8601String(),
           'completed': now.subtract(const Duration(hours: 2)).toIso8601String(),
         },
         'history': [],
@@ -253,8 +262,11 @@ class MockDatabase {
         'plateNumber': 'B 1234 CD',
         'status': 'completed',
         'timestamps': {
-          'created': now.subtract(const Duration(days: 1, hours: 3)).toIso8601String(),
-          'arrived': now.subtract(const Duration(days: 1, hours: 2, minutes: 45)).toIso8601String(),
+          'created':
+              now.subtract(const Duration(days: 1, hours: 3)).toIso8601String(),
+          'arrived': now
+              .subtract(const Duration(days: 1, hours: 2, minutes: 45))
+              .toIso8601String(),
           'completed': now.subtract(const Duration(days: 1)).toIso8601String(),
         },
         'history': [],
@@ -271,7 +283,8 @@ class MockDatabase {
         'plateNumber': 'B 1234 CD',
         'status': 'cancelled',
         'timestamps': {
-          'created': now.subtract(const Duration(days: 2, hours: 6)).toIso8601String(),
+          'created':
+              now.subtract(const Duration(days: 2, hours: 6)).toIso8601String(),
           'arrived': null,
           'completed': null,
         },
@@ -289,9 +302,13 @@ class MockDatabase {
         'plateNumber': 'D 5678 EF',
         'status': 'completed',
         'timestamps': {
-          'created': now.subtract(const Duration(days: 3, hours: 4)).toIso8601String(),
-          'arrived': now.subtract(const Duration(days: 3, hours: 3, minutes: 50)).toIso8601String(),
-          'completed': now.subtract(const Duration(days: 3, hours: 1)).toIso8601String(),
+          'created':
+              now.subtract(const Duration(days: 3, hours: 4)).toIso8601String(),
+          'arrived': now
+              .subtract(const Duration(days: 3, hours: 3, minutes: 50))
+              .toIso8601String(),
+          'completed':
+              now.subtract(const Duration(days: 3, hours: 1)).toIso8601String(),
         },
         'history': [],
         'formattedDuration': '3 Jam',
@@ -328,7 +345,9 @@ class MockDatabase {
       'areaId': 'area-001',
       'areaName': 'Teknik Elektro Universitas Lampung',
       'bindingId': 'bind-001',
-      'claimedAt': DateTime.now().subtract(const Duration(minutes: 30)).toIso8601String(),
+      'claimedAt': DateTime.now()
+          .subtract(const Duration(minutes: 30))
+          .toIso8601String(),
     };
   }
 

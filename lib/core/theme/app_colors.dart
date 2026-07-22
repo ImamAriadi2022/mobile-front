@@ -24,7 +24,7 @@ class AppColors {
   // Status colors
   static const Color green = Color(0xFF4CAF50);
   static const Color red = Color(0xFFEF5350);
-  static const Color orange = Color(0xFFFFA726);
+  static const Color orangeWarning = Color(0xFFFFA726);
   static const Color yellow = Color(0xFFFFEB3B);
 
   // Navigation

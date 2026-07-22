@@ -72,8 +72,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
               colorBlendMode: BlendMode.darken,
               loadingBuilder: (ctx, child, p) {
                 if (p == null) return child;
-                return Container(
-                    decoration: BoxDecoration(gradient: fallback));
+                return Container(decoration: BoxDecoration(gradient: fallback));
               },
               errorBuilder: (_, __, ___) =>
                   Container(decoration: BoxDecoration(gradient: fallback)),
@@ -171,7 +170,8 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            widget.ticketData?.ticketCode ?? 'TXT-00000000-0000',
+                            widget.ticketData?.ticketCode ??
+                                'TXT-00000000-0000',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -180,7 +180,8 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                             ),
                           ),
                           const SizedBox(height: 14),
-                          const Divider(color: AppColors.borderColor, height: 1),
+                          const Divider(
+                              color: AppColors.borderColor, height: 1),
                           const SizedBox(height: 14),
                           const Text(
                             'Status:',
@@ -315,8 +316,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                   children: [
                     Text(
                       _isDark ? 'Terang' : 'Gelap',
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
                     ),
                     const SizedBox(width: 6),
                     Icon(

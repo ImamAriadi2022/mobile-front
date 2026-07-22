@@ -14,8 +14,7 @@ class MockResponse {
   static http.Response okList(List<dynamic> data,
       {String message = 'Success'}) {
     return http.Response(
-        jsonEncode({'success': true, 'message': message, 'data': data}),
-        200,
+        jsonEncode({'success': true, 'message': message, 'data': data}), 200,
         headers: _jsonHeaders);
   }
 
@@ -26,8 +25,7 @@ class MockResponse {
   static http.Response error(String message,
       {int statusCode = 400, bool success = false}) {
     return http.Response(
-        jsonEncode({'success': success, 'message': message}),
-        statusCode,
+        jsonEncode({'success': success, 'message': message}), statusCode,
         headers: _jsonHeaders);
   }
 

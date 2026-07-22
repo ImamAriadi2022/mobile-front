@@ -54,8 +54,7 @@ class HomeProvider extends ChangeNotifier {
 
     final result = await _bookingService.getAreas();
     _areas = result;
-    _areasStatus =
-        result.isEmpty ? HomeStatus.failure : HomeStatus.success;
+    _areasStatus = result.isEmpty ? HomeStatus.failure : HomeStatus.success;
     if (result.isEmpty) {
       _areasError = 'Tidak ada area parkir yang tersedia.';
     }

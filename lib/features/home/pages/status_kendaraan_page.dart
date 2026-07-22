@@ -44,9 +44,9 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
-        vsync: this, duration: const Duration(seconds: 2))
-      ..repeat(reverse: true);
+    _ctrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2))
+          ..repeat(reverse: true);
     _glowAnim = Tween<double>(begin: 0.3, end: 0.8).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
@@ -136,7 +136,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   void _startElapsedTimer() {
     _timer?.cancel();
 
-    if (_activeReservation != null && _activeReservation!.startTime.isNotEmpty) {
+    if (_activeReservation != null &&
+        _activeReservation!.startTime.isNotEmpty) {
       try {
         final startTime = DateTime.parse(_activeReservation!.startTime);
         _elapsedSeconds = DateTime.now().difference(startTime).inSeconds;
@@ -184,7 +185,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   bool get _hasActiveSession {
-    if (_activeReservation != null && _activeReservation!.reservationId.isNotEmpty) {
+    if (_activeReservation != null &&
+        _activeReservation!.reservationId.isNotEmpty) {
       return true;
     }
     if (_activeTicket != null &&
@@ -225,7 +227,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     if (_activeReservation != null &&
         (_activeReservation!.status == 'active' ||
             _activeReservation!.status == 'arrived')) {
-      final result = await service.completeReservation(_activeReservation!.reservationId);
+      final result =
+          await service.completeReservation(_activeReservation!.reservationId);
       if (!mounted) return;
       setState(() => _isCancelling = false);
 
@@ -250,7 +253,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     // Default cancel behavior
     CancelResult result;
     if (_activeReservation != null) {
-      result = await service.cancelReservation(_activeReservation!.reservationId);
+      result =
+          await service.cancelReservation(_activeReservation!.reservationId);
     } else if (_activeTicket != null) {
       result = await service.cancelTicket(_activeTicket!.ticketCode);
     } else {
@@ -287,11 +291,13 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         title: const Text('Gagal', style: TextStyle(color: Colors.white)),
-        content: Text(msg, style: const TextStyle(color: AppColors.textSecondary)),
+        content:
+            Text(msg, style: const TextStyle(color: AppColors.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
+            child:
+                const Text('Tutup', style: TextStyle(color: AppColors.accent)),
           ),
         ],
       ),
@@ -422,9 +428,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   Widget _buildActiveSessionView() {
     final slotName = _activeReservation?.slotName ?? '';
     final areaName = _activeTicket?.areaName ?? '';
-    final displayVehicleType = _vehicleType.isNotEmpty
-        ? _vehicleType.toUpperCase()
-        : 'KENDARAAN';
+    final displayVehicleType =
+        _vehicleType.isNotEmpty ? _vehicleType.toUpperCase() : 'KENDARAAN';
     final reservationStatus = _activeReservation?.status ?? 'pending';
 
     // If reservation status is pending, show the routing/navigation, "Saya Sudah Sampai", "Ganti Slot", and "Batalkan Reservasi"
@@ -442,7 +447,10 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
           const SizedBox(height: 16),
           const Text(
             'Menunggu Kedatangan',
-            style: TextStyle(color: AppColors.accent, fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: AppColors.accent,
+                fontSize: 14,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
 
@@ -489,7 +497,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                           height: 180,
                           color: const Color(0xFF132136),
                           child: const Center(
-                            child: Icon(Icons.map_outlined, color: Colors.white38, size: 48),
+                            child: Icon(Icons.map_outlined,
+                                color: Colors.white38, size: 48),
                           ),
                         );
                       },
@@ -588,10 +597,12 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                   height: 50,
                   child: OutlinedButton.icon(
                     onPressed: _isSwapping ? null : _showSwapSlotDialog,
-                    icon: const Icon(Icons.swap_horiz_rounded, size: 20, color: AppColors.accent),
+                    icon: const Icon(Icons.swap_horiz_rounded,
+                        size: 20, color: AppColors.accent),
                     label: const Text(
                       'Ganti Slot Parkir',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.accent,
@@ -610,15 +621,20 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                   height: 50,
                   child: TextButton.icon(
                     onPressed: _isCancelling ? null : _onKeluarParkir,
-                    icon: const Icon(Icons.cancel_outlined, size: 20, color: Colors.redAccent),
+                    icon: const Icon(Icons.cancel_outlined,
+                        size: 20, color: Colors.redAccent),
                     label: const Text(
                       'Batalkan Reservasi',
-                      style: TextStyle(color: Colors.redAccent, fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600),
                     ),
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: Colors.redAccent, width: 1),
+                        side:
+                            const BorderSide(color: Colors.redAccent, width: 1),
                       ),
                     ),
                   ),
@@ -637,7 +653,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     setState(() => _isArriving = true);
 
     final service = BookingService();
-    final result = await service.arriveReservation(_activeReservation!.reservationId);
+    final result =
+        await service.arriveReservation(_activeReservation!.reservationId);
 
     if (!mounted) return;
     setState(() => _isArriving = false);
@@ -651,7 +668,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         slotName: _activeReservation!.slotName,
         areaId: _activeReservation!.areaId,
         ticketId: _activeReservation!.ticketId,
-        startTime: DateTime.now().toIso8601String(), // Start timer from arrival timestamp
+        startTime: DateTime.now()
+            .toIso8601String(), // Start timer from arrival timestamp
       );
       await ActiveReservationStorage().save(updatedRes);
 
@@ -720,7 +738,10 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                   ),
                   child: const Text(
                     'Tutup',
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -743,19 +764,27 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     setState(() => _isSwapping = false);
 
     // Filter available slots
-    final availableSlots = allSlots.where((s) => s.status.toLowerCase() == 'available' && s.id != _activeReservation!.slotId).toList();
+    final availableSlots = allSlots
+        .where((s) =>
+            s.status.toLowerCase() == 'available' &&
+            s.id != _activeReservation!.slotId)
+        .toList();
 
     if (availableSlots.isEmpty) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppColors.cardBg,
-          title: const Text('Ganti Slot', style: TextStyle(color: Colors.white)),
-          content: const Text('Maaf, tidak ada slot parkir kosong lain yang tersedia saat ini.', style: TextStyle(color: AppColors.textSecondary)),
+          title:
+              const Text('Ganti Slot', style: TextStyle(color: Colors.white)),
+          content: const Text(
+              'Maaf, tidak ada slot parkir kosong lain yang tersedia saat ini.',
+              style: TextStyle(color: AppColors.textSecondary)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Tutup', style: TextStyle(color: AppColors.accent)),
+              child: const Text('Tutup',
+                  style: TextStyle(color: AppColors.accent)),
             ),
           ],
         ),
@@ -773,7 +802,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
               backgroundColor: const Color(0xFF0D2040),
               title: const Text(
                 'Pilih Slot Baru',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               content: SizedBox(
                 width: double.maxFinite,
@@ -789,7 +819,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                     const SizedBox(height: 12),
                     const Text(
                       'Silakan pilih salah satu slot parkir kosong di bawah ini:',
-                      style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 13),
                     ),
                     const SizedBox(height: 16),
                     Flexible(
@@ -801,10 +832,12 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                         child: DropdownButtonFormField<ParkingSlot>(
                           dropdownColor: const Color(0xFF0D2040),
                           decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16),
                             border: InputBorder.none,
                           ),
-                          hint: const Text('Pilih Slot', style: TextStyle(color: Colors.white30)),
+                          hint: const Text('Pilih Slot',
+                              style: TextStyle(color: Colors.white30)),
                           initialValue: selectedSlot,
                           items: availableSlots.map((slot) {
                             return DropdownMenuItem<ParkingSlot>(
@@ -829,19 +862,22 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+                  child: const Text('Batal',
+                      style: TextStyle(color: AppColors.textSecondary)),
                 ),
                 ElevatedButton(
                   onPressed: selectedSlot == null
                       ? null
                       : () {
                           Navigator.pop(ctx);
-                          _onSwapSlot(selectedSlot!.id, selectedSlot!.slotNumber);
+                          _onSwapSlot(
+                              selectedSlot!.id, selectedSlot!.slotNumber);
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent,
                   ),
-                  child: const Text('Ganti Slot', style: TextStyle(color: Colors.white)),
+                  child: const Text('Ganti Slot',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -857,7 +893,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     setState(() => _isSwapping = true);
 
     final service = BookingService();
-    final result = await service.swapReservation(_activeReservation!.reservationId, newSlotId);
+    final result = await service.swapReservation(
+        _activeReservation!.reservationId, newSlotId);
 
     if (!mounted) return;
     setState(() => _isSwapping = false);
@@ -888,7 +925,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     }
   }
 
-  Widget _buildActiveOrArrivedView(String slotName, String areaName, String displayVehicleType) {
+  Widget _buildActiveOrArrivedView(
+      String slotName, String areaName, String displayVehicleType) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -950,7 +988,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: _glowAnim.value * 0.4),
+                      color: AppColors.accent
+                          .withValues(alpha: _glowAnim.value * 0.4),
                       blurRadius: 40,
                       spreadRadius: 10,
                     ),

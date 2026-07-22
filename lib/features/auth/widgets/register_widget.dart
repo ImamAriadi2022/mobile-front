@@ -56,8 +56,12 @@ class _RegisterWidgetState extends State<RegisterWidget>
 
     // Rebuild on focus change untuk glow effect
     for (final fn in [
-      _namaFocus, _emailFocus, _telFocus,
-      _kendFocus, _passFocus, _confirmFocus
+      _namaFocus,
+      _emailFocus,
+      _telFocus,
+      _kendFocus,
+      _passFocus,
+      _confirmFocus
     ]) {
       fn.addListener(() => setState(() {}));
     }
@@ -83,7 +87,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
 
   void _doRegister() async {
     setState(() => _isLoading = true);
-    
+
     final name = _namaCtrl.text.trim();
     final email = _emailCtrl.text.trim();
     final phone = _teleponCtrl.text.trim();
@@ -110,11 +114,12 @@ class _RegisterWidgetState extends State<RegisterWidget>
 
     if (!mounted) return;
     setState(() => _isLoading = false);
-    
+
     if (result.isSuccess) {
       _showSuccessDialog();
     } else {
-      _showErrorDialog(result.errorMessage ?? 'Pendaftaran gagal. Silakan coba lagi.');
+      _showErrorDialog(
+          result.errorMessage ?? 'Pendaftaran gagal. Silakan coba lagi.');
     }
   }
 
@@ -146,9 +151,11 @@ class _RegisterWidgetState extends State<RegisterWidget>
                   decoration: BoxDecoration(
                     color: Colors.red.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                    border:
+                        Border.all(color: Colors.red.withValues(alpha: 0.3)),
                   ),
-                  child: const Icon(Icons.block_rounded, color: Colors.red, size: 32),
+                  child: const Icon(Icons.block_rounded,
+                      color: Colors.red, size: 32),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -247,8 +254,8 @@ class _RegisterWidgetState extends State<RegisterWidget>
                 return Container(
                     decoration: BoxDecoration(gradient: fallbackGradient));
               },
-              errorBuilder: (_, __, ___) =>
-                  Container(decoration: BoxDecoration(gradient: fallbackGradient)),
+              errorBuilder: (_, __, ___) => Container(
+                  decoration: BoxDecoration(gradient: fallbackGradient)),
             ),
           ),
 
@@ -349,8 +356,8 @@ class _RegisterWidgetState extends State<RegisterWidget>
                                   color: Colors.white60,
                                   size: 20,
                                 ),
-                                onPressed: () =>
-                                    setState(() => _obscurePass = !_obscurePass),
+                                onPressed: () => setState(
+                                    () => _obscurePass = !_obscurePass),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -463,8 +470,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
                   children: [
                     Text(
                       _isDark ? 'Terang' : 'Gelap',
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
                     ),
                     const SizedBox(width: 6),
                     Icon(
@@ -530,8 +536,8 @@ class _NeonField extends StatelessWidget {
         style: const TextStyle(color: Colors.white, fontSize: 14),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle:
-              TextStyle(color: Colors.white.withValues(alpha: 0.40), fontSize: 14),
+          hintStyle: TextStyle(
+              color: Colors.white.withValues(alpha: 0.40), fontSize: 14),
           suffixIcon: suffixIcon,
           filled: true,
           fillColor: Colors.white.withValues(alpha: 0.09),
@@ -702,4 +708,3 @@ class _SuccessSheetState extends State<_SuccessSheet>
     );
   }
 }
-

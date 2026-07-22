@@ -126,7 +126,8 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.welcomeTransition);
+                        Navigator.pushNamed(
+                            context, AppRoutes.welcomeTransition);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -170,8 +171,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   children: [
                     Text(
                       _isDark ? 'Terang' : 'Gelap',
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
                     ),
                     const SizedBox(width: 6),
                     Icon(

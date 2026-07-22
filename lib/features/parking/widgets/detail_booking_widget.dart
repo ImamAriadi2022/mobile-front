@@ -54,29 +54,34 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
       setState(() {
         // Simple division of slots to left and right for UI purpose
         final half = (slots.length / 2).ceil();
-        
+
         SlotStatus mapStatus(String st) {
           switch (st.toLowerCase()) {
-            case 'available': return SlotStatus.kosong;
-            case 'occupied': return SlotStatus.terisi;
-            case 'booked': return SlotStatus.terpesan;
-            case 'maintenance': return SlotStatus.pemeliharaan;
-            default: return SlotStatus.alatRusak;
+            case 'available':
+              return SlotStatus.kosong;
+            case 'occupied':
+              return SlotStatus.terisi;
+            case 'booked':
+              return SlotStatus.terpesan;
+            case 'maintenance':
+              return SlotStatus.pemeliharaan;
+            default:
+              return SlotStatus.alatRusak;
           }
         }
 
-        _leftSlots = slots.take(half).map((s) => ParkingSlotData(
-          id: s.id,
-          label: s.slotNumber, 
-          status: mapStatus(s.status)
-        )).toList();
-        
-        _rightSlots = slots.skip(half).map((s) => ParkingSlotData(
-          id: s.id,
-          label: s.slotNumber, 
-          status: mapStatus(s.status)
-        )).toList();
-        
+        _leftSlots = slots
+            .take(half)
+            .map((s) => ParkingSlotData(
+                id: s.id, label: s.slotNumber, status: mapStatus(s.status)))
+            .toList();
+
+        _rightSlots = slots
+            .skip(half)
+            .map((s) => ParkingSlotData(
+                id: s.id, label: s.slotNumber, status: mapStatus(s.status)))
+            .toList();
+
         _isLoading = false;
       });
     }
@@ -125,17 +130,16 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
         // ③ Floor tabs
         Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: _floorTabs.asMap().entries.map((e) {
               return Padding(
-                padding: EdgeInsets.only(right: e.key < _floorTabs.length - 1 ? 8 : 0),
+                padding: EdgeInsets.only(
+                    right: e.key < _floorTabs.length - 1 ? 8 : 0),
                 child: FloorTabWidget(
                   label: e.value,
                   isSelected: _selectedFloorTab == e.key,
-                  onTap: () =>
-                      setState(() => _selectedFloorTab = e.key),
+                  onTap: () => setState(() => _selectedFloorTab = e.key),
                 ),
               );
             }).toList(),
@@ -147,16 +151,17 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
         // ⑤ Peta slot parkir
         Expanded(
-          child: _isLoading 
-            ? const Center(child: CircularProgressIndicator(color: Colors.white))
-            : SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: ParkingSlotMapWidget(
-                  leftSlots: _leftSlots,
-                  rightSlots: _rightSlots,
-                  onSlotTap: (slot) => _handleSlotBooking(slot),
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: Colors.white))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ParkingSlotMapWidget(
+                    leftSlots: _leftSlots,
+                    rightSlots: _rightSlots,
+                    onSlotTap: (slot) => _handleSlotBooking(slot),
+                  ),
                 ),
-              ),
         ),
 
         // ⑥ Bottom nav
@@ -164,6 +169,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
       ],
     );
   }
+
   Future<void> _handleSlotBooking(ParkingSlotData slot) async {
     if (slot.status != SlotStatus.kosong) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -181,7 +187,8 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     final vehicles = await vehicleService.getVehicles();
 
     final name = profile?.name ?? 'User';
-    final plateNumber = vehicles.isNotEmpty ? vehicles.first.plateNumber : 'UNKNOWN';
+    final plateNumber =
+        vehicles.isNotEmpty ? vehicles.first.plateNumber : 'UNKNOWN';
 
     final activeTicket = await ActiveTicketStorage().load();
     final ticketId = activeTicket?.ticketCode ?? 'unknown';
@@ -217,7 +224,8 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         await ActiveReservationStorage().save(reservation);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: Colors.green),
+          SnackBar(
+              content: Text(result.message), backgroundColor: Colors.green),
         );
         _fetchSlots();
       } else {
@@ -239,8 +247,7 @@ class _DetailAppBarWidget extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
 
-  const _DetailAppBarWidget(
-      {required this.title, required this.onBack});
+  const _DetailAppBarWidget({required this.title, required this.onBack});
 
   @override
   Widget build(BuildContext context) {
@@ -294,8 +301,7 @@ class _ZoneHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -304,9 +310,7 @@ class _ZoneHeaderWidget extends StatelessWidget {
           Text(
             zoneName,
             style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600),
+                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const Icon(Icons.arrow_forward_ios,
               color: AppColors.textSecondary, size: 16),

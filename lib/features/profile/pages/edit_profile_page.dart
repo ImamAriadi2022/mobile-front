@@ -57,13 +57,13 @@ class _EditProfilPageState extends State<EditProfilPage> {
       if (pickedFile == null) return;
 
       setState(() => _isSaving = true);
-      
+
       final bytes = await pickedFile.readAsBytes();
       final name = pickedFile.name;
-      
+
       final service = ProfileService();
       final result = await service.uploadPhoto(bytes: bytes, fileName: name);
-      
+
       if (mounted) {
         setState(() => _isSaving = false);
         if (result.success) {
@@ -121,12 +121,10 @@ class _EditProfilPageState extends State<EditProfilPage> {
   InputDecoration _inputDeco(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle:
-          const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+      labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
       filled: true,
       fillColor: AppColors.cardBg2,
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.borderColor),
@@ -180,8 +178,8 @@ class _EditProfilPageState extends State<EditProfilPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text('OK',
-                      style: TextStyle(color: Colors.white)),
+                  child:
+                      const Text('OK', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -235,201 +233,209 @@ class _EditProfilPageState extends State<EditProfilPage> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 8),
-                    // Avatar
-                    GestureDetector(
-                      onTap: _isSaving ? null : _pickAndUploadPhoto,
-                      child: Stack(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 90,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: AppColors.cardBg2,
-                              shape: BoxShape.circle,
-                              border:
-                                  Border.all(color: AppColors.accent, width: 2),
-                            ),
-                            child: _photoUrl != null && _photoUrl!.isNotEmpty
-                                ? ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl: _photoUrl!,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => const Center(
-                                        child: SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: AppColors.accent,
-                                          ),
-                                        ),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.person,
-                                              color: Colors.white70, size: 54),
-                                    ),
-                                  )
-                                : const Icon(Icons.person,
-                                    color: Colors.white70, size: 54),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    GestureDetector(
-                      onTap: _isSaving ? null : _pickAndUploadPhoto,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBg,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.borderColor),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.camera_alt_outlined,
-                                color: AppColors.accent, size: 14),
-                            SizedBox(width: 4),
-                            Text('Ubah Foto',
-                                style: TextStyle(
-                                    color: AppColors.accent, fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Divider(color: AppColors.borderColor),
-                    const SizedBox(height: 16),
-
-                    // Fields
-                    _buildFieldLabel('Nama Lengkap*'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _namaCtrl,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDeco('Nama Lengkap'),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildFieldLabel('Email (tidak dapat diubah)'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _emailCtrl,
-                      readOnly: true,
-                      style: const TextStyle(color: Colors.white54),
-                      decoration: _inputDeco('Email').copyWith(
-                        suffixIcon: const Icon(
-                          Icons.lock_outline,
-                          color: Colors.white38,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildFieldLabel('No Telp*'),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _teleponCtrl,
-                      keyboardType: TextInputType.phone,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDeco('No. Telepon'),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Kendaraan section — link ke VehicleManagementPage
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.vehicleManagement,
-                      ).then((_) => _loadProfile()),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBg2,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.borderColor),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Row(
+                          const SizedBox(height: 8),
+                          // Avatar
+                          GestureDetector(
+                            onTap: _isSaving ? null : _pickAndUploadPhoto,
+                            child: Stack(
                               children: [
-                                Icon(
-                                  Icons.directions_car_outlined,
-                                  color: AppColors.accent,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Manajemen Kendaraan',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                Container(
+                                  width: 90,
+                                  height: 90,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cardBg2,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: AppColors.accent, width: 2),
                                   ),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: AppColors.textSecondary,
-                                  size: 14,
+                                  child: _photoUrl != null &&
+                                          _photoUrl!.isNotEmpty
+                                      ? ClipOval(
+                                          child: CachedNetworkImage(
+                                            imageUrl: _photoUrl!,
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: AppColors.accent,
+                                                ),
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.person,
+                                                        color: Colors.white70,
+                                                        size: 54),
+                                          ),
+                                        )
+                                      : const Icon(Icons.person,
+                                          color: Colors.white70, size: 54),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              _vehicles.isEmpty
-                                  ? 'Belum ada kendaraan. Ketuk untuk menambahkan.'
-                                  : '${_vehicles.length} kendaraan terdaftar: ${_vehicles.map((v) => v.plateNumber).join(', ')}',
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 12,
+                          ),
+                          const SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: _isSaving ? null : _pickAndUploadPhoto,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.cardBg,
+                                borderRadius: BorderRadius.circular(20),
+                                border:
+                                    Border.all(color: AppColors.borderColor),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.camera_alt_outlined,
+                                      color: AppColors.accent, size: 14),
+                                  SizedBox(width: 4),
+                                  Text('Ubah Foto',
+                                      style: TextStyle(
+                                          color: AppColors.accent,
+                                          fontSize: 12)),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 28),
+                          ),
+                          const SizedBox(height: 20),
+                          const Divider(color: AppColors.borderColor),
+                          const SizedBox(height: 16),
 
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _saveProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
-                        ),
-                        child: _isSaving
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2.5,
-                                ),
-                              )
-                            : const Text('Simpan Perubahan',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600)),
+                          // Fields
+                          _buildFieldLabel('Nama Lengkap*'),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: _namaCtrl,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: _inputDeco('Nama Lengkap'),
+                          ),
+                          const SizedBox(height: 14),
+                          _buildFieldLabel('Email (tidak dapat diubah)'),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: _emailCtrl,
+                            readOnly: true,
+                            style: const TextStyle(color: Colors.white54),
+                            decoration: _inputDeco('Email').copyWith(
+                              suffixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Colors.white38,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          _buildFieldLabel('No Telp*'),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: _teleponCtrl,
+                            keyboardType: TextInputType.phone,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: _inputDeco('No. Telepon'),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Kendaraan section — link ke VehicleManagementPage
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              AppRoutes.vehicleManagement,
+                            ).then((_) => _loadProfile()),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: AppColors.cardBg2,
+                                borderRadius: BorderRadius.circular(12),
+                                border:
+                                    Border.all(color: AppColors.borderColor),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.directions_car_outlined,
+                                        color: AppColors.accent,
+                                        size: 18,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Manajemen Kendaraan',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: AppColors.textSecondary,
+                                        size: 14,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    _vehicles.isEmpty
+                                        ? 'Belum ada kendaraan. Ketuk untuk menambahkan.'
+                                        : '${_vehicles.length} kendaraan terdaftar: ${_vehicles.map((v) => v.plateNumber).join(', ')}',
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: ElevatedButton(
+                              onPressed: _isSaving ? null : _saveProfile,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.accent,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14)),
+                              ),
+                              child: _isSaving
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : const Text('Simpan Perubahan',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600)),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
             ),
           ],
         ),

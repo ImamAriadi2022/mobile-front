@@ -51,7 +51,8 @@ class AuthService {
 
       final body = jsonDecode(response.body);
       return AuthResult.failure(
-        body['message'] as String? ?? 'Login gagal. Periksa email dan password.',
+        body['message'] as String? ??
+            'Login gagal. Periksa email dan password.',
       );
     } catch (e) {
       return const AuthResult.failure(

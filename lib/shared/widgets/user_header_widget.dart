@@ -54,8 +54,10 @@ class UserHeaderWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.person, color: AppColors.accent, size: 28),
+                      errorWidget: (context, url, error) => const Icon(
+                          Icons.person,
+                          color: AppColors.accent,
+                          size: 28),
                     ),
                   )
                 : const Icon(Icons.person, color: AppColors.accent, size: 28),
@@ -87,7 +89,7 @@ class UserHeaderWidget extends StatelessWidget {
             child: Container(
               width: 42,
               height: 42,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
               child: const Icon(Icons.notifications_outlined,

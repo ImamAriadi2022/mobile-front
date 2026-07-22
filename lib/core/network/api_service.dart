@@ -58,8 +58,7 @@ class ApiClient {
     bool requireAuth = false,
   }) async {
     if (AppConfig.useMock) {
-      return MockRouter.handle(
-          method: 'POST', endpoint: endpoint, body: body);
+      return MockRouter.handle(method: 'POST', endpoint: endpoint, body: body);
     }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
@@ -76,8 +75,7 @@ class ApiClient {
     bool requireAuth = false,
   }) async {
     if (AppConfig.useMock) {
-      return MockRouter.handle(
-          method: 'PUT', endpoint: endpoint, body: body);
+      return MockRouter.handle(method: 'PUT', endpoint: endpoint, body: body);
     }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
@@ -94,8 +92,7 @@ class ApiClient {
     bool requireAuth = false,
   }) async {
     if (AppConfig.useMock) {
-      return MockRouter.handle(
-          method: 'PATCH', endpoint: endpoint, body: body);
+      return MockRouter.handle(method: 'PATCH', endpoint: endpoint, body: body);
     }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);

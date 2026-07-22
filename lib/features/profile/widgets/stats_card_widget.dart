@@ -20,8 +20,7 @@ class StatsCardWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
         decoration: BoxDecoration(
           color: AppColors.cardBg,
           borderRadius: BorderRadius.circular(16),
@@ -31,8 +30,7 @@ class StatsCardWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _StatItem(value: totalParkir, label: 'Total Parkir'),
-            Container(
-                width: 1, height: 40, color: AppColors.borderColor),
+            Container(width: 1, height: 40, color: AppColors.borderColor),
             _StatItem(value: parkirAktif, label: 'Parkir Aktif'),
           ],
         ),
@@ -54,15 +52,12 @@ class _StatItem extends StatelessWidget {
         Text(
           value,
           style: const TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-              color: AppColors.textSecondary, fontSize: 12),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
         ),
       ],
     );

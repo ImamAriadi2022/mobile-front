@@ -127,8 +127,18 @@ class _HistoryWidgetState extends State<HistoryWidget> {
     if (dateTime == null) return '-';
     final day = dateTime.day.toString().padLeft(2, '0');
     final months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember'
     ];
     final month = months[dateTime.month - 1];
     final year = dateTime.year;
@@ -152,9 +162,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         const Text(
           'History',
           style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500),
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 10),
 

@@ -21,10 +21,8 @@ class ParkingArea {
       address: json['address'] as String? ??
           json['location'] as String? ??
           'Unknown Location',
-      totalSlot: (json['totalSlots'] ??
-              json['totalSlot'] ??
-              json['slot'] ??
-              0) as int,
+      totalSlot:
+          (json['totalSlots'] ?? json['totalSlot'] ?? json['slot'] ?? 0) as int,
       availableSlots:
           (json['availableSlots'] ?? json['availableSlot'] ?? 0) as int,
     );

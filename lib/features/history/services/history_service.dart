@@ -8,7 +8,8 @@ class HistoryService {
 
   Future<List<ReservationHistory>> getHistory(String userId) async {
     try {
-      final response = await _apiService.get('/users/$userId/reservations', requireAuth: true);
+      final response = await _apiService.get('/users/$userId/reservations',
+          requireAuth: true);
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         if (body['success'] == true && body['data'] is List) {

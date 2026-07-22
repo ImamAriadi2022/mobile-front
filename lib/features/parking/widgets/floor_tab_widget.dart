@@ -23,14 +23,12 @@ class FloorTabWidget extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.accent : AppColors.cardBg,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color:
-                isSelected ? AppColors.accent : AppColors.borderColor,
+            color: isSelected ? AppColors.accent : AppColors.borderColor,
           ),
         ),
         child: Text(

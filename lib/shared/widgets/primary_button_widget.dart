@@ -25,8 +25,8 @@ class PrimaryButtonWidget extends StatelessWidget {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.cardBg,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           side: const BorderSide(color: AppColors.accent),
         ),
         child: Text(

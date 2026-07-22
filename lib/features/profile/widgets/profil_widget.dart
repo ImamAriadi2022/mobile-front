@@ -40,7 +40,7 @@ class _ProfilWidgetState extends State<ProfilWidget> {
     final vehicleService = VehicleService();
     final profile = await profileService.getProfile();
     final vehicles = await vehicleService.getVehicles();
-    
+
     if (mounted) {
       setState(() {
         _profileData = profile;
@@ -159,8 +159,9 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                       icon: Icons.edit_outlined,
                       title: 'Edit Profil',
                       subtitle: 'Ubah Informasi Profil Anda',
-                      onTap: () => Navigator.pushNamed(
-                          context, AppRoutes.editProfil).then((_) {
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.editProfil)
+                              .then((_) {
                         _loadProfile();
                       }),
                     ),
@@ -169,7 +170,8 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                       title: 'Manajemen Kendaraan',
                       subtitle: 'Tambah & Hapus Kendaraan Anda',
                       onTap: () => Navigator.pushNamed(
-                          context, AppRoutes.vehicleManagement).then((_) {
+                              context, AppRoutes.vehicleManagement)
+                          .then((_) {
                         // Refresh profil setelah kembali dari vehicle management
                         _loadProfile();
                       }),
@@ -178,8 +180,8 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                       icon: Icons.settings_outlined,
                       title: 'Preferensi',
                       subtitle: 'Ubah Pengaturan Personal Anda',
-                      onTap: () => Navigator.pushNamed(
-                          context, AppRoutes.pengaturan),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.pengaturan),
                       isLast: true,
                     ),
                   ],
@@ -195,15 +197,13 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                         width: double.infinity,
                         height: 50,
                         child: OutlinedButton(
-                          onPressed: () =>
-                              Navigator.pushReplacementNamed(
-                                  context, AppRoutes.home),
+                          onPressed: () => Navigator.pushReplacementNamed(
+                              context, AppRoutes.home),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                color: AppColors.borderColor),
+                            side:
+                                const BorderSide(color: AppColors.borderColor),
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(14)),
+                                borderRadius: BorderRadius.circular(14)),
                           ),
                           child: const Text(
                             'Kembali Ke Beranda',
@@ -220,13 +220,11 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.red,
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(14)),
+                                borderRadius: BorderRadius.circular(14)),
                           ),
                           child: const Text('Keluar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16)),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
                         ),
                       ),
                     ],

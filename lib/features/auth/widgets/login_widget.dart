@@ -51,10 +51,10 @@ class _LoginWidgetState extends State<LoginWidget>
 
   void _doLogin() async {
     setState(() => _isLoading = true);
-    
+
     final email = _emailCtrl.text.trim();
     final password = _passCtrl.text;
-    
+
     final authProvider = context.read<AuthProvider>();
     final result = await authProvider.login(email, password);
 
@@ -64,7 +64,8 @@ class _LoginWidgetState extends State<LoginWidget>
     if (result.isSuccess) {
       _showSuccessDialog();
     } else {
-      _showErrorDialog(result.errorMessage ?? 'Login gagal. Periksa kembali email dan kata sandi Anda.');
+      _showErrorDialog(result.errorMessage ??
+          'Login gagal. Periksa kembali email dan kata sandi Anda.');
     }
   }
 
@@ -96,9 +97,11 @@ class _LoginWidgetState extends State<LoginWidget>
                   decoration: BoxDecoration(
                     color: Colors.red.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                    border:
+                        Border.all(color: Colors.red.withValues(alpha: 0.3)),
                   ),
-                  child: const Icon(Icons.block_rounded, color: Colors.red, size: 32),
+                  child: const Icon(Icons.block_rounded,
+                      color: Colors.red, size: 32),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -221,8 +224,7 @@ class _LoginWidgetState extends State<LoginWidget>
           Positioned.fill(
             child: Center(
               child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(
-                    24, topPad + 72, 24, 24),
+                padding: EdgeInsets.fromLTRB(24, topPad + 72, 24, 24),
                 child: FadeTransition(
                   opacity: _fadeAnim,
                   child: SlideTransition(
@@ -335,7 +337,8 @@ class _LoginWidgetState extends State<LoginWidget>
                                   Text(
                                     'Belum punya akun? ',
                                     style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.7),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.7),
                                       fontSize: 13,
                                     ),
                                   ),
@@ -383,8 +386,7 @@ class _LoginWidgetState extends State<LoginWidget>
                   children: [
                     Text(
                       _isDark ? 'Terang' : 'Gelap',
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
                     ),
                     const SizedBox(width: 6),
                     Icon(
@@ -428,7 +430,8 @@ class _GlassTextField extends StatelessWidget {
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.45), fontSize: 14),
+        hintStyle: TextStyle(
+            color: Colors.white.withValues(alpha: 0.45), fontSize: 14),
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.10),
@@ -592,4 +595,3 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
     );
   }
 }
-

@@ -97,7 +97,8 @@ class MockRouter {
       }
 
       final mockProfile = await MockDatabase.getProfile();
-      await MockDatabase.saveToken('mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}');
+      await MockDatabase.saveToken(
+          'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}');
       await MockDatabase.saveRole('user');
 
       return MockResponse.ok({
@@ -314,8 +315,13 @@ class MockRouter {
           'plateNumber': 'B 1234 CD',
           'status': 'completed',
           'timestamps': {
-            'created': res['startTime'] ?? DateTime.now().subtract(const Duration(hours: 3)).toIso8601String(),
-            'arrived': DateTime.now().subtract(const Duration(hours: 2, minutes: 50)).toIso8601String(),
+            'created': res['startTime'] ??
+                DateTime.now()
+                    .subtract(const Duration(hours: 3))
+                    .toIso8601String(),
+            'arrived': DateTime.now()
+                .subtract(const Duration(hours: 2, minutes: 50))
+                .toIso8601String(),
             'completed': DateTime.now().toIso8601String(),
           },
           'history': [],

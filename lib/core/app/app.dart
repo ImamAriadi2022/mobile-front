@@ -53,7 +53,8 @@ class MyApp extends StatelessWidget {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: AppColors.backgroundLight,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           hintStyle: const TextStyle(color: AppColors.textMuted),
           labelStyle: const TextStyle(color: AppColors.textSecondary),
           prefixIconColor: AppColors.textSecondary,
@@ -72,7 +73,8 @@ class MyApp extends StatelessWidget {
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(52),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             textStyle: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
@@ -172,4 +174,3 @@ class _UpdateListenerWrapperState extends State<UpdateListenerWrapper> {
     return widget.child;
   }
 }
-

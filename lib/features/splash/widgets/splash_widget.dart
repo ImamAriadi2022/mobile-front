@@ -58,7 +58,8 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
 
   void _initPwaCheck() {
     if (kIsWeb) {
-      _installSubscription = PwaInstallService.instance.onInstallAvailable.listen((_) {
+      _installSubscription =
+          PwaInstallService.instance.onInstallAvailable.listen((_) {
         if (mounted) {
           _checkPwaInstall();
         }
@@ -92,7 +93,8 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
 
     _didCheckPwa = true;
 
-    final available = await PwaInstallService.instance.isInstallPromptAvailable();
+    final available =
+        await PwaInstallService.instance.isInstallPromptAvailable();
     if (available) {
       if (mounted) {
         PwaInstallDialog.show(

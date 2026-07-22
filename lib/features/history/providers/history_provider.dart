@@ -33,9 +33,7 @@ class HistoryProvider extends ChangeNotifier {
   /// Riwayat yang sudah difilter berdasarkan status.
   List<ReservationHistory> get filteredHistory {
     if (_filterStatus == 'all') return _history;
-    return _history
-        .where((h) => h.status == _filterStatus)
-        .toList();
+    return _history.where((h) => h.status == _filterStatus).toList();
   }
 
   // ─── Actions ──────────────────────────────────────────────────────────────
@@ -48,8 +46,7 @@ class HistoryProvider extends ChangeNotifier {
     try {
       final result = await _service.getHistory(userId);
       _history = result;
-      _status =
-          result.isEmpty ? HistoryStatus.failure : HistoryStatus.success;
+      _status = result.isEmpty ? HistoryStatus.failure : HistoryStatus.success;
       if (result.isEmpty) {
         _error = 'Belum ada riwayat parkir.';
       }

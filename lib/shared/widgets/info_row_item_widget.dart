@@ -26,8 +26,7 @@ class InfoRowItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         border: isLast
             ? null
-            : const Border(
-                bottom: BorderSide(color: AppColors.borderColor)),
+            : const Border(bottom: BorderSide(color: AppColors.borderColor)),
         color: AppColors.cardBg2.withValues(alpha: 0.5),
         borderRadius: isLast
             ? const BorderRadius.vertical(bottom: Radius.circular(16))

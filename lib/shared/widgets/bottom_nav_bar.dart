@@ -47,15 +47,21 @@ class AppBottomNavBar extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.transparent,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isActive ? AppColors.orange : AppColors.accent, size: 24),
+            Icon(icon,
+                color: isActive ? AppColors.orange : AppColors.accent,
+                size: 24),
             const SizedBox(height: 3),
-            Text(label, style: TextStyle(color: isActive ? AppColors.orange : AppColors.accent, fontSize: 10, fontWeight: isActive ? FontWeight.w600 : FontWeight.w400)),
+            Text(label,
+                style: TextStyle(
+                    color: isActive ? AppColors.orange : AppColors.accent,
+                    fontSize: 10,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w400)),
           ],
         ),
       ),

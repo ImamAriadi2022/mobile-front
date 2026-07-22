@@ -48,8 +48,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
       vsync: this,
       duration: const Duration(milliseconds: 1600),
     )..repeat(reverse: true);
-    _scanLine =
-        CurvedAnimation(parent: _scanLineCtrl, curve: Curves.easeInOut);
+    _scanLine = CurvedAnimation(parent: _scanLineCtrl, curve: Curves.easeInOut);
   }
 
   @override
@@ -93,7 +92,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     } else {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Tiket tidak valid. Silakan periksa kembali kode tiket Anda.';
+        _errorMessage =
+            'Tiket tidak valid. Silakan periksa kembali kode tiket Anda.';
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -112,7 +112,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
     for (int i = 0; i < maxRetries; i++) {
       final activeTicket = await accessService.getActiveTicket();
       if (activeTicket != null) {
-        debugPrint('[Scan] Active ticket found on retry ${i + 1}: status=${activeTicket.status}');
+        debugPrint(
+            '[Scan] Active ticket found on retry ${i + 1}: status=${activeTicket.status}');
         await ActiveTicketStorage().save(activeTicket);
         return activeTicket;
       }
@@ -121,7 +122,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
       }
     }
 
-    debugPrint('[Scan] No active ticket after $maxRetries retries, using verify result: status=${verifyResult.status}');
+    debugPrint(
+        '[Scan] No active ticket after $maxRetries retries, using verify result: status=${verifyResult.status}');
     await ActiveTicketStorage().save(verifyResult);
     return verifyResult;
   }
@@ -267,8 +269,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                   const SizedBox(height: 4),
                   const Text(
                     'Silahkan Scan tiket parkir terlebih dahulu',
-                    style: TextStyle(
-                        color: AppColors.textSecondary, fontSize: 13),
+                    style:
+                        TextStyle(color: AppColors.textSecondary, fontSize: 13),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
@@ -278,7 +280,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.1)),
                     ),
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -599,19 +602,21 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Contoh: TCK-12345',
-                        hintStyle:
-                            const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                        hintStyle: const TextStyle(
+                            color: AppColors.textSecondary, fontSize: 14),
                         filled: true,
                         fillColor: AppColors.cardBg2,
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 14, horizontal: 16),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.borderColor),
+                          borderSide:
+                              const BorderSide(color: AppColors.borderColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+                          borderSide: const BorderSide(
+                              color: AppColors.accent, width: 1.5),
                         ),
                       ),
                     ),
@@ -704,18 +709,38 @@ class _ScanFrame extends StatelessWidget {
       child: Stack(
         children: [
           // Corner brackets
-          const Positioned(top: 0, left: 0,
-            child: _Corner(isLeft: true, isTop: true,
-                len: cornerLen, width: cornerWidth)),
-          const Positioned(top: 0, right: 0,
-            child: _Corner(isLeft: false, isTop: true,
-                len: cornerLen, width: cornerWidth)),
-          const Positioned(bottom: 0, left: 0,
-            child: _Corner(isLeft: true, isTop: false,
-                len: cornerLen, width: cornerWidth)),
-          const Positioned(bottom: 0, right: 0,
-            child: _Corner(isLeft: false, isTop: false,
-                len: cornerLen, width: cornerWidth)),
+          const Positioned(
+              top: 0,
+              left: 0,
+              child: _Corner(
+                  isLeft: true,
+                  isTop: true,
+                  len: cornerLen,
+                  width: cornerWidth)),
+          const Positioned(
+              top: 0,
+              right: 0,
+              child: _Corner(
+                  isLeft: false,
+                  isTop: true,
+                  len: cornerLen,
+                  width: cornerWidth)),
+          const Positioned(
+              bottom: 0,
+              left: 0,
+              child: _Corner(
+                  isLeft: true,
+                  isTop: false,
+                  len: cornerLen,
+                  width: cornerWidth)),
+          const Positioned(
+              bottom: 0,
+              right: 0,
+              child: _Corner(
+                  isLeft: false,
+                  isTop: false,
+                  len: cornerLen,
+                  width: cornerWidth)),
 
           // Garis scan neon
           AnimatedBuilder(

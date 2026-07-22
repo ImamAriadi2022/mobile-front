@@ -37,23 +37,21 @@ class SearchBarWidget extends StatelessWidget {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle:
-                    const TextStyle(color: AppColors.textSecondary),
+                hintStyle: const TextStyle(color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search,
                     color: AppColors.textSecondary, size: 20),
                 filled: true,
                 fillColor: AppColors.cardBg,
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12, horizontal: 16),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      const BorderSide(color: AppColors.borderColor),
+                  borderSide: const BorderSide(color: AppColors.borderColor),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(
-                      color: AppColors.accent, width: 1.5),
+                  borderSide:
+                      const BorderSide(color: AppColors.accent, width: 1.5),
                 ),
               ),
             ),
@@ -75,8 +73,8 @@ class SearchBarWidget extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             hintText,
-            style: const TextStyle(
-                color: AppColors.textSecondary, fontSize: 14),
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
         ],
       ),

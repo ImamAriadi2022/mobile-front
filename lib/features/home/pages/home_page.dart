@@ -108,7 +108,8 @@ class _TutorialDialogState extends State<_TutorialDialog>
     const _TutorialStep(
       imageUrl: '$_cdn/foto/tutor3.png',
       title: 'Langkah 3',
-      desc: 'Ikuti Panduan menuju slot nya dan ketika sudah sampai di lokasi parkir, '
+      desc:
+          'Ikuti Panduan menuju slot nya dan ketika sudah sampai di lokasi parkir, '
           'anda bisa tekan tombol saya sudah sampai untuk konfirmasi.',
     ),
   ];
@@ -293,7 +294,8 @@ class _TutorialDialogState extends State<_TutorialDialog>
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                                color: AppColors.accent.withValues(alpha: 0.35)),
+                                color:
+                                    AppColors.accent.withValues(alpha: 0.35)),
                           ),
                           elevation: 0,
                         ),

@@ -33,7 +33,7 @@ class HistoryCardWidget extends StatelessWidget {
 
     switch (status.toLowerCase()) {
       case 'pending':
-        badgeColor = AppColors.orange;
+        badgeColor = AppColors.orangeWarning;
         label = 'Pending';
         break;
       case 'active':

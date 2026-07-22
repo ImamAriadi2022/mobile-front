@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
@@ -140,7 +141,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Aplikasi ini khusus untuk pengguna parkir. Silakan gunakan Web Admin Panel.'),
+        content: Text(
+            'Aplikasi ini khusus untuk pengguna parkir. Silakan gunakan Web Admin Panel.'),
         backgroundColor: Colors.red,
         duration: Duration(seconds: 5),
       ),
@@ -187,7 +189,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() => _navIndex = idx);
     switch (idx) {
       case 1:
-        Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
+        Navigator.pushNamed(context, AppRoutes.booking)
+            .then((_) => _checkActiveTicket());
         break;
       case 2:
         Navigator.pushNamed(context, AppRoutes.statusKendaraan);
@@ -213,11 +216,15 @@ class _HomeWidgetState extends State<HomeWidget> {
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 14),
+            Icon(Icons.check_circle_outline_rounded,
+                color: Colors.green, size: 14),
             SizedBox(width: 6),
             Text(
               'Aplikasi Terinstal',
-              style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -231,7 +238,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
     return GestureDetector(
       onTap: () async {
-        final available = await PwaInstallService.instance.isInstallPromptAvailable();
+        final available =
+            await PwaInstallService.instance.isInstallPromptAvailable();
         if (available) {
           if (mounted) {
             showDialog(
@@ -239,7 +247,9 @@ class _HomeWidgetState extends State<HomeWidget> {
               barrierColor: Colors.black.withValues(alpha: 0.55),
               builder: (_) => PwaInstallDialog(onDismiss: () {}),
             ).then((_) {
-              PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
+              PwaInstallService.instance
+                  .isInstallPromptAvailable()
+                  .then((avail) {
                 if (mounted) setState(() => _canInstallPwa = avail);
               });
             });
@@ -252,7 +262,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                 barrierColor: Colors.black.withValues(alpha: 0.55),
                 builder: (_) => PwaSafariInstallDialog(onDismiss: () {}),
               ).then((_) {
-                PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
+                PwaInstallService.instance
+                    .isInstallPromptAvailable()
+                    .then((avail) {
                   if (mounted) setState(() => _canInstallPwa = avail);
                 });
               });
@@ -265,16 +277,21 @@ class _HomeWidgetState extends State<HomeWidget> {
         decoration: BoxDecoration(
           color: const Color(0xFF00D2FF).withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF00D2FF).withValues(alpha: 0.3)),
+          border:
+              Border.all(color: const Color(0xFF00D2FF).withValues(alpha: 0.3)),
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.download_for_offline_rounded, color: Color(0xFF00D2FF), size: 14),
+            Icon(Icons.download_for_offline_rounded,
+                color: Color(0xFF00D2FF), size: 14),
             SizedBox(width: 6),
             Text(
               'Install Aplikasi',
-              style: TextStyle(color: Color(0xFF00D2FF), fontSize: 12, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Color(0xFF00D2FF),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -284,7 +301,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Widget _buildTicketStatusBanner() {
     String titleText = '⚠ Tiket Belum Aktif';
-    String descText = 'Untuk melakukan booking slot parkir, silakan scan tiket masuk terlebih dahulu.';
+    String descText =
+        'Untuk melakukan booking slot parkir, silakan scan tiket masuk terlebih dahulu.';
     bool isSuccess = false;
     bool showScanButton = true;
 
@@ -297,12 +315,14 @@ class _HomeWidgetState extends State<HomeWidget> {
         showScanButton = false;
       } else if (st == 'pending' || st == '') {
         titleText = '⚠ Tiket Belum Aktif';
-        descText = 'Tiket Anda sudah diverifikasi namun belum aktif. Silakan scan tiket parkir terlebih dahulu.';
+        descText =
+            'Tiket Anda sudah diverifikasi namun belum aktif. Silakan scan tiket parkir terlebih dahulu.';
         showScanButton = true;
         isSuccess = false;
       } else {
         titleText = '⚠ Tiket Tidak Aktif';
-        descText = 'Tiket Anda sudah checkout, kedaluwarsa, atau tidak valid. Silakan scan tiket baru.';
+        descText =
+            'Tiket Anda sudah checkout, kedaluwarsa, atau tidak valid. Silakan scan tiket baru.';
         showScanButton = true;
         isSuccess = false;
       }
@@ -313,13 +333,13 @@ class _HomeWidgetState extends State<HomeWidget> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSuccess 
-              ? const Color(0xFF00D2FF).withValues(alpha: 0.08) 
+          color: isSuccess
+              ? const Color(0xFF00D2FF).withValues(alpha: 0.08)
               : const Color(0xFFEF5350).withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSuccess 
-                ? const Color(0xFF00D2FF).withValues(alpha: 0.25) 
+            color: isSuccess
+                ? const Color(0xFF00D2FF).withValues(alpha: 0.25)
                 : const Color(0xFFEF5350).withValues(alpha: 0.25),
             width: 1.2,
           ),
@@ -329,16 +349,18 @@ class _HomeWidgetState extends State<HomeWidget> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isSuccess 
-                    ? const Color(0xFF00D2FF).withValues(alpha: 0.15) 
+                color: isSuccess
+                    ? const Color(0xFF00D2FF).withValues(alpha: 0.15)
                     : const Color(0xFFEF5350).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                isSuccess 
-                    ? Icons.check_circle_outline_rounded 
+                isSuccess
+                    ? Icons.check_circle_outline_rounded
                     : Icons.warning_amber_rounded,
-                color: isSuccess ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                color: isSuccess
+                    ? const Color(0xFF00D2FF)
+                    : const Color(0xFFEF5350),
                 size: 24,
               ),
             ),
@@ -350,7 +372,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                   Text(
                     titleText,
                     style: TextStyle(
-                      color: isSuccess ? const Color(0xFF00D2FF) : const Color(0xFFEF5350),
+                      color: isSuccess
+                          ? const Color(0xFF00D2FF)
+                          : const Color(0xFFEF5350),
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
@@ -371,12 +395,14 @@ class _HomeWidgetState extends State<HomeWidget> {
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.welcomeScan).then((_) => _checkActiveTicket());
+                  Navigator.pushNamed(context, AppRoutes.welcomeScan)
+                      .then((_) => _checkActiveTicket());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEF5350),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -437,7 +463,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                 SearchBarWidget(
                   readOnly: true,
                   onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.booking).then((_) => _checkActiveTicket());
+                    Navigator.pushNamed(context, AppRoutes.booking)
+                        .then((_) => _checkActiveTicket());
                   },
                 ),
                 const SizedBox(height: 20),
@@ -593,7 +620,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           StatusCardWidget(
             title: 'Status Booking\nAktif',
             cardImage: StatusCardImage.waiting,
-            subtitle: 'Slot ${_activeReservation!.slotName.isNotEmpty ? _activeReservation!.slotName : "-"}\nMenunggu kedatangan',
+            subtitle:
+                'Slot ${_activeReservation!.slotName.isNotEmpty ? _activeReservation!.slotName : "-"}\nMenunggu kedatangan',
             width: 160,
           ),
         );

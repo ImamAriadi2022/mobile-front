@@ -17,8 +17,9 @@ class ParkingSlot {
       id: json['id'] as String? ?? json['_id'] as String? ?? '',
       slotNumber:
           json['slotName'] as String? ?? json['slotNumber'] as String? ?? '',
-      status:
-          json['appStatus'] as String? ?? json['status'] as String? ?? 'available',
+      status: json['appStatus'] as String? ??
+          json['status'] as String? ??
+          'available',
       vehicleType: json['vehicleType'] as String? ?? 'mobil',
     );
   }
