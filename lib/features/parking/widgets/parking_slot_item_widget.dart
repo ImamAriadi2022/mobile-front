@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../shared/styles/app_colors.dart';
 
 enum SlotStatus { alatRusak, kosong, terisi, terpesan, pemeliharaan }
 
@@ -7,14 +6,13 @@ extension SlotStatusExtension on SlotStatus {
   Color get bgColor {
     switch (this) {
       case SlotStatus.kosong:
-        return const Color(0xFF22C55E); // Green
+        return const Color(0xFF22C55E); // Hijau Tersedia
       case SlotStatus.terisi:
-        return const Color(0xFFDC2626); // Red
       case SlotStatus.terpesan:
-        return const Color(0xFFEA580C); // Orange
+        return const Color(0xFFDC2626); // Merah Terisi
       case SlotStatus.pemeliharaan:
       case SlotStatus.alatRusak:
-        return const Color(0xFFE2E8F0); // Light Grey
+        return const Color(0xFFE2E8F0); // Abu-abu Pemeliharaan
     }
   }
 
@@ -33,15 +31,13 @@ extension SlotStatusExtension on SlotStatus {
   String get label {
     switch (this) {
       case SlotStatus.alatRusak:
-        return 'Alat Rusak';
+      case SlotStatus.pemeliharaan:
+        return 'Pemeliharaan';
       case SlotStatus.kosong:
         return 'Tersedia';
       case SlotStatus.terisi:
-        return 'Terisi';
       case SlotStatus.terpesan:
-        return 'Terpesan';
-      case SlotStatus.pemeliharaan:
-        return 'Pemeliharaan';
+        return 'Terisi';
     }
   }
 }

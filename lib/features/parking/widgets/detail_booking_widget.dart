@@ -24,7 +24,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   int _selectedFloorTab = 0;
   int _navIndex = 1;
   bool _isLoading = true;
-  ParkingSlotData? _selectedSlot;
 
   List<ParkingSlotData> _leftSlots = [];
   List<ParkingSlotData> _rightSlots = [];
@@ -53,13 +52,11 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
             case 'available':
               return SlotStatus.kosong;
             case 'occupied':
-              return SlotStatus.terisi;
             case 'booked':
-              return SlotStatus.terpesan;
+              return SlotStatus.terisi;
             case 'maintenance':
-              return SlotStatus.pemeliharaan;
             default:
-              return SlotStatus.alatRusak;
+              return SlotStatus.pemeliharaan;
           }
         }
 
@@ -74,13 +71,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
             .map((s) => ParkingSlotData(
                 id: s.id, label: s.slotNumber, status: mapStatus(s.status)))
             .toList();
-
-        if (_leftSlots.isNotEmpty) {
-          _selectedSlot = _leftSlots.firstWhere(
-            (s) => s.status == SlotStatus.kosong,
-            orElse: () => _leftSlots.first,
-          );
-        }
 
         _isLoading = false;
       });
@@ -103,6 +93,138 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         Navigator.pushReplacementNamed(context, AppRoutes.profil);
         break;
     }
+  }
+
+  void _showSlotConfirmationDialog(ParkingSlotData slot) {
+    if (slot.status != SlotStatus.kosong) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Slot ini sedang terisi atau dalam pemeliharaan.')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF061E3D),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFDBEAFE),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.local_parking_rounded,
+                  color: Color(0xFF1D4ED8),
+                  size: 36,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Konfirmasi Reservasi',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Apakah Anda yakin ingin memilih Slot ${slot.label} di Gedung Teknik Elektro?',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F203C),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('SLOT PILIHAN',
+                            style: TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 2),
+                        Text('Lantai 1 - Sisi Timur',
+                            style: TextStyle(color: Colors.white, fontSize: 12)),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF22C55E),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        'Slot ${slot.label}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white70,
+                        side: const BorderSide(color: Colors.white30),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Batal'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        _handleSlotBooking(slot);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF97316),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Konfirmasi', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -181,19 +303,19 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFEDD5),
+                              color: const Color(0xFFDBEAFE),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.directions_car_filled_rounded, size: 14, color: Color(0xFFC2410C)),
+                                const Icon(Icons.directions_car_filled_rounded, size: 14, color: Color(0xFF1D4ED8)),
                                 const SizedBox(width: 4),
                                 Text(
                                   '$availableCount/$totalCount',
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFFC2410C),
+                                    color: Color(0xFF1D4ED8),
                                   ),
                                 ),
                               ],
@@ -223,10 +345,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                               children: _leftSlots.map((slot) {
                                 return ParkingSlotItemWidget(
                                   slot: slot,
-                                  isSelected: _selectedSlot?.id == slot.id,
-                                  onTap: () {
-                                    setState(() => _selectedSlot = slot);
-                                  },
+                                  onTap: () => _showSlotConfirmationDialog(slot),
                                 );
                               }).toList(),
                             ),
@@ -263,10 +382,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                               children: _rightSlots.map((slot) {
                                 return ParkingSlotItemWidget(
                                   slot: slot,
-                                  isSelected: _selectedSlot?.id == slot.id,
-                                  onTap: () {
-                                    setState(() => _selectedSlot = slot);
-                                  },
+                                  onTap: () => _showSlotConfirmationDialog(slot),
                                 );
                               }).toList(),
                             ),
@@ -274,76 +390,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-
-                    // Bottom Confirmation Banner Box
-                    if (_selectedSlot != null)
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF061E3D),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.info_outline_rounded,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Pilih Slot ini?',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Slot ${_selectedSlot!.label}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _handleSlotBooking(_selectedSlot!);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFF97316),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: const Text(
-                                'Pilih',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     const SizedBox(height: 16),
                   ],
                 ),
@@ -383,13 +429,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   }
 
   Future<void> _handleSlotBooking(ParkingSlotData slot) async {
-    if (slot.status != SlotStatus.kosong) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Slot tidak tersedia.')),
-      );
-      return;
-    }
-
     setState(() => _isLoading = true);
 
     final profileService = ProfileService();

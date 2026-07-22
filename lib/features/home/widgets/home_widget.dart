@@ -243,6 +243,102 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  void _showQrCodeDialog(BuildContext context) {
+    final ticketCode = _activeTicket?.ticketCode ?? 'TCK-8891234';
+    final slotName = _activeReservation?.slotName ?? 'A-12';
+    final areaName = _activeTicket?.areaName ?? 'Gedung Teknik Elektro';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF061E3D),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'QR Ticket Masuk',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Image.asset(
+                  'lib/assets/scan/qr_scanner.png',
+                  height: 180,
+                  width: 180,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.qr_code_2_rounded,
+                    size: 160,
+                    color: Color(0xFF061E3D),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                ticketCode,
+                style: const TextStyle(
+                  color: Color(0xFFF97316),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '$areaName • Slot $slotName',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    Navigator.pushNamed(context, AppRoutes.statusKendaraan);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2563EB),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Lihat Status Sesi Aktif',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildActiveParkingBanner(bool isDark) {
     final slotName = _activeReservation?.slotName ?? 'A-12';
     final areaName = _activeTicket?.areaName ?? 'GEDUNG TEKNIK ELEKTRO';
@@ -331,7 +427,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   if (_hasActiveTicket) {
-                    Navigator.pushNamed(context, AppRoutes.statusKendaraan);
+                    _showQrCodeDialog(context);
                   } else {
                     Navigator.pushNamed(context, AppRoutes.welcomeScan);
                   }

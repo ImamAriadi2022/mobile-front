@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mobile_front/core/routes/app_routes.dart';
 import '../styles/app_colors.dart';
 import '../styles/theme_provider.dart';
 
-/// Widget shared: Header halaman dengan avatar, nama user, greeting,
-/// tombol sakelar Tema (Light/Dark Mode), dan tombol notifikasi.
+/// Widget shared: Header halaman dengan avatar (ketuk untuk ke profil),
+/// judul, tombol sakelar Tema (Light/Dark Mode), dan modal notifikasi.
 class UserHeaderWidget extends StatelessWidget {
   final String name;
   final String greeting;
@@ -21,6 +22,198 @@ class UserHeaderWidget extends StatelessWidget {
     this.photoUrl,
     this.onNotificationTap,
   });
+
+  void _showNotificationsDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Notifikasi',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDBEAFE),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Baru',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1D4ED8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            _buildNotifItem(
+              icon: Icons.check_circle_outline_rounded,
+              iconColor: const Color(0xFF10B981),
+              title: 'Reservasi Slot Parkir Berhasil',
+              subtitle: 'Slot A-12 Gedung Teknik Elektro telah berhasil direservasi.',
+              time: '5 mnt yang lalu',
+              isDark: isDark,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+            ),
+            const SizedBox(height: 12),
+
+            _buildNotifItem(
+              icon: Icons.local_parking_rounded,
+              iconColor: const Color(0xFF2563EB),
+              title: 'Sesi Parkir Aktif',
+              subtitle: 'Status parkir Anda sedang berjalan di Fakultas Teknik Unila.',
+              time: '15 mnt yang lalu',
+              isDark: isDark,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+            ),
+            const SizedBox(height: 12),
+
+            _buildNotifItem(
+              icon: Icons.warning_amber_rounded,
+              iconColor: const Color(0xFFF97316),
+              title: 'Pengingat Waktu Parkir',
+              subtitle: 'Sesi parkir Anda akan berakhir dalam 15 menit.',
+              time: '1 jam yang lalu',
+              isDark: isDark,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+            ),
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF03192E),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Tutup',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotifItem({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    required String time,
+    required bool isDark,
+    required Color textPrimary,
+    required Color textSecondary,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: textPrimary,
+                      ),
+                    ),
+                    Text(
+                      time,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,38 +231,43 @@ class UserHeaderWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Avatar
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.cardBg2Dark : const Color(0xFFE0F2FE),
-              shape: BoxShape.circle,
-            ),
-            child: photoUrl != null && photoUrl!.isNotEmpty
-                ? ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: photoUrl!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(
-                        child: SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 1.5),
+          // Avatar (Clicking navigates to Profile)
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.profil);
+            },
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.cardBg2Dark : const Color(0xFFE0F2FE),
+                shape: BoxShape.circle,
+              ),
+              child: photoUrl != null && photoUrl!.isNotEmpty
+                  ? ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: photoUrl!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 1.5),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.person_rounded,
+                          color: Color(0xFF2563EB),
+                          size: 24,
                         ),
                       ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.person_rounded,
-                        color: Color(0xFF2563EB),
-                        size: 24,
-                      ),
+                    )
+                  : const Icon(
+                      Icons.person_rounded,
+                      color: Color(0xFF2563EB),
+                      size: 24,
                     ),
-                  )
-                : const Icon(
-                    Icons.person_rounded,
-                    color: Color(0xFF2563EB),
-                    size: 24,
-                  ),
+            ),
           ),
           const SizedBox(width: 12),
 
@@ -111,14 +309,14 @@ class UserHeaderWidget extends StatelessWidget {
             tooltip: isDark ? 'Mode Terang' : 'Mode Gelap',
           ),
 
-          // Notification Bell Icon
+          // Notification Bell Icon (Opens Notifications Modal)
           IconButton(
             icon: const Icon(
               Icons.notifications_none_rounded,
               color: Color(0xFF2563EB),
               size: 24,
             ),
-            onPressed: onNotificationTap ?? () {},
+            onPressed: onNotificationTap ?? () => _showNotificationsDialog(context),
             tooltip: 'Notifikasi',
           ),
         ],

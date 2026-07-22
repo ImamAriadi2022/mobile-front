@@ -2,19 +2,14 @@
 
 ## Selesai
 
-- **Perbaikan Bug Bottom Navigation Bar Dark Mode**: Memperbarui [bottom_nav_bar.dart](file:///c:/programming/mobile-front/lib/shared/widgets/bottom_nav_bar.dart) agar latar belakang (`AppColors.navBarDark`/`AppColors.navBarLight`), garis tepi, dan warna ikon tak terpilih beradaptasi secara dinamis saat beralih antara Mode Terang dan Mode Gelap.
-- **Perbaikan Kontras Warna & Style Terpusat di Profil & Pengaturan**:
-  - Memperbarui [settings_row_item_widget.dart](file:///c:/programming/mobile-front/lib/shared/widgets/settings_row_item_widget.dart), [edit_profile_page.dart](file:///c:/programming/mobile-front/lib/features/profile/pages/edit_profile_page.dart), [profile_avatar_widget.dart](file:///c:/programming/mobile-front/lib/features/profile/widgets/profile_avatar_widget.dart), dan [settings_page.dart](file:///c:/programming/mobile-front/lib/features/profile/pages/settings_page.dart) menggunakan token warna terpusat (`AppColors.getBackgroundColor`, `AppColors.getCardBg`, `AppColors.getTextPrimary`, `AppColors.getTextSecondary`).
-  - Mengeliminasi 100% masalah teks putih di atas latar belakang putih pada halaman Profil, Edit Profil, dan Pengaturan.
+- **Modal Notifikasi Pada Header**: Mengubah ikon lonceng notifikasi pada `UserHeaderWidget` agar membuka Bottom Sheet Modal daftar notifikasi (seperti Reservasi Slot Berhasil, Sesi Parkir Aktif, Pengingat Waktu Parkir).
+- **Navigasi Profil via Tap Foto Avatar**: Menghubungkan gesture sentuhan pada foto avatar di `UserHeaderWidget` agar langsung mengarahkan pengguna ke Halaman Profil (`AppRoutes.profil`).
+- **Popup QR Code Tiket Masuk**: Mengubah tombol **Tampilkan QR** pada banner Parkir Aktif di Beranda agar menampilkan Popup Dialog Kode QR Tiket Masuk (`lib/assets/scan/qr_scanner.png`, kode tiket, slot, dan area).
+- **Pembersihan Halaman Area Parkir**: Menghapus baris filter pills (`Semua`, `Terdekat`, `Populer`, `Baru`), badge bintang rating (`4.9`), dan label jarak (`0.8 km`) dari `BookingWidget` sesuai permintaan.
+- **Konfirmasi Reservasi Slot via Popup Dialog**: Mengubah pemilihan slot di `DetailBookingWidget` agar konfirmasi dilakukan via Popup Dialog dialog eksplisit ("Konfirmasi Reservasi") dan menghapus banner bawah statis.
+- **Penyelarasan 3 Warna Resmi Slot Parkir**: Menghapus warna orange pada slot parkir di `parking_slot_item_widget.dart` dan menyelaraskan hanya dengan 3 warna standar: **Hijau (Tersedia)**, **Merah (Terisi)**, dan **Abu-abu (Pemeliharaan)**.
 - **Re-build & Ekspor PWA**: Berhasil mengompilasi ulang Flutter PWA (`flutter build web --release`) dan memperbarui seluruh berkas di direktori root `pwa/`.
-- **Penyesuaian Alur Tutorial & Onboarding**: Menghapus transisi tutorial lama yang berlebihan; alur dipusatkan sepenuhnya melalui Onboarding (`WelcomeWidget`) setelah login/register berhasil (`Splash` $\rightarrow$ `Login` $\rightarrow$ `Onboarding` $\rightarrow$ `Home`).
-- **Redesign Halaman Beranda (Home)**: Menyesuaikan 100% dengan `Dashboard Parkir.png`.
-- **Redesign Area Parkir & Denah Slot**:
-  - `BookingWidget` disesuaikan 100% dengan `Denah.png`.
-  - `DetailBookingWidget` & `ParkingSlotItemWidget` disesuaikan 100% dengan `Peta Parkir FT Unila.png`.
-- **Implementasi Dark & Light Mode Toggle After Login**: Ikon sakelar tema hadir di `UserHeaderWidget` pada semua halaman pasca-login.
-- **Batasan Tipe Kendaraan (Hanya Mobil)**: Membatasi seluruh formulir dan tampilan kendaraan khusus untuk jenis **Mobil**.
-- Redesign presisi Halaman Masuk (`login_widget.dart`) & Halaman Daftar (`register_widget.dart`).
+- Redesign presisi Halaman Masuk (`login_widget.dart`), Halaman Daftar (`register_widget.dart`), Beranda (Home), Area Parkir, Status Kendaraan, Riwayat, dan Profil.
 - Dokumentasi audit UI di `docs/ui_redesign_audit.md`.
 
 ## Sedang dikerjakan
