@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 
-/// Widget feature-specific: Avatar profil besar dengan border accent
-/// dan efek glow shadow.
-///
-/// Hanya digunakan di: ProfilWidget.
 class ProfileAvatarWidget extends StatelessWidget {
   final double size;
   final String? photoUrl;
@@ -14,16 +10,20 @@ class ProfileAvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg2 = AppColors.getCardBg2(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.cardBg2,
+        color: cardBg2,
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.accent, width: 3),
+        border: Border.all(color: const Color(0xFF2563EB), width: 3),
         boxShadow: [
           BoxShadow(
-            color: AppColors.accent.withValues(alpha: 0.3),
+            color: const Color(0xFF2563EB).withValues(alpha: isDark ? 0.3 : 0.15),
             blurRadius: 20,
             spreadRadius: 4,
           ),
@@ -40,15 +40,15 @@ class ProfileAvatarWidget extends StatelessWidget {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.accent,
+                      color: Color(0xFF2563EB),
                     ),
                   ),
                 ),
                 errorWidget: (context, url, error) =>
-                    Icon(Icons.person, color: Colors.white70, size: size * 0.6),
+                    Icon(Icons.person_rounded, color: textSecondary, size: size * 0.6),
               ),
             )
-          : Icon(Icons.person, color: Colors.white70, size: size * 0.6),
+          : Icon(Icons.person_rounded, color: const Color(0xFF2563EB), size: size * 0.6),
     );
   }
 }

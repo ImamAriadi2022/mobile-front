@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/profile/models/vehicle.dart';
 
@@ -70,7 +70,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result.message),
-              backgroundColor: Colors.green,
+              backgroundColor: const Color(0xFF10B981),
             ),
           );
           _loadProfile();
@@ -78,7 +78,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result.message),
-              backgroundColor: Colors.red,
+              backgroundColor: const Color(0xFFEF4444),
             ),
           );
         }
@@ -89,7 +89,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Gagal memilih foto: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: const Color(0xFFEF4444),
           ),
         );
       }
@@ -111,36 +111,43 @@ class _EditProfilPageState extends State<EditProfilPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.message),
-            backgroundColor: Colors.red,
+            backgroundColor: const Color(0xFFEF4444),
           ),
         );
       }
     }
   }
 
-  InputDecoration _inputDeco(String label) {
+  InputDecoration _inputDeco(String label, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+      labelStyle: TextStyle(
+          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight, fontSize: 13),
       filled: true,
-      fillColor: AppColors.cardBg2,
+      fillColor: isDark ? AppColors.cardBg2Dark : const Color(0xFFF8FAFC),
       contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.borderColor),
+        borderSide: BorderSide(
+          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFF03192E), width: 1.5),
       ),
     );
   }
 
   void _showSuccess() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        backgroundColor: const Color(0xFF1A2D47),
+        backgroundColor: cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(28),
@@ -151,16 +158,16 @@ class _EditProfilPageState extends State<EditProfilPage> {
                 width: 70,
                 height: 70,
                 decoration: const BoxDecoration(
-                  color: AppColors.green,
+                  color: Color(0xFF10B981),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.check, color: Colors.white, size: 40),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Profil Berhasil Diperbarui',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
@@ -174,12 +181,12 @@ class _EditProfilPageState extends State<EditProfilPage> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.cardBg,
+                    backgroundColor: const Color(0xFF03192E),
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
-                  child:
-                      const Text('OK', style: TextStyle(color: Colors.white)),
+                  child: const Text('OK', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -191,8 +198,16 @@ class _EditProfilPageState extends State<EditProfilPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final cardBg = AppColors.getCardBg(context);
+    final cardBg2 = AppColors.getCardBg2(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+    final borderColor = AppColors.getBorderColor(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -206,20 +221,20 @@ class _EditProfilPageState extends State<EditProfilPage> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBg,
+                        color: cardBg,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.borderColor),
+                        border: Border.all(color: borderColor),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new,
-                          color: Colors.white, size: 18),
+                      child: Icon(Icons.arrow_back_ios_new,
+                          color: textPrimary, size: 18),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Edit Profil',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
@@ -247,10 +262,10 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                   width: 90,
                                   height: 90,
                                   decoration: BoxDecoration(
-                                    color: AppColors.cardBg2,
+                                    color: cardBg2,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                        color: AppColors.accent, width: 2),
+                                        color: const Color(0xFF2563EB), width: 2),
                                   ),
                                   child: _photoUrl != null &&
                                           _photoUrl!.isNotEmpty
@@ -266,19 +281,19 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                                 child:
                                                     CircularProgressIndicator(
                                                   strokeWidth: 2,
-                                                  color: AppColors.accent,
+                                                  color: Color(0xFF2563EB),
                                                 ),
                                               ),
                                             ),
                                             errorWidget:
                                                 (context, url, error) =>
-                                                    const Icon(Icons.person,
-                                                        color: Colors.white70,
+                                                    Icon(Icons.person,
+                                                        color: textSecondary,
                                                         size: 54),
                                           ),
                                         )
-                                      : const Icon(Icons.person,
-                                          color: Colors.white70, size: 54),
+                                      : Icon(Icons.person,
+                                          color: textSecondary, size: 54),
                                 ),
                               ],
                             ),
@@ -290,64 +305,64 @@ class _EditProfilPageState extends State<EditProfilPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: AppColors.cardBg,
+                                color: cardBg,
                                 borderRadius: BorderRadius.circular(20),
-                                border:
-                                    Border.all(color: AppColors.borderColor),
+                                border: Border.all(color: borderColor),
                               ),
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(Icons.camera_alt_outlined,
-                                      color: AppColors.accent, size: 14),
+                                      color: Color(0xFF2563EB), size: 14),
                                   SizedBox(width: 4),
                                   Text('Ubah Foto',
                                       style: TextStyle(
-                                          color: AppColors.accent,
-                                          fontSize: 12)),
+                                          color: Color(0xFF2563EB),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
                           ),
                           const SizedBox(height: 20),
-                          const Divider(color: AppColors.borderColor),
+                          Divider(color: borderColor),
                           const SizedBox(height: 16),
 
                           // Fields
-                          _buildFieldLabel('Nama Lengkap*'),
+                          _buildFieldLabel('Nama Lengkap*', textPrimary),
                           const SizedBox(height: 6),
                           TextField(
                             controller: _namaCtrl,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: _inputDeco('Nama Lengkap'),
+                            style: TextStyle(color: textPrimary),
+                            decoration: _inputDeco('Nama Lengkap', isDark),
                           ),
                           const SizedBox(height: 14),
-                          _buildFieldLabel('Email (tidak dapat diubah)'),
+                          _buildFieldLabel('Email (tidak dapat diubah)', textPrimary),
                           const SizedBox(height: 6),
                           TextField(
                             controller: _emailCtrl,
                             readOnly: true,
-                            style: const TextStyle(color: Colors.white54),
-                            decoration: _inputDeco('Email').copyWith(
-                              suffixIcon: const Icon(
+                            style: TextStyle(color: textSecondary),
+                            decoration: _inputDeco('Email', isDark).copyWith(
+                              suffixIcon: Icon(
                                 Icons.lock_outline,
-                                color: Colors.white38,
+                                color: textSecondary,
                                 size: 18,
                               ),
                             ),
                           ),
                           const SizedBox(height: 14),
-                          _buildFieldLabel('No Telp*'),
+                          _buildFieldLabel('No Telp*', textPrimary),
                           const SizedBox(height: 6),
                           TextField(
                             controller: _teleponCtrl,
                             keyboardType: TextInputType.phone,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: _inputDeco('No. Telepon'),
+                            style: TextStyle(color: textPrimary),
+                            decoration: _inputDeco('No. Telepon', isDark),
                           ),
                           const SizedBox(height: 20),
 
-                          // Kendaraan section — link ke VehicleManagementPage
+                          // Kendaraan section
                           GestureDetector(
                             onTap: () => Navigator.pushNamed(
                               context,
@@ -357,27 +372,26 @@ class _EditProfilPageState extends State<EditProfilPage> {
                               width: double.infinity,
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: AppColors.cardBg2,
-                                borderRadius: BorderRadius.circular(12),
-                                border:
-                                    Border.all(color: AppColors.borderColor),
+                                color: cardBg2,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: borderColor),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Row(
+                                  Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.directions_car_outlined,
-                                        color: AppColors.accent,
+                                        color: Color(0xFF2563EB),
                                         size: 18,
                                       ),
-                                      SizedBox(width: 8),
+                                      const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
-                                          'Manajemen Kendaraan',
+                                          'Manajemen Kendaraan (Mobil)',
                                           style: TextStyle(
-                                            color: Colors.white,
+                                            color: textPrimary,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -385,7 +399,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                       ),
                                       Icon(
                                         Icons.arrow_forward_ios,
-                                        color: AppColors.textSecondary,
+                                        color: textSecondary,
                                         size: 14,
                                       ),
                                     ],
@@ -394,9 +408,9 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                   Text(
                                     _vehicles.isEmpty
                                         ? 'Belum ada kendaraan. Ketuk untuk menambahkan.'
-                                        : '${_vehicles.length} kendaraan terdaftar: ${_vehicles.map((v) => v.plateNumber).join(', ')}',
-                                    style: const TextStyle(
-                                      color: AppColors.textSecondary,
+                                        : '${_vehicles.length} kendaraan mobil terdaftar: ${_vehicles.map((v) => v.plateNumber).join(', ')}',
+                                    style: TextStyle(
+                                      color: textSecondary,
                                       fontSize: 12,
                                     ),
                                   ),
@@ -412,7 +426,8 @@ class _EditProfilPageState extends State<EditProfilPage> {
                             child: ElevatedButton(
                               onPressed: _isSaving ? null : _saveProfile,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.accent,
+                                backgroundColor: const Color(0xFF03192E),
+                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14)),
                               ),
@@ -429,7 +444,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w600)),
+                                          fontWeight: FontWeight.bold)),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -443,11 +458,11 @@ class _EditProfilPageState extends State<EditProfilPage> {
     );
   }
 
-  Widget _buildFieldLabel(String label) {
+  Widget _buildFieldLabel(String label, Color textPrimary) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(label,
-          style: const TextStyle(color: Colors.white, fontSize: 13)),
+          style: TextStyle(color: textPrimary, fontSize: 13, fontWeight: FontWeight.bold)),
     );
   }
 }
