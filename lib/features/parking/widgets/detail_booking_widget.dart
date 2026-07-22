@@ -95,7 +95,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     }
   }
 
-  void _showSlotConfirmationDialog(ParkingSlotData slot) {
+  Future<void> _showSlotConfirmationDialog(ParkingSlotData slot) async {
     if (slot.status != SlotStatus.kosong) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Slot ini sedang terisi atau dalam pemeliharaan.')),
@@ -103,10 +103,109 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
       return;
     }
 
+    final activeTicket = await ActiveTicketStorage().load();
+    if (!mounted) return;
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final cardBg2 = AppColors.getCardBg2(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
+    if (activeTicket == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => Dialog(
+          backgroundColor: cardBg,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFDBEAFE),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.qr_code_scanner_rounded,
+                    color: Color(0xFF2563EB),
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Scan Tiket Dahulu',
+                  style: TextStyle(
+                    color: textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Anda perlu melakukan scan tiket parkir terlebih dahulu sebelum dapat memilih slot.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: textSecondary,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: textSecondary,
+                          side: BorderSide(
+                            color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Batal'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          Navigator.pushNamed(context, AppRoutes.welcomeScan);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF03192E),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Scan Sekarang', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        backgroundColor: const Color(0xFF061E3D),
+        backgroundColor: cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -127,10 +226,10 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Konfirmasi Reservasi',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -139,8 +238,8 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
               Text(
                 'Apakah Anda yakin ingin memilih Slot ${slot.label} di Gedung Teknik Elektro?',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: TextStyle(
+                  color: textSecondary,
                   fontSize: 13,
                   height: 1.4,
                 ),
@@ -149,20 +248,20 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F203C),
+                  color: cardBg2,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('SLOT PILIHAN',
-                            style: TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 2),
+                            style: TextStyle(color: textSecondary, fontSize: 10, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 2),
                         Text('Lantai 1 - Sisi Timur',
-                            style: TextStyle(color: Colors.white, fontSize: 12)),
+                            style: TextStyle(color: textPrimary, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     Container(
@@ -190,8 +289,10 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(ctx),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white70,
-                        side: const BorderSide(color: Colors.white30),
+                        foregroundColor: textSecondary,
+                        side: BorderSide(
+                          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

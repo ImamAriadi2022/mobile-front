@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
+import '../styles/app_colors.dart';
 
 class NoTicketDialog extends StatelessWidget {
   const NoTicketDialog({super.key});
@@ -15,6 +16,11 @@ class NoTicketDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -25,15 +31,15 @@ class NoTicketDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withValues(alpha: 0.75),
+              color: cardBg,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
+                color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00D2FF).withValues(alpha: 0.08),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -46,42 +52,31 @@ class NoTicketDialog extends StatelessWidget {
                 Container(
                   width: 76,
                   height: 76,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0D1628),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFDBEAFE),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFF00D2FF),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                    ],
                   ),
                   child: const Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: Color(0xFF00D2FF),
+                    color: Color(0xFF2563EB),
                     size: 38,
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Tiket Belum Diverifikasi',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Sebelum melakukan booking slot parkir, Anda harus memindai tiket masuk terlebih dahulu.\n\nSilakan lakukan scan tiket untuk mengaktifkan sesi parkir.',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: textSecondary,
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -98,14 +93,14 @@ class NoTicketDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.15),
+                              color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                             ),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Batal',
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: textSecondary,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -120,8 +115,8 @@ class NoTicketDialog extends StatelessWidget {
                           Navigator.pushNamed(context, AppRoutes.welcomeScan);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00D2FF),
-                          foregroundColor: Colors.black,
+                          backgroundColor: const Color(0xFF03192E),
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -131,7 +126,7 @@ class NoTicketDialog extends StatelessWidget {
                         child: const Text(
                           'Scan Tiket Sekarang',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                           ),

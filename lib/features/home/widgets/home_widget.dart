@@ -244,6 +244,11 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   void _showQrCodeDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     final ticketCode = _activeTicket?.ticketCode ?? 'TCK-8891234';
     final slotName = _activeReservation?.slotName ?? 'A-12';
     final areaName = _activeTicket?.areaName ?? 'Gedung Teknik Elektro';
@@ -251,7 +256,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        backgroundColor: const Color(0xFF061E3D),
+        backgroundColor: cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -261,16 +266,16 @@ class _HomeWidgetState extends State<HomeWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'QR Ticket Masuk',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                    icon: Icon(Icons.close_rounded, color: textSecondary),
                     onPressed: () => Navigator.pop(ctx),
                   ),
                 ],
@@ -279,7 +284,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Image.asset(
@@ -307,8 +312,8 @@ class _HomeWidgetState extends State<HomeWidget> {
               const SizedBox(height: 6),
               Text(
                 '$areaName • Slot $slotName',
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: TextStyle(
+                  color: textSecondary,
                   fontSize: 13,
                 ),
               ),
@@ -322,7 +327,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     Navigator.pushNamed(context, AppRoutes.statusKendaraan);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
+                    backgroundColor: const Color(0xFF03192E),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

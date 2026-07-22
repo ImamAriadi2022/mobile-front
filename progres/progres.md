@@ -2,12 +2,15 @@
 
 ## Selesai
 
-- **Modal Notifikasi Pada Header**: Mengubah ikon lonceng notifikasi pada `UserHeaderWidget` agar membuka Bottom Sheet Modal daftar notifikasi (seperti Reservasi Slot Berhasil, Sesi Parkir Aktif, Pengingat Waktu Parkir).
-- **Navigasi Profil via Tap Foto Avatar**: Menghubungkan gesture sentuhan pada foto avatar di `UserHeaderWidget` agar langsung mengarahkan pengguna ke Halaman Profil (`AppRoutes.profil`).
-- **Popup QR Code Tiket Masuk**: Mengubah tombol **Tampilkan QR** pada banner Parkir Aktif di Beranda agar menampilkan Popup Dialog Kode QR Tiket Masuk (`lib/assets/scan/qr_scanner.png`, kode tiket, slot, dan area).
-- **Pembersihan Halaman Area Parkir**: Menghapus baris filter pills (`Semua`, `Terdekat`, `Populer`, `Baru`), badge bintang rating (`4.9`), dan label jarak (`0.8 km`) dari `BookingWidget` sesuai permintaan.
-- **Konfirmasi Reservasi Slot via Popup Dialog**: Mengubah pemilihan slot di `DetailBookingWidget` agar konfirmasi dilakukan via Popup Dialog dialog eksplisit ("Konfirmasi Reservasi") dan menghapus banner bawah statis.
-- **Penyelarasan 3 Warna Resmi Slot Parkir**: Menghapus warna orange pada slot parkir di `parking_slot_item_widget.dart` dan menyelaraskan hanya dengan 3 warna standar: **Hijau (Tersedia)**, **Merah (Terisi)**, dan **Abu-abu (Pemeliharaan)**.
+- **Penyelarasan Warna Popup Sesuai Tema (Dynamic Popup Theme)**:
+  - Seluruh modal & dialog popup (Popup QR Code, Modal Notifikasi, Popup Konfirmasi Reservasi, Dialog Verifikasi Tiket, dan Dialog Sukses Aktivasi) kini 100% menggunakan warna latar belakang (`AppColors.getCardBg(context)`) dan teks (`AppColors.getTextPrimary(context)`) yang beradaptasi secara dinamis antara Mode Terang (Light Mode) dan Mode Gelap (Dark Mode).
+- **Siklus Status Sesi Parkir & Tombol "Saya Sudah Sampai"**:
+  - Pada halaman Status Parkir (`StatusKendaraanPage`), saat reservasi dibuat (status `pending`), aplikasi menampilkan **Panduan Rute Menuju Slot**, detail slot, dan tombol **"Saya Sudah Sampai"**.
+  - Mengetuk **"Saya Sudah Sampai"** mengaktifkan status sesi ke `active`/`arrived`, menyalakan timer durasi parkir aktif, animasi glow kendaraan, dan tombol **"Selesai Parkir"**.
+- **Simulasi Tiket Masuk Otomatis via Local Storage**:
+  - Menghapus ketergantungan pada tombol "Simulasi".
+  - Saat pengguna masuk ke alur scan (`WelcomeScanWidget` / `ScanBerhasilWidget`), sistem secara otomatis mengaktifkan dan menyimpan data tiket mock (`TCK-8891234`) di local storage `ActiveTicketStorage`.
+  - Jika pengguna belum memindai tiket saat memilih slot, sistem menampilkan popup bertema **"Scan Tiket Dahulu"** yang langsung mengarahkan pengguna ke halaman scan.
 - **Re-build & Ekspor PWA**: Berhasil mengompilasi ulang Flutter PWA (`flutter build web --release`) dan memperbarui seluruh berkas di direktori root `pwa/`.
 - Redesign presisi Halaman Masuk (`login_widget.dart`), Halaman Daftar (`register_widget.dart`), Beranda (Home), Area Parkir, Status Kendaraan, Riwayat, dan Profil.
 - Dokumentasi audit UI di `docs/ui_redesign_audit.md`.

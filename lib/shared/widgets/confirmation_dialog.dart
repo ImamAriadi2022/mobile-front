@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
+import '../styles/app_colors.dart';
 
-/// ConfirmationDialog — Dialog konfirmasi reusable.
-///
-/// Digunakan untuk semua aksi destruktif (logout, batalkan reservasi, dll.).
-/// Menggantikan dialog yang tersebar di banyak file berbeda.
+/// ConfirmationDialog — Dialog konfirmasi reusable dengan tema terpusat (Light/Dark).
 class ConfirmationDialog extends StatelessWidget {
   final String title;
   final String message;
@@ -49,43 +46,49 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     final effectiveConfirmColor =
-        confirmColor ?? (isDangerous ? AppColors.red : AppColors.accent);
+        confirmColor ?? (isDangerous ? const Color(0xFFEF4444) : const Color(0xFF2563EB));
 
     return AlertDialog(
-      backgroundColor: AppColors.cardBg2,
+      backgroundColor: cardBg,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text(
         title,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
       content: Text(
         message,
-        style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        style: TextStyle(color: textSecondary, fontSize: 14),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
           child: Text(
             cancelLabel,
-            style: const TextStyle(color: AppColors.textSecondary),
+            style: TextStyle(color: textSecondary),
           ),
         ),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
           style: ElevatedButton.styleFrom(
             backgroundColor: effectiveConfirmColor,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
           child: Text(
             confirmLabel,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ],

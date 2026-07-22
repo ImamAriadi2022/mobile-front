@@ -26,6 +26,7 @@ class UserHeaderWidget extends StatelessWidget {
   void _showNotificationsDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.getCardBg(context);
+    final cardBg2 = AppColors.getCardBg2(context);
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);
 
@@ -68,7 +69,7 @@ class UserHeaderWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDBEAFE),
+                    color: isDark ? const Color(0xFF1E3A5F) : const Color(0xFFDBEAFE),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
@@ -76,7 +77,7 @@ class UserHeaderWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D4ED8),
+                      color: Color(0xFF2563EB),
                     ),
                   ),
                 ),
@@ -91,6 +92,7 @@ class UserHeaderWidget extends StatelessWidget {
               subtitle: 'Slot A-12 Gedung Teknik Elektro telah berhasil direservasi.',
               time: '5 mnt yang lalu',
               isDark: isDark,
+              cardBg2: cardBg2,
               textPrimary: textPrimary,
               textSecondary: textSecondary,
             ),
@@ -103,6 +105,7 @@ class UserHeaderWidget extends StatelessWidget {
               subtitle: 'Status parkir Anda sedang berjalan di Fakultas Teknik Unila.',
               time: '15 mnt yang lalu',
               isDark: isDark,
+              cardBg2: cardBg2,
               textPrimary: textPrimary,
               textSecondary: textSecondary,
             ),
@@ -115,6 +118,7 @@ class UserHeaderWidget extends StatelessWidget {
               subtitle: 'Sesi parkir Anda akan berakhir dalam 15 menit.',
               time: '1 jam yang lalu',
               isDark: isDark,
+              cardBg2: cardBg2,
               textPrimary: textPrimary,
               textSecondary: textSecondary,
             ),
@@ -151,13 +155,14 @@ class UserHeaderWidget extends StatelessWidget {
     required String subtitle,
     required String time,
     required bool isDark,
+    required Color cardBg2,
     required Color textPrimary,
     required Color textSecondary,
   }) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF8FAFC),
+        color: cardBg2,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),

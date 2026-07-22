@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import 'package:mobile_front/features/scan/models/ticket_data.dart';
+import '../../../core/storage/active_ticket_storage.dart';
 
 const String _cdnBaseUrl = 'https://storage.googleapis.com/parkfinderbucket';
 
@@ -29,6 +30,15 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
     _scaleAnim = CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut);
     _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
+
+    final mockTicket = widget.ticketData ??
+        TicketData(
+          ticketCode: 'TCK-8891234',
+          areaName: 'Gedung Teknik Elektro',
+          status: 'active',
+          claimedAt: DateTime.now().toIso8601String(),
+        );
+    ActiveTicketStorage().save(mockTicket);
   }
 
   @override

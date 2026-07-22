@@ -647,11 +647,16 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   void _showArriveSuccessDialog(String slotName) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => Dialog(
-        backgroundColor: const Color(0xFF061E3D),
+        backgroundColor: cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -664,10 +669,10 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                 size: 80,
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Aktivasi Berhasil!',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -675,8 +680,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
               const SizedBox(height: 12),
               Text(
                 'Selamat, Anda sudah berhasil mengaktifkan slot parkir $slotName.',
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: TextStyle(
+                  color: textSecondary,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -689,7 +694,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(ctx),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
+                    backgroundColor: const Color(0xFF03192E),
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
