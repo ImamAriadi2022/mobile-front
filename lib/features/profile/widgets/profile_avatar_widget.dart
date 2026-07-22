@@ -23,7 +23,7 @@ class ProfileAvatarWidget extends StatelessWidget {
         border: Border.all(color: AppColors.accent, width: 3),
         boxShadow: [
           BoxShadow(
-            color: AppColors.accent.withOpacity(0.3),
+            color: AppColors.accent.withValues(alpha: 0.3),
             blurRadius: 20,
             spreadRadius: 4,
           ),

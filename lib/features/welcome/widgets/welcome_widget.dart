@@ -78,7 +78,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 gradient: LinearGradient(
                   colors: [
                     Colors.transparent,
-                    const Color(0xFF1A2D6B).withOpacity(0.7),
+                    const Color(0xFF1A2D6B).withValues(alpha: 0.7),
                     const Color(0xFF1A2D6B),
                   ],
                   begin: Alignment.topCenter,
@@ -161,7 +161,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white30),
                 ),

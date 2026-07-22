@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../core/theme/app_colors.dart';
 
 class NoTicketDialog extends StatelessWidget {
   const NoTicketDialog({super.key});
@@ -9,7 +8,7 @@ class NoTicketDialog extends StatelessWidget {
   static void show(BuildContext context) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       builder: (_) => const NoTicketDialog(),
     );
   }
@@ -26,15 +25,15 @@ class NoTicketDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withOpacity(0.75),
+              color: const Color(0xFF132136).withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF00D2FF).withOpacity(0.25),
+                color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00D2FF).withOpacity(0.08),
+                  color: const Color(0xFF00D2FF).withValues(alpha: 0.08),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -56,7 +55,7 @@ class NoTicketDialog extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00D2FF).withOpacity(0.25),
+                        color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                         blurRadius: 15,
                         spreadRadius: 1,
                       ),
@@ -99,7 +98,7 @@ class NoTicketDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                             ),
                           ),
                         ),

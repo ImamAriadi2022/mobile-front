@@ -69,7 +69,7 @@ class StatusCardWidget extends StatelessWidget {
               _imageUrl,
               fit: BoxFit.contain,
               alignment: Alignment.centerLeft,
-              errorBuilder: (_, __, ___) => Icon(
+              errorBuilder: (_, __, ___) => const Icon(
                 Icons.image_not_supported,
                 color: Colors.white24,
                 size: 36,

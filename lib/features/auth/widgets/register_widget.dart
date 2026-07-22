@@ -121,7 +121,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -130,10 +130,10 @@ class _RegisterWidgetState extends State<RegisterWidget>
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withOpacity(0.95),
+              color: const Color(0xFF132136).withValues(alpha: 0.95),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFFFF5252).withOpacity(0.25),
+                color: const Color(0xFFFF5252).withValues(alpha: 0.25),
                 width: 1.2,
               ),
             ),
@@ -144,9 +144,9 @@ class _RegisterWidgetState extends State<RegisterWidget>
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.15),
+                    color: Colors.red.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                   ),
                   child: const Icon(Icons.block_rounded, color: Colors.red, size: 32),
                 ),
@@ -205,7 +205,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       builder: (_) => const _SuccessSheet(),
     ).then((_) {
       if (!mounted) return;
@@ -254,7 +254,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
 
           // ── Layer 2: Dark overlay ringan ───────────────────────
           Positioned.fill(
-            child: Container(color: Colors.black.withOpacity(0.30)),
+            child: Container(color: Colors.black.withValues(alpha: 0.30)),
           ),
 
           // ── Layer 3: Scrollable glassmorphism card ─────────────
@@ -273,10 +273,10 @@ class _RegisterWidgetState extends State<RegisterWidget>
                         width: double.infinity,
                         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.09),
+                          color: Colors.white.withValues(alpha: 0.09),
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.18),
+                            color: Colors.white.withValues(alpha: 0.18),
                             width: 1.2,
                           ),
                         ),
@@ -298,7 +298,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
                             Text(
                               'Silahkan daftarkan akun anda',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.60),
+                                color: Colors.white.withValues(alpha: 0.60),
                                 fontSize: 13,
                               ),
                             ),
@@ -416,7 +416,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
                                 Text(
                                   'Sudah Punya Akun? Silahkan ',
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.70),
+                                    color: Colors.white.withValues(alpha: 0.70),
                                     fontSize: 13,
                                   ),
                                 ),
@@ -454,7 +454,7 @@ class _RegisterWidgetState extends State<RegisterWidget>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white30),
                 ),
@@ -515,7 +515,7 @@ class _NeonField extends StatelessWidget {
         boxShadow: isFocused
             ? [
                 BoxShadow(
-                  color: glowColor.withOpacity(0.55),
+                  color: glowColor.withValues(alpha: 0.55),
                   blurRadius: 14,
                   spreadRadius: 1,
                 ),
@@ -531,16 +531,16 @@ class _NeonField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle:
-              TextStyle(color: Colors.white.withOpacity(0.40), fontSize: 14),
+              TextStyle(color: Colors.white.withValues(alpha: 0.40), fontSize: 14),
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor: Colors.white.withOpacity(0.09),
+          fillColor: Colors.white.withValues(alpha: 0.09),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: glowColor.withOpacity(0.35),
+              color: glowColor.withValues(alpha: 0.35),
               width: 1.0,
             ),
           ),
@@ -635,7 +635,7 @@ class _SuccessSheetState extends State<_SuccessSheet>
                   color: AppColors.green,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.green.withOpacity(0.45),
+                      color: AppColors.green.withValues(alpha: 0.45),
                       blurRadius: 24,
                       spreadRadius: 4,
                     ),
@@ -663,7 +663,7 @@ class _SuccessSheetState extends State<_SuccessSheet>
             Text(
               'Anda Berhasil Mendaftar',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.65),
+                color: Colors.white.withValues(alpha: 0.65),
                 fontSize: 15,
               ),
             ),
@@ -681,7 +681,7 @@ class _SuccessSheetState extends State<_SuccessSheet>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                     side: BorderSide(
-                      color: AppColors.accent.withOpacity(0.4),
+                      color: AppColors.accent.withValues(alpha: 0.4),
                     ),
                   ),
                   elevation: 0,

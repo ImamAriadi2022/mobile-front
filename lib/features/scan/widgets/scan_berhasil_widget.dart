@@ -68,7 +68,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
               imageUrl,
               key: ValueKey(imageUrl),
               fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.45),
+              color: Colors.black.withValues(alpha: 0.45),
               colorBlendMode: BlendMode.darken,
               loadingBuilder: (ctx, child, p) {
                 if (p == null) return child;
@@ -90,12 +90,12 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
               child: Container(
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D1A30).withOpacity(0.92),
+                  color: const Color(0xFF0D1A30).withValues(alpha: 0.92),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(color: AppColors.borderColor),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
+                      color: Colors.black.withValues(alpha: 0.4),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
@@ -140,7 +140,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                           color: AppColors.green,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.green.withOpacity(0.5),
+                              color: AppColors.green.withValues(alpha: 0.5),
                               blurRadius: 28,
                               spreadRadius: 4,
                             ),
@@ -255,7 +255,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                           side: BorderSide(
-                              color: AppColors.accent.withOpacity(0.4)),
+                              color: AppColors.accent.withValues(alpha: 0.4)),
                         ),
                         elevation: 0,
                       ),
@@ -306,7 +306,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white30),
                 ),

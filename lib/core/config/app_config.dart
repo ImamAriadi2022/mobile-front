@@ -18,4 +18,7 @@ class AppConfig {
 
   /// Versi aplikasi
   static const String appVersion = '1.0.0';
+
+  /// Gunakan data lokal (MockDatabase) — set false untuk gunakan API nyata.
+  static bool useMock = true;
 }

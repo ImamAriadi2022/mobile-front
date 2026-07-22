@@ -9,7 +9,6 @@ import 'package:mobile_front/features/scan/services/scan_service.dart';
 import 'package:mobile_front/features/scan/models/ticket_data.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/profile/models/vehicle.dart';
-import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/history/services/history_service.dart';
 import 'package:mobile_front/features/history/models/reservation_history.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
@@ -103,7 +102,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         }
       }
     } catch (e) {
-      print('Sync active reservation error: $e');
+      debugPrint('Sync active reservation error: $e');
     }
 
     // Load vehicle data from API
@@ -234,6 +233,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         _timer?.cancel();
         await ActiveTicketStorage().clear();
         await ActiveReservationStorage().clear();
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.message),
@@ -268,6 +268,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
       _timer?.cancel();
       await ActiveTicketStorage().clear();
       await ActiveReservationStorage().clear();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
@@ -362,7 +363,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
               'Anda belum memiliki sesi parkir yang sedang berjalan.\n'
               'Silakan scan tiket dan booking slot parkir terlebih dahulu.',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -699,7 +700,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
               Text(
                 'Selamat, Anda sudah berhasil mengaktifkan slot parkir $slotName.',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -804,7 +805,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                             border: InputBorder.none,
                           ),
                           hint: const Text('Pilih Slot', style: TextStyle(color: Colors.white30)),
-                          value: selectedSlot,
+                          initialValue: selectedSlot,
                           items: availableSlots.map((slot) {
                             return DropdownMenuItem<ParkingSlot>(
                               value: slot,
@@ -873,7 +874,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         startTime: _activeReservation!.startTime,
       );
       await ActiveReservationStorage().save(updatedRes);
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Berhasil ganti slot ke $newSlotName!'),
@@ -944,12 +945,12 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.accent.withOpacity(_glowAnim.value),
+                    color: AppColors.accent.withValues(alpha: _glowAnim.value),
                     width: 3,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withOpacity(_glowAnim.value * 0.4),
+                      color: AppColors.accent.withValues(alpha: _glowAnim.value * 0.4),
                       blurRadius: 40,
                       spreadRadius: 10,
                     ),
@@ -1086,12 +1087,12 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       decoration: BoxDecoration(
         color: isHighlighted
-            ? AppColors.accent.withOpacity(0.08)
+            ? AppColors.accent.withValues(alpha: 0.08)
             : AppColors.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isHighlighted
-              ? AppColors.accent.withOpacity(0.3)
+              ? AppColors.accent.withValues(alpha: 0.3)
               : AppColors.borderColor,
         ),
       ),

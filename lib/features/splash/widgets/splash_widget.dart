@@ -123,13 +123,16 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     if (token != null) {
       // Validate token by fetching profile
       final profile = await ProfileService().getProfile();
-      if (profile != null && mounted) {
+      if (profile != null) {
+        if (!mounted) return;
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacementNamed(AppRoutes.home);
         return;
       }
     }
 
     if (!mounted) return;
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 420),
@@ -184,13 +187,13 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.12),
+                          color: Colors.black.withValues(alpha: 0.12),
                           blurRadius: 18,
                           offset: const Offset(0, 8),
                         ),
                       ],
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.keyboard_arrow_up_rounded,
                       color: AppColors.accent,
                       size: 34,

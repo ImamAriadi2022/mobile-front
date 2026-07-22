@@ -71,7 +71,7 @@ class _LoginWidgetState extends State<LoginWidget>
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -80,10 +80,10 @@ class _LoginWidgetState extends State<LoginWidget>
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withOpacity(0.95),
+              color: const Color(0xFF132136).withValues(alpha: 0.95),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFFFF5252).withOpacity(0.25),
+                color: const Color(0xFFFF5252).withValues(alpha: 0.25),
                 width: 1.2,
               ),
             ),
@@ -94,9 +94,9 @@ class _LoginWidgetState extends State<LoginWidget>
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.15),
+                    color: Colors.red.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                   ),
                   child: const Icon(Icons.block_rounded, color: Colors.red, size: 32),
                 ),
@@ -155,7 +155,7 @@ class _LoginWidgetState extends State<LoginWidget>
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       builder: (_) => const _LoginSuccessSheet(),
     ).then((_) {
       if (!mounted) return;
@@ -213,7 +213,7 @@ class _LoginWidgetState extends State<LoginWidget>
           // ── Layer 2: Gelap overlay ringan supaya form terbaca ──
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withValues(alpha: 0.25),
             ),
           ),
 
@@ -235,10 +235,10 @@ class _LoginWidgetState extends State<LoginWidget>
                           width: double.infinity,
                           padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.10),
+                            color: Colors.white.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.18),
+                              color: Colors.white.withValues(alpha: 0.18),
                               width: 1.2,
                             ),
                           ),
@@ -260,7 +260,7 @@ class _LoginWidgetState extends State<LoginWidget>
                               Text(
                                 'Silakan Masukan Akun Anda',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.65),
+                                  color: Colors.white.withValues(alpha: 0.65),
                                   fontSize: 13,
                                 ),
                               ),
@@ -335,7 +335,7 @@ class _LoginWidgetState extends State<LoginWidget>
                                   Text(
                                     'Belum punya akun? ',
                                     style: TextStyle(
-                                      color: Colors.white.withOpacity(0.7),
+                                      color: Colors.white.withValues(alpha: 0.7),
                                       fontSize: 13,
                                     ),
                                   ),
@@ -374,7 +374,7 @@ class _LoginWidgetState extends State<LoginWidget>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white30),
                 ),
@@ -428,15 +428,15 @@ class _GlassTextField extends StatelessWidget {
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: 14),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.45), fontSize: 14),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.10),
+        fillColor: Colors.white.withValues(alpha: 0.10),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.25)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -527,7 +527,7 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
                   color: AppColors.green,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.green.withOpacity(0.45),
+                      color: AppColors.green.withValues(alpha: 0.45),
                       blurRadius: 24,
                       spreadRadius: 4,
                     ),
@@ -554,7 +554,7 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
             Text(
               'Anda Berhasil Masuk',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.65),
+                color: Colors.white.withValues(alpha: 0.65),
                 fontSize: 15,
               ),
             ),
@@ -571,7 +571,7 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                     side: BorderSide(
-                      color: AppColors.accent.withOpacity(0.4),
+                      color: AppColors.accent.withValues(alpha: 0.4),
                     ),
                   ),
                   elevation: 0,

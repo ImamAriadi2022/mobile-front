@@ -2,12 +2,21 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
 import '../storage/token_storage.dart';
+import '../data/mock_router.dart';
+import '../data/mock_data.dart';
+import '../data/mock_response.dart';
 
 /// ApiClient — HTTP client terpusat untuk REST API ParkFinder.
 ///
 /// Bertanggung jawab HANYA untuk komunikasi HTTP.
 /// Token management didelegasikan ke [TokenStorage].
 /// Semua feature service menggunakan class ini sebagai base HTTP layer.
+///
+/// Saat [AppConfig.useMock] = true, semua request dialihkan ke
+/// [MockRouter] yang membaca/menulis dari [MockDatabase] (SharedPreferences).
+/// Tidak ada koneksi HTTP nyata — aplikasi berjalan offline dengan data statis.
+///
+/// Saat [AppConfig.useMock] = false, request dikirim ke backend sungguhan.
 class ApiClient {
   final TokenStorage _tokenStorage = TokenStorage();
 
@@ -35,6 +44,9 @@ class ApiClient {
     String endpoint, {
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockRouter.handle(method: 'GET', endpoint: endpoint);
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.get(url, headers: headers);
@@ -45,6 +57,10 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockRouter.handle(
+          method: 'POST', endpoint: endpoint, body: body);
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.post(
@@ -59,6 +75,10 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockRouter.handle(
+          method: 'PUT', endpoint: endpoint, body: body);
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.put(
@@ -73,6 +93,10 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockRouter.handle(
+          method: 'PATCH', endpoint: endpoint, body: body);
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.patch(
@@ -86,6 +110,9 @@ class ApiClient {
     String endpoint, {
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockRouter.handle(method: 'DELETE', endpoint: endpoint);
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final headers = await _getHeaders(requireAuth: requireAuth);
     return http.delete(url, headers: headers);
@@ -98,6 +125,16 @@ class ApiClient {
     String fieldName = 'image',
     bool requireAuth = false,
   }) async {
+    if (AppConfig.useMock) {
+      return MockResponse.ok({
+        'success': true,
+        'message': 'Foto profil berhasil diunggah (mock).',
+        'data': {
+          'photoUrl':
+              'https://storage.googleapis.com/parkfinderbucket/foto/mock-avatar.png',
+        },
+      });
+    }
     final url = Uri.parse('${AppConfig.baseUrl}$endpoint');
     final request = http.MultipartRequest('POST', url);
 

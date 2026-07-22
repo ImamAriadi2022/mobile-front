@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       scaffoldMessengerKey: scaffoldMessengerKey,
-      useInheritedMediaQuery: true,
       title: 'ParkFinder',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -29,13 +28,11 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFF00D2FF),
           secondary: Color(0xFF00D2FF),
-          surface: Color(0xFF132136),
-          background: Color(0xFF0D1628),
+          surface: Color(0xFF0D1628),
           error: Color(0xFFEF5350),
           onPrimary: Colors.white,
           onSecondary: Colors.white,
           onSurface: Colors.white,
-          onBackground: Colors.white,
           onError: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFF0D1628),
@@ -46,17 +43,17 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
         switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return const Color(0xFF00D2FF);
             }
             return Colors.grey;
           }),
-          trackColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const Color(0xFF00D2FF).withOpacity(0.4);
+          trackColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF00D2FF).withValues(alpha: 0.4);
             }
-            return Colors.grey.withOpacity(0.3);
+            return Colors.grey.withValues(alpha: 0.3);
           }),
         ),
       ),
@@ -105,8 +102,8 @@ class _UpdateListenerWrapperState extends State<UpdateListenerWrapper> {
       MaterialBanner(
         backgroundColor: const Color(0xFF0D1628),
         elevation: 2.0,
-        content: Row(
-          children: const [
+        content: const Row(
+          children: [
             Icon(Icons.system_update_rounded, color: Color(0xFF00D2FF)),
             SizedBox(width: 12),
             Expanded(

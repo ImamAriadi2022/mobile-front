@@ -1,9 +1,5 @@
-/// Barrel export untuk semua shared widgets ParkFinder.
-///
-/// Import satu file ini untuk mengakses semua reusable widget:
-/// ```dart
-/// import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-/// ```
+library shared_widgets;
+
 export 'primary_button.dart';
 export 'loading_widget.dart';
 export 'empty_error_state.dart';

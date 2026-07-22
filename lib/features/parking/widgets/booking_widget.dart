@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import '../services/booking_service.dart';
 
 /// BookingWidget: Composer untuk halaman pencarian dan pemilihan gedung parkir.
@@ -99,7 +97,7 @@ class _BookingWidgetState extends State<BookingWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ① Header
-              _BookingHeaderWidget(),
+              const _BookingHeaderWidget(),
               const SizedBox(height: 12),
 
               // ② Search bar

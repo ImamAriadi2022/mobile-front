@@ -4,14 +4,11 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'floor_tab_widget.dart';
 import 'parking_slot_item_widget.dart';
 import 'parking_slot_map_widget.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
-import 'package:mobile_front/features/profile/services/profile_service.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 
 /// DetailBookingWidget: Composer untuk halaman peta slot parkir.
 ///
@@ -218,6 +215,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
           startTime: DateTime.now().toIso8601String(),
         );
         await ActiveReservationStorage().save(reservation);
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result.message), backgroundColor: Colors.green),
         );

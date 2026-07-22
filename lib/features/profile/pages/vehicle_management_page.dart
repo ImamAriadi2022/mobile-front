@@ -353,9 +353,9 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.accent.withOpacity(0.15),
+                color: AppColors.accent.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.accent.withOpacity(0.4)),
+                border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
               ),
               child: const Icon(
                 Icons.add,
@@ -402,7 +402,7 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: AppColors.red.withOpacity(0.1),
+                color: AppColors.red.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -458,7 +458,7 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.accent.withOpacity(0.08),
+                color: AppColors.accent.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -547,7 +547,7 @@ class _VehicleCard extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.1),
+              color: AppColors.accent.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(vehicleIcon, color: AppColors.accent, size: 26),
@@ -587,7 +587,7 @@ class _VehicleCard extends StatelessWidget {
             icon: const Icon(Icons.delete_outline, color: AppColors.red),
             tooltip: 'Hapus kendaraan',
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.red.withOpacity(0.1),
+              backgroundColor: AppColors.red.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -823,7 +823,7 @@ class _AddVehicleBottomSheetState extends State<_AddVehicleBottomSheet> {
                 onPressed: _isSubmitting ? null : _submit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accent,
-                  disabledBackgroundColor: AppColors.accent.withOpacity(0.4),
+                  disabledBackgroundColor: AppColors.accent.withValues(alpha: 0.4),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

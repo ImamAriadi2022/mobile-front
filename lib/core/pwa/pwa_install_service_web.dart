@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:html' as html;
 import 'dart:js_util' as js_util;
+import 'package:flutter/foundation.dart';
 
 class PwaInstallService {
   static final PwaInstallService instance = PwaInstallService._();
@@ -46,7 +47,7 @@ class PwaInstallService {
         return result.toString(); // 'accepted', 'dismissed', 'not-available'
       }
     } catch (e) {
-      print('triggerInstall error: $e');
+      debugPrint('triggerInstall error: $e');
     }
     return 'not-available';
   }

@@ -196,7 +196,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             left: 0,
             right: 0,
             height: topPad + 64,
-            child: Container(color: Colors.black.withOpacity(0.55)),
+            child: Container(color: Colors.black.withValues(alpha: 0.55)),
           ),
           // Bawah
           Positioned(
@@ -204,7 +204,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             right: 0,
             bottom: 0,
             height: 265 + bottomPad,
-            child: Container(color: Colors.black.withOpacity(0.55)),
+            child: Container(color: Colors.black.withValues(alpha: 0.55)),
           ),
           // Kiri
           Positioned(
@@ -212,7 +212,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             bottom: 265 + bottomPad,
             left: 0,
             width: _sideMargin(context),
-            child: Container(color: Colors.black.withOpacity(0.55)),
+            child: Container(color: Colors.black.withValues(alpha: 0.55)),
           ),
           // Kanan
           Positioned(
@@ -220,7 +220,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             bottom: 265 + bottomPad,
             right: 0,
             width: _sideMargin(context),
-            child: Container(color: Colors.black.withOpacity(0.55)),
+            child: Container(color: Colors.black.withValues(alpha: 0.55)),
           ),
 
           // ── Layer 3: Scan frame + animasi garis ────────────────
@@ -276,13 +276,13 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
+                      color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                     ),
-                    child: Column(
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           'Langkah 1: Scan tiket yang diperoleh dari gerbang masuk.',
                           style: TextStyle(
@@ -435,7 +435,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                   border: Border.all(color: AppColors.accent, width: 3),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withOpacity(0.3),
+                      color: AppColors.accent.withValues(alpha: 0.3),
                       blurRadius: 25,
                       spreadRadius: 5,
                     ),
@@ -473,18 +473,18 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF132136).withOpacity(0.55),
+                  color: const Color(0xFF132136).withValues(alpha: 0.55),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: const Color(0xFF00D2FF).withOpacity(0.25),
+                    color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                     width: 1.2,
                   ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Icon(
                           Icons.info_outline_rounded,
                           color: Color(0xFF00D2FF),
@@ -704,16 +704,16 @@ class _ScanFrame extends StatelessWidget {
       child: Stack(
         children: [
           // Corner brackets
-          Positioned(top: 0, left: 0,
+          const Positioned(top: 0, left: 0,
             child: _Corner(isLeft: true, isTop: true,
                 len: cornerLen, width: cornerWidth)),
-          Positioned(top: 0, right: 0,
+          const Positioned(top: 0, right: 0,
             child: _Corner(isLeft: false, isTop: true,
                 len: cornerLen, width: cornerWidth)),
-          Positioned(bottom: 0, left: 0,
+          const Positioned(bottom: 0, left: 0,
             child: _Corner(isLeft: true, isTop: false,
                 len: cornerLen, width: cornerWidth)),
-          Positioned(bottom: 0, right: 0,
+          const Positioned(bottom: 0, right: 0,
             child: _Corner(isLeft: false, isTop: false,
                 len: cornerLen, width: cornerWidth)),
 
@@ -731,13 +731,13 @@ class _ScanFrame extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        AppColors.accent.withOpacity(0.95),
+                        AppColors.accent.withValues(alpha: 0.95),
                         Colors.transparent,
                       ],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.6),
+                        color: AppColors.accent.withValues(alpha: 0.6),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -837,7 +837,7 @@ class _ActionButton extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.10),
+              color: Colors.white.withValues(alpha: 0.10),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white24),
             ),

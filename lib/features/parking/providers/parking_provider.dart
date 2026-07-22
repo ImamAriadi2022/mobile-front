@@ -35,6 +35,7 @@ class ParkingProvider extends ChangeNotifier {
   // ─── State: Slot ──────────────────────────────────────────────────────────
   List<ParkingSlot> _slots = [];
   ParkingStatus _slotsStatus = ParkingStatus.idle;
+  // ignore: unused_field
   String? _slotsError;
 
   List<ParkingSlot> get slots => _slots;

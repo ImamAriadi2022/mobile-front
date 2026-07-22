@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
-import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/profile/models/vehicle.dart';
 
 class EditProfilPage extends StatefulWidget {
@@ -360,15 +359,15 @@ class _EditProfilPageState extends State<EditProfilPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.directions_car_outlined,
                                   color: AppColors.accent,
                                   size: 18,
                                 ),
-                                const SizedBox(width: 8),
-                                const Expanded(
+                                SizedBox(width: 8),
+                                Expanded(
                                   child: Text(
                                     'Manajemen Kendaraan',
                                     style: TextStyle(
@@ -378,7 +377,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
                                     ),
                                   ),
                                 ),
-                                const Icon(
+                                Icon(
                                   Icons.arrow_forward_ios,
                                   color: AppColors.textSecondary,
                                   size: 14,

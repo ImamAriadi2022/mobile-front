@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../../../core/network/api_service.dart';
 import '../models/reservation_history.dart';
 
@@ -17,7 +18,7 @@ class HistoryService {
       }
       return [];
     } catch (e) {
-      print('Get history error: $e');
+      debugPrint('Get history error: $e');
       return [];
     }
   }

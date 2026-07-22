@@ -11,7 +11,7 @@ class PwaInstallDialog extends StatelessWidget {
   static void show(BuildContext context, {required VoidCallback onDismiss}) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       barrierDismissible: false,
       builder: (_) => PwaInstallDialog(onDismiss: onDismiss),
     );
@@ -29,15 +29,15 @@ class PwaInstallDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withOpacity(0.75),
+              color: const Color(0xFF132136).withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF00D2FF).withOpacity(0.25),
+                color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00D2FF).withOpacity(0.08),
+                  color: const Color(0xFF00D2FF).withValues(alpha: 0.08),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -59,7 +59,7 @@ class PwaInstallDialog extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00D2FF).withOpacity(0.25),
+                        color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                         blurRadius: 15,
                         spreadRadius: 1,
                       ),
@@ -85,7 +85,7 @@ class PwaInstallDialog extends StatelessWidget {
                 Text(
                   'Untuk pengalaman terbaik, install ParkFinder ke perangkat Anda.\n\nNikmati akses lebih cepat, pengalaman seperti aplikasi native, dan kemudahan penggunaan tanpa membuka browser setiap saat.',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -108,7 +108,7 @@ class PwaInstallDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                             ),
                           ),
                         ),
@@ -178,7 +178,7 @@ class PwaSafariInstallDialog extends StatelessWidget {
   static void show(BuildContext context, {required VoidCallback onDismiss}) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.55),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       barrierDismissible: false,
       builder: (_) => PwaSafariInstallDialog(onDismiss: onDismiss),
     );
@@ -196,15 +196,15 @@ class PwaSafariInstallDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF132136).withOpacity(0.75),
+              color: const Color(0xFF132136).withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF00D2FF).withOpacity(0.25),
+                color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00D2FF).withOpacity(0.08),
+                  color: const Color(0xFF00D2FF).withValues(alpha: 0.08),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -225,7 +225,7 @@ class PwaSafariInstallDialog extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00D2FF).withOpacity(0.25),
+                        color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
                         blurRadius: 15,
                         spreadRadius: 1,
                       ),
@@ -261,13 +261,13 @@ class PwaSafariInstallDialog extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.35),
+                    color: Colors.black.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Column(
+                  child: const Column(
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Icon(Icons.ios_share_rounded, color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
@@ -278,11 +278,11 @@ class PwaSafariInstallDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       Row(
-                        children: const [
+                        children: [
                           Icon(Icons.add_box_outlined, color: Color(0xFF00D2FF), size: 20),
-                          SDouble(width: 12),
+                          SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               '2. Pilih "Add to Home Screen" (Tambahkan ke Layar Utama).',
@@ -291,9 +291,9 @@ class PwaSafariInstallDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       Row(
-                        children: const [
+                        children: [
                           Icon(Icons.add_rounded, color: Color(0xFF00D2FF), size: 20),
                           SizedBox(width: 12),
                           Expanded(
@@ -342,10 +342,3 @@ class PwaSafariInstallDialog extends StatelessWidget {
   }
 }
 
-// Small helper subclass to bypass linting issues in copy-paste
-class SDouble extends StatelessWidget {
-  final double width;
-  const SDouble({super.key, required this.width});
-  @override
-  Widget build(BuildContext context) => SizedBox(width: width);
-}

@@ -14,11 +14,6 @@ import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/auth/services/auth_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'hero_banner_widget.dart';
 import 'status_card_widget.dart';
 
@@ -206,30 +201,18 @@ class _HomeWidgetState extends State<HomeWidget> {
     }
   }
 
-  void _showEndSessionDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => EndSessionDialogWidget(
-        vehiclePlate: 'D 12345 FE',
-        parkingDuration: '3 Jam 10 Menit',
-        onConfirm: () => Navigator.pop(context),
-        onCancel: () => Navigator.pop(context),
-      ),
-    );
-  }
-
   Widget _buildInstallIndicator() {
     if (_isPwaStandalone) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.15),
+          color: Colors.green.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.green.withOpacity(0.3)),
+          border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
         ),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 14),
             SizedBox(width: 6),
             Text(
@@ -253,7 +236,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           if (mounted) {
             showDialog(
               context: context,
-              barrierColor: Colors.black.withOpacity(0.55),
+              barrierColor: Colors.black.withValues(alpha: 0.55),
               builder: (_) => PwaInstallDialog(onDismiss: () {}),
             ).then((_) {
               PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
@@ -266,7 +249,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             if (mounted) {
               showDialog(
                 context: context,
-                barrierColor: Colors.black.withOpacity(0.55),
+                barrierColor: Colors.black.withValues(alpha: 0.55),
                 builder: (_) => PwaSafariInstallDialog(onDismiss: () {}),
               ).then((_) {
                 PwaInstallService.instance.isInstallPromptAvailable().then((avail) {
@@ -280,13 +263,13 @@ class _HomeWidgetState extends State<HomeWidget> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFF00D2FF).withOpacity(0.15),
+          color: const Color(0xFF00D2FF).withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF00D2FF).withOpacity(0.3)),
+          border: Border.all(color: const Color(0xFF00D2FF).withValues(alpha: 0.3)),
         ),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.download_for_offline_rounded, color: Color(0xFF00D2FF), size: 14),
             SizedBox(width: 6),
             Text(
@@ -331,13 +314,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSuccess 
-              ? const Color(0xFF00D2FF).withOpacity(0.08) 
-              : const Color(0xFFEF5350).withOpacity(0.08),
+              ? const Color(0xFF00D2FF).withValues(alpha: 0.08) 
+              : const Color(0xFFEF5350).withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSuccess 
-                ? const Color(0xFF00D2FF).withOpacity(0.25) 
-                : const Color(0xFFEF5350).withOpacity(0.25),
+                ? const Color(0xFF00D2FF).withValues(alpha: 0.25) 
+                : const Color(0xFFEF5350).withValues(alpha: 0.25),
             width: 1.2,
           ),
         ),
@@ -347,8 +330,8 @@ class _HomeWidgetState extends State<HomeWidget> {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: isSuccess 
-                    ? const Color(0xFF00D2FF).withOpacity(0.15) 
-                    : const Color(0xFFEF5350).withOpacity(0.15),
+                    ? const Color(0xFF00D2FF).withValues(alpha: 0.15) 
+                    : const Color(0xFFEF5350).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -376,7 +359,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   Text(
                     descText,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                       height: 1.4,
                     ),

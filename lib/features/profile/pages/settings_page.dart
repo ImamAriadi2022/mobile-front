@@ -234,8 +234,8 @@ class _PengaturanPageState extends State<PengaturanPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.accent,
-            activeTrackColor: AppColors.accent.withOpacity(0.3),
+            activeThumbColor: AppColors.accent,
+            activeTrackColor: AppColors.accent.withValues(alpha: 0.3),
             inactiveThumbColor: AppColors.textSecondary,
             inactiveTrackColor: AppColors.borderColor,
           ),

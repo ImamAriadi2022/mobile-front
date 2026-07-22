@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.70),
+      barrierColor: Colors.black.withValues(alpha: 0.70),
       builder: (_) => _TutorialDialog(
         onDone: () async {
           // Simpan flag agar tidak muncul lagi
@@ -87,25 +87,25 @@ class _TutorialDialogState extends State<_TutorialDialog>
   late final Animation<double> _fadeAnim;
 
   static final List<_TutorialStep> _steps = [
-    _TutorialStep(
+    const _TutorialStep(
       imageUrl: '$_cdn/foto/wel-tutor.png',
       title: '3 Langkah Mudah\nAmankan Parkir Anda',
       desc: 'Tidak perlu repot, cukup ikuti langkah ini untuk mendapatkan '
           'tempat parkir sebelum Anda tiba.',
     ),
-    _TutorialStep(
+    const _TutorialStep(
       imageUrl: '$_cdn/foto/tutor1.png',
       title: 'Langkah 1',
       desc: 'Gunakan kolom pencarian untuk menemukan gedung parkir, '
           'dan klik gedung parkir teratas untuk melihat area parkir secara detail',
     ),
-    _TutorialStep(
+    const _TutorialStep(
       imageUrl: '$_cdn/foto/tutor2.png',
       title: 'Langkah 2',
       desc: 'Pilih lantai dan nomor slot yang masih kosong. '
           'Ketuk "Pesan Sekarang" untuk mengunci tempat tersebut agar tidak diambil orang lain.',
     ),
-    _TutorialStep(
+    const _TutorialStep(
       imageUrl: '$_cdn/foto/tutor3.png',
       title: 'Langkah 3',
       desc: 'Ikuti Panduan menuju slot nya dan ketika sudah sampai di lokasi parkir, '
@@ -169,12 +169,12 @@ class _TutorialDialogState extends State<_TutorialDialog>
             color: const Color(0xFF0D2040),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.accent.withOpacity(0.7),
+              color: AppColors.accent.withValues(alpha: 0.7),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accent.withOpacity(0.15),
+                color: AppColors.accent.withValues(alpha: 0.15),
                 blurRadius: 24,
                 spreadRadius: 4,
               ),
@@ -272,7 +272,7 @@ class _TutorialDialogState extends State<_TutorialDialog>
                         step.desc,
                         key: ValueKey(step.desc),
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.60),
+                          color: Colors.white.withValues(alpha: 0.60),
                           fontSize: 13,
                           height: 1.5,
                         ),
@@ -293,7 +293,7 @@ class _TutorialDialogState extends State<_TutorialDialog>
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                                color: AppColors.accent.withOpacity(0.35)),
+                                color: AppColors.accent.withValues(alpha: 0.35)),
                           ),
                           elevation: 0,
                         ),
