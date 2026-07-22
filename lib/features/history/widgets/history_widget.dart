@@ -140,61 +140,66 @@ class _HistoryWidgetState extends State<HistoryWidget> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            // User Header
-            UserHeaderWidget(
-              name: _userName,
-              greeting: '',
-              title: 'ParkFinder',
-              photoUrl: _photoUrl,
-            ),
-            const SizedBox(height: 16),
+            Column(
+              children: [
+                // User Header
+                UserHeaderWidget(
+                  name: _userName,
+                  greeting: '',
+                  title: 'ParkFinder',
+                  photoUrl: _photoUrl,
+                ),
+                const SizedBox(height: 16),
 
-            // Riwayat Parkir Section Title Row
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Riwayat Parkir',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: textPrimary,
-                    ),
-                  ),
-                  Row(
+                // Riwayat Parkir Section Title Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Filter',
+                        'Riwayat Parkir',
                         style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textPrimary,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.filter_list_rounded,
-                        size: 16,
-                        color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                      Row(
+                        children: [
+                          Text(
+                            'Filter',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.filter_list_rounded,
+                            size: 16,
+                            color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
+                ),
+                const SizedBox(height: 12),
 
-            // Konten Utama
-            Expanded(
-              child: _buildMainContent(isDark, textPrimary),
-            ),
+                // Konten Utama
+                Expanded(
+                  child: _buildMainContent(isDark, textPrimary),
+                ),
 
-            // Bottom Nav
-            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+                // Bottom Nav
+                AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+              ],
+            ),
+            const FloatingTutorialWidget(),
           ],
         ),
       ),

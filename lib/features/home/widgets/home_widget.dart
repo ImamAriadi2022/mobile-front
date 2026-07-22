@@ -147,96 +147,101 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ① User Header Bar
-                    UserHeaderWidget(
-                      name: _userName,
-                      greeting: '',
-                      title: 'Beranda',
-                      photoUrl: _photoUrl,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // ② Search Bar
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SearchBarWidget(
-                        hintText: 'Cari Gedung Parkir',
-                        readOnly: true,
-                        onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.booking)
-                              .then((_) => _checkActiveTicket());
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // ③ Section 1: Parkir Aktif
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Parkir Aktif',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: textPrimary,
+            Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ① User Header Bar
+                        UserHeaderWidget(
+                          name: _userName,
+                          greeting: '',
+                          title: 'Beranda',
+                          photoUrl: _photoUrl,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+                        const SizedBox(height: 16),
 
-                    // Banner Card Parkir Aktif
-                    _buildActiveParkingBanner(isDark),
-                    const SizedBox(height: 24),
+                        // ② Search Bar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SearchBarWidget(
+                            hintText: 'Cari Gedung Parkir',
+                            readOnly: true,
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.booking)
+                                  .then((_) => _checkActiveTicket());
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
 
-                    // ④ Section 2: Gedung Parkir Header Row
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Gedung Parkir',
+                        // ③ Section 1: Parkir Aktif
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Parkir Aktif',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: textPrimary,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.booking);
-                            },
-                            child: const Text(
-                              'Lihat Semua',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF2563EB),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Banner Card Parkir Aktif
+                        _buildActiveParkingBanner(isDark),
+                        const SizedBox(height: 24),
+
+                        // ④ Section 2: Gedung Parkir Header Row
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Gedung Parkir',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: textPrimary,
+                                ),
                               ),
-                            ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, AppRoutes.booking);
+                                },
+                                child: const Text(
+                                  'Lihat Semua',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF2563EB),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Daftar Gedung Parkir Cards
+                        _buildBuildingCards(isDark),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-
-                    // Daftar Gedung Parkir Cards
-                    _buildBuildingCards(isDark),
-                    const SizedBox(height: 20),
-                  ],
+                  ),
                 ),
-              ),
-            ),
 
-            // Bottom Navigation Bar
-            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+                // Bottom Navigation Bar
+                AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+              ],
+            ),
+            const FloatingTutorialWidget(),
           ],
         ),
       ),

@@ -89,167 +89,172 @@ class _BookingWidgetState extends State<BookingWidget> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header Bar (Cari Lokasi Parkir)
-                    UserHeaderWidget(
-                      name: 'User',
-                      greeting: '',
-                      title: 'Cari Lokasi Parkir',
-                    ),
-                    const SizedBox(height: 16),
+            Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header Bar (Cari Lokasi Parkir)
+                        UserHeaderWidget(
+                          name: 'User',
+                          greeting: '',
+                          title: 'Cari Lokasi Parkir',
+                        ),
+                        const SizedBox(height: 16),
 
-                    // Search Bar
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SearchBarWidget(
-                        controller: _searchCtrl,
-                        hintText: 'Cari gedung atau area...',
-                        onChanged: (_) => setState(() {}),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                        // Search Bar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SearchBarWidget(
+                            controller: _searchCtrl,
+                            hintText: 'Cari gedung atau area...',
+                            onChanged: (_) => setState(() {}),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
 
-                    // List Area Cards
-                    _isLoading
-                        ? const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(24),
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
-                              children: _filtered.asMap().entries.map((entry) {
-                                final index = entry.key;
-                                final item = entry.value;
+                        // List Area Cards
+                        _isLoading
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(24),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Column(
+                                  children: _filtered.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final item = entry.value;
 
-                                return Container(
-                                  margin: const EdgeInsets.only(bottom: 16),
-                                  decoration: BoxDecoration(
-                                    color: cardBg,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.detailBooking,
-                                        arguments: item.id,
-                                      );
-                                    },
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Header Image
-                                        ClipRRect(
-                                          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                                          child: SizedBox(
-                                            height: 160,
-                                            width: double.infinity,
-                                            child: Image.asset(
-                                              index == 0
-                                                  ? 'lib/assets/parking/denah_parkir.png'
-                                                  : 'lib/assets/home/dashboard_parkir.png',
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) => Container(
-                                                color: const Color(0xFFF1F5F9),
-                                                child: const Icon(Icons.apartment_rounded, size: 60),
-                                              ),
-                                            ),
-                                          ),
+                                    return Container(
+                                      margin: const EdgeInsets.only(bottom: 16),
+                                      decoration: BoxDecoration(
+                                        color: cardBg,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                                         ),
-
-                                        // Body Details
-                                        Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                item.name,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: textPrimary,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.detailBooking,
+                                            arguments: item.id,
+                                          );
+                                        },
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // Header Image
+                                            ClipRRect(
+                                              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                                              child: SizedBox(
+                                                height: 160,
+                                                width: double.infinity,
+                                                child: Image.asset(
+                                                  index == 0
+                                                      ? 'lib/assets/parking/denah_parkir.png'
+                                                      : 'lib/assets/home/dashboard_parkir.png',
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => Container(
+                                                    color: const Color(0xFFF1F5F9),
+                                                    child: const Icon(Icons.apartment_rounded, size: 60),
+                                                  ),
                                                 ),
                                               ),
-                                              const SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    'Fakultas Teknik Unila, Gedung B',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: textSecondary,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 12),
-                                              Divider(
-                                                height: 1,
-                                                color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
-                                              ),
-                                              const SizedBox(height: 12),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 8,
-                                                    height: 8,
-                                                    decoration: const BoxDecoration(
-                                                      color: Color(0xFF10B981),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    item.availableSlotLabel,
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF10B981),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
+                                            ),
 
-            // Bottom Navigation Bar
-            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+                                            // Body Details
+                                            Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    item.name,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: textPrimary,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        'Fakultas Teknik Unila, Gedung B',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: textSecondary,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Divider(
+                                                    height: 1,
+                                                    color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 8,
+                                                        height: 8,
+                                                        decoration: const BoxDecoration(
+                                                          color: Color(0xFF10B981),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        item.availableSlotLabel,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF10B981),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Bottom Navigation Bar
+                AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+              ],
+            ),
+            const FloatingTutorialWidget(),
           ],
         ),
       ),

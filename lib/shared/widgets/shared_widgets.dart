@@ -14,3 +14,4 @@ export 'user_header_widget.dart';
 export 'end_session_dialog_widget.dart';
 export 'no_ticket_dialog.dart';
 export 'primary_button_widget.dart';
+export 'floating_tutorial_widget.dart';

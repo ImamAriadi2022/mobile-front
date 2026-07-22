@@ -303,24 +303,29 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            UserHeaderWidget(
-              name: 'User',
-              greeting: '',
-              title: 'Status Parkir Aktif',
+            Column(
+              children: [
+                UserHeaderWidget(
+                  name: 'User',
+                  greeting: '',
+                  title: 'Status Parkir Aktif',
+                ),
+                Expanded(
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.accentLight),
+                        )
+                      : _hasActiveSession
+                          ? _buildActiveSessionView(isDark)
+                          : _buildEmptyStateView(isDark),
+                ),
+                AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+              ],
             ),
-            Expanded(
-              child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                          color: AppColors.accentLight),
-                    )
-                  : _hasActiveSession
-                      ? _buildActiveSessionView(isDark)
-                      : _buildEmptyStateView(isDark),
-            ),
-            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+            const FloatingTutorialWidget(),
           ],
         ),
       ),

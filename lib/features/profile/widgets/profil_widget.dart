@@ -82,212 +82,217 @@ class _ProfilWidgetState extends State<ProfilWidget> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            // User Header
-            UserHeaderWidget(
-              name: _profileData?.name ?? 'User',
-              greeting: '',
-              title: 'ParkFinder',
-              photoUrl: _profileData?.photoUrl,
-            ),
+            Column(
+              children: [
+                // User Header
+                UserHeaderWidget(
+                  name: _profileData?.name ?? 'User',
+                  greeting: '',
+                  title: 'ParkFinder',
+                  photoUrl: _profileData?.photoUrl,
+                ),
 
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
 
-                    // Avatar & Name Header
-                    ProfileAvatarWidget(photoUrl: _profileData?.photoUrl),
-                    const SizedBox(height: 12),
+                        // Avatar & Name Header
+                        ProfileAvatarWidget(photoUrl: _profileData?.photoUrl),
+                        const SizedBox(height: 12),
 
-                    if (_isLoading)
-                      const CircularProgressIndicator()
-                    else
-                      Column(
-                        children: [
-                          Text(
-                            _profileData?.name ?? 'Imam Ariadi',
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Member sejak Januari 2026',
-                            style: TextStyle(
-                              color: textSecondary,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Kartu Statistik
-                          const StatsCardWidget(
-                            totalParkir: '33',
-                            parkirAktif: '1',
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Section Informasi Pribadi
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: cardBg,
-                                borderRadius: BorderRadius.circular(24),
-                                border: Border.all(
-                                  color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                        if (_isLoading)
+                          const CircularProgressIndicator()
+                        else
+                          Column(
+                            children: [
+                              Text(
+                                _profileData?.name ?? 'Imam Ariadi',
+                                style: TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Informasi Pribadi',
-                                    style: TextStyle(
-                                      color: textPrimary,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                              const SizedBox(height: 4),
+                              Text(
+                                'Member sejak Januari 2026',
+                                style: TextStyle(
+                                  color: textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Kartu Statistik
+                              const StatsCardWidget(
+                                totalParkir: '33',
+                                parkirAktif: '1',
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Section Informasi Pribadi
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: cardBg,
+                                    borderRadius: BorderRadius.circular(24),
+                                    border: Border.all(
+                                      color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Informasi Pribadi',
+                                        style: TextStyle(
+                                          color: textPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
 
-                                  _buildInfoCard(
-                                    icon: Icons.email_outlined,
-                                    label: 'Email',
-                                    value: _profileData?.email ?? 'imamariadi775@gmail.com',
-                                    isDark: isDark,
-                                    cardBg2: cardBg2,
-                                    textPrimary: textPrimary,
-                                    textSecondary: textSecondary,
-                                  ),
-                                  const SizedBox(height: 12),
+                                      _buildInfoCard(
+                                        icon: Icons.email_outlined,
+                                        label: 'Email',
+                                        value: _profileData?.email ?? 'imamariadi775@gmail.com',
+                                        isDark: isDark,
+                                        cardBg2: cardBg2,
+                                        textPrimary: textPrimary,
+                                        textSecondary: textSecondary,
+                                      ),
+                                      const SizedBox(height: 12),
 
-                                  _buildInfoCard(
-                                    icon: Icons.phone_outlined,
-                                    label: 'Nomor Telpon',
-                                    value: _profileData?.phoneNumber ?? '085788322061',
-                                    isDark: isDark,
-                                    cardBg2: cardBg2,
-                                    textPrimary: textPrimary,
-                                    textSecondary: textSecondary,
-                                  ),
-                                  const SizedBox(height: 12),
+                                      _buildInfoCard(
+                                        icon: Icons.phone_outlined,
+                                        label: 'Nomor Telpon',
+                                        value: _profileData?.phoneNumber ?? '085788322061',
+                                        isDark: isDark,
+                                        cardBg2: cardBg2,
+                                        textPrimary: textPrimary,
+                                        textSecondary: textSecondary,
+                                      ),
+                                      const SizedBox(height: 12),
 
-                                  _buildInfoCard(
-                                    icon: Icons.directions_car_outlined,
-                                    label: 'Kendaraan Utama (Mobil)',
-                                    value: _vehicles.isEmpty
-                                        ? 'BE 1234 AB (Mobil)'
-                                        : '${_vehicles.first.plateNumber} (Mobil)',
-                                    isDark: isDark,
-                                    cardBg2: cardBg2,
-                                    textPrimary: textPrimary,
-                                    textSecondary: textSecondary,
+                                      _buildInfoCard(
+                                        icon: Icons.directions_car_outlined,
+                                        label: 'Kendaraan Utama (Mobil)',
+                                        value: _vehicles.isEmpty
+                                            ? 'BE 1234 AB (Mobil)'
+                                            : '${_vehicles.first.plateNumber} (Mobil)',
+                                        isDark: isDark,
+                                        cardBg2: cardBg2,
+                                        textPrimary: textPrimary,
+                                        textSecondary: textSecondary,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        const SizedBox(height: 20),
+
+                        // Section Pengaturan & Akses
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: cardBg,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    const SizedBox(height: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Pengaturan',
+                                  style: TextStyle(
+                                    color: textPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
 
-                    // Section Pengaturan & Akses
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: cardBg,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Pengaturan',
-                              style: TextStyle(
-                                color: textPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-
-                            SettingsRowItemWidget(
-                              icon: Icons.edit_outlined,
-                              title: 'Edit Profil',
-                              subtitle: 'Ubah Informasi Profil Anda',
-                              onTap: () =>
-                                  Navigator.pushNamed(context, AppRoutes.editProfil)
+                                SettingsRowItemWidget(
+                                  icon: Icons.edit_outlined,
+                                  title: 'Edit Profil',
+                                  subtitle: 'Ubah Informasi Profil Anda',
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, AppRoutes.editProfil)
+                                          .then((_) => _loadProfile()),
+                                ),
+                                SettingsRowItemWidget(
+                                  icon: Icons.directions_car_outlined,
+                                  title: 'Manajemen Kendaraan',
+                                  subtitle: 'Kelola Kendaraan Mobil Anda',
+                                  onTap: () => Navigator.pushNamed(
+                                          context, AppRoutes.vehicleManagement)
                                       .then((_) => _loadProfile()),
+                                ),
+                                SettingsRowItemWidget(
+                                  icon: Icons.settings_outlined,
+                                  title: 'Preferensi & Tema',
+                                  subtitle: 'Ubah Pengaturan Tema (Light/Dark Mode)',
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, AppRoutes.pengaturan),
+                                  isLast: true,
+                                ),
+                              ],
                             ),
-                            SettingsRowItemWidget(
-                              icon: Icons.directions_car_outlined,
-                              title: 'Manajemen Kendaraan',
-                              subtitle: 'Kelola Kendaraan Mobil Anda',
-                              onTap: () => Navigator.pushNamed(
-                                      context, AppRoutes.vehicleManagement)
-                                  .then((_) => _loadProfile()),
-                            ),
-                            SettingsRowItemWidget(
-                              icon: Icons.settings_outlined,
-                              title: 'Preferensi & Tema',
-                              subtitle: 'Ubah Pengaturan Tema (Light/Dark Mode)',
-                              onTap: () =>
-                                  Navigator.pushNamed(context, AppRoutes.pengaturan),
-                              isLast: true,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                    // Button Keluar
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 52,
-                        child: ElevatedButton(
-                          onPressed: _doLogout,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFEF4444),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Keluar',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                        // Button Keluar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: ElevatedButton(
+                              onPressed: _doLogout,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFEF4444),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                'Keluar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                  ],
+                  ),
                 ),
-              ),
-            ),
 
-            // Bottom Navigation Bar
-            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+                // Bottom Navigation Bar
+                AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+              ],
+            ),
+            const FloatingTutorialWidget(),
           ],
         ),
       ),

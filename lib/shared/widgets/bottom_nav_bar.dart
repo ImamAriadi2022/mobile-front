@@ -34,11 +34,11 @@ class AppBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(context, 0, Icons.home_outlined, 'Home', isDark),
-          _buildNavItem(context, 1, Icons.map_outlined, 'Area', isDark),
-          _buildNavItem(context, 2, Icons.directions_car_outlined, 'Parking', isDark),
-          _buildNavItem(context, 3, Icons.history_rounded, 'History', isDark),
-          _buildNavItem(context, 4, Icons.person_outline_rounded, 'Profile', isDark),
+          _buildNavItem(context, 0, Icons.home_outlined, 'Beranda', isDark),
+          _buildNavItem(context, 1, Icons.map_outlined, 'Area Parkir', isDark),
+          _buildNavItem(context, 2, Icons.directions_car_outlined, 'Status Parkir', isDark),
+          _buildNavItem(context, 3, Icons.history_rounded, 'Riwayat', isDark),
+          _buildNavItem(context, 4, Icons.person_outline_rounded, 'Profil', isDark),
         ],
       ),
     );
@@ -53,7 +53,7 @@ class AppBottomNavBar extends StatelessWidget {
       onTap: () => onTap(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: const BoxDecoration(
           color: Colors.transparent,
         ),
@@ -70,7 +70,7 @@ class AppBottomNavBar extends StatelessWidget {
               label,
               style: TextStyle(
                 color: isActive ? activeColor : unselectedColor,
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
               ),
             ),
