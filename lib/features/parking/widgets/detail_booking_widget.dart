@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
@@ -11,11 +12,6 @@ import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 
 /// DetailBookingWidget: Composer untuk halaman peta slot parkir.
-///
-/// Tanggung jawab:
-/// - Mengelola state [_selectedFloorTab], [_navIndex]
-/// - Menyusun widget: AppBar custom, SearchBar, FloorTabs, ZoneHeader, SlotMap
-/// - Menangani navigasi
 class DetailBookingWidget extends StatefulWidget {
   final String areaId;
 
@@ -26,12 +22,11 @@ class DetailBookingWidget extends StatefulWidget {
 }
 
 class _DetailBookingWidgetState extends State<DetailBookingWidget> {
-  // ── State ────────────────────────────────────────────────────────────────
   int _selectedFloorTab = 0;
   int _navIndex = 1;
   bool _isLoading = true;
+  bool _showVisualMap = false;
 
-  // ── Data ─────────────────────────────────────────────────────────────────
   List<ParkingSlotData> _leftSlots = [];
   List<ParkingSlotData> _rightSlots = [];
 
@@ -52,7 +47,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
     if (mounted) {
       setState(() {
-        // Simple division of slots to left and right for UI purpose
         final half = (slots.length / 2).ceil();
 
         SlotStatus mapStatus(String st) {
@@ -89,7 +83,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
   static const _floorTabs = ['Semua', 'Lantai 1', 'Lantai 2'];
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
     setState(() => _navIndex = idx);
     switch (idx) {
@@ -108,65 +101,94 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     }
   }
 
-  // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // ① Custom app bar
-        _DetailAppBarWidget(
-          title: 'Teknik Elektro Universitas Lampung',
-          onBack: () => Navigator.pop(context),
-        ),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom app bar
+            _DetailAppBarWidget(
+              title: 'Peta Slot Parkir FT Unila',
+              onBack: () => Navigator.pop(context),
+              showVisualMap: _showVisualMap,
+              onToggleMap: () => setState(() => _showVisualMap = !_showVisualMap),
+            ),
 
-        // ② Search bar (read-only mock)
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: SearchBarWidget(
-            hintText: 'Cari slot , contoh (lantai 1 Slot A4)',
-            readOnly: true,
-          ),
-        ),
+            // Search bar
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: SearchBarWidget(
+                hintText: 'Cari slot (contoh: Lantai 1 Slot A4)',
+                readOnly: true,
+              ),
+            ),
 
-        // ③ Floor tabs
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            children: _floorTabs.asMap().entries.map((e) {
-              return Padding(
-                padding: EdgeInsets.only(
-                    right: e.key < _floorTabs.length - 1 ? 8 : 0),
-                child: FloorTabWidget(
-                  label: e.value,
-                  isSelected: _selectedFloorTab == e.key,
-                  onTap: () => setState(() => _selectedFloorTab = e.key),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
+            // Floor tabs
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: _floorTabs.asMap().entries.map((e) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        right: e.key < _floorTabs.length - 1 ? 8 : 0),
+                    child: FloorTabWidget(
+                      label: e.value,
+                      isSelected: _selectedFloorTab == e.key,
+                      onTap: () => setState(() => _selectedFloorTab = e.key),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
 
-        // ④ Zone header
-        const _ZoneHeaderWidget(zoneName: 'Zona A - Lantai 1'),
-
-        // ⑤ Peta slot parkir
-        Expanded(
-          child: _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: Colors.white))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ParkingSlotMapWidget(
-                    leftSlots: _leftSlots,
-                    rightSlots: _rightSlots,
-                    onSlotTap: (slot) => _handleSlotBooking(slot),
+            // Visual Map preview PNG vs Slot grid
+            if (_showVisualMap)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      'assets/images/peta_parkir_ft_unila.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Center(
+                        child: Text(
+                          'Gambar Peta Denah Tidak Ditemukan',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-        ),
+              )
+            else ...[
+              // Zone header
+              const _ZoneHeaderWidget(zoneName: 'Zona A - Lantai 1'),
+              const SizedBox(height: 8),
 
-        // ⑥ Bottom nav
-        AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
-      ],
+              // Peta slot parkir
+              Expanded(
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(color: AppColors.accent))
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ParkingSlotMapWidget(
+                          leftSlots: _leftSlots,
+                          rightSlots: _rightSlots,
+                          onSlotTap: (slot) => _handleSlotBooking(slot),
+                        ),
+                      ),
+              ),
+            ],
+
+            // Bottom nav
+            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+          ],
+        ),
+      ),
     );
   }
 
@@ -180,7 +202,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
     setState(() => _isLoading = true);
 
-    // Get Profile for name and plateNumber
     final profileService = ProfileService();
     final vehicleService = VehicleService();
     final profile = await profileService.getProfile();
@@ -241,18 +262,23 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   }
 }
 
-// ── Private feature-specific widgets ─────────────────────────────────────────
-
 class _DetailAppBarWidget extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
+  final bool showVisualMap;
+  final VoidCallback onToggleMap;
 
-  const _DetailAppBarWidget({required this.title, required this.onBack});
+  const _DetailAppBarWidget({
+    required this.title,
+    required this.onBack,
+    required this.showVisualMap,
+    required this.onToggleMap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
           GestureDetector(
@@ -260,32 +286,42 @@ class _DetailAppBarWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.cardBg,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.borderColor),
               ),
               child: const Icon(Icons.arrow_back_ios_new,
-                  color: Colors.white, size: 18),
+                  color: AppColors.textPrimary, size: 18),
             ),
           ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+              style: AppTextStyles.heading3.copyWith(
+                fontSize: 16,
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.cardBg,
-              borderRadius: BorderRadius.circular(10),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: onToggleMap,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: showVisualMap ? AppColors.accent : Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.borderColor),
+              ),
+              child: Icon(
+                showVisualMap ? Icons.grid_view_rounded : Icons.map_rounded,
+                color: showVisualMap ? Colors.white : AppColors.textPrimary,
+                size: 20,
+              ),
             ),
-            child: const Icon(Icons.notifications_outlined,
-                color: Colors.white70, size: 20),
           ),
         ],
       ),
@@ -301,7 +337,7 @@ class _ZoneHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -309,8 +345,10 @@ class _ZoneHeaderWidget extends StatelessWidget {
               color: AppColors.textSecondary, size: 16),
           Text(
             zoneName,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+            style: AppTextStyles.cardTitle.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const Icon(Icons.arrow_forward_ios,
               color: AppColors.textSecondary, size: 16),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-
-// CDN base for remote assets used by welcome page
-const String _cdnBaseUrl = 'https://storage.googleapis.com/parkfinderbucket';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 class WelcomeWidget extends StatefulWidget {
   const WelcomeWidget({super.key});
@@ -12,179 +11,218 @@ class WelcomeWidget extends StatefulWidget {
 }
 
 class _WelcomeWidgetState extends State<WelcomeWidget> {
-  bool _isDark = true;
+  final PageController _pageController = PageController();
+  int _currentIndex = 0;
+
+  final List<Map<String, String>> _onboardingData = [
+    {
+      'title': 'ParkFinder FT Unila',
+      'subtitle': 'Solusi Pintar Cari & Reservasi Slot Parkir Kampus',
+      'description': 'Temukan lokasi parkir yang tersedia secara cepat dan efisien tanpa perlu memutar area kampus.',
+      'image': 'assets/images/onboarding_main.png',
+    },
+    {
+      'title': 'Denah & Slot Interaktif',
+      'subtitle': 'Pilih Slot Sesuai Keinginan Anda',
+      'description': 'Lihat ketersediaan slot parkir secara langsung dari peta denah interaktif Fakultas Teknik.',
+      'image': 'assets/images/onboarding_1.png',
+    },
+    {
+      'title': 'Scan QR & Status Aktif',
+      'subtitle': 'Masuk & Keluar Parkir Lebih Praktis',
+      'description': 'Gunakan QR Ticket untuk konfirmasi masuk dan pantau durasi serta status parkir secara realtime.',
+      'image': 'assets/images/onboarding_2.png',
+    },
+  ];
+
+  void _onNext() {
+    if (_currentIndex < _onboardingData.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    }
+  }
+
+  void _onSkip() {
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    final imageUrl = _isDark
-        ? '$_cdnBaseUrl/background/bg-wellcome-dark.png'
-        : '$_cdnBaseUrl/background/bg-wellcome-light.png';
-
-    final fallbackGradient = _isDark
-        ? const LinearGradient(
-            colors: [Color(0xFF2C3E6B), Color(0xFF0D1628)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )
-        : const LinearGradient(
-            colors: [Color(0xFF87CEEB), Color(0xFFB0D9F5)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          );
-
-    // Tinggi panel bawah (teks + tombol + padding)
-    const double bottomPanelHeight = 220;
-
-    return SizedBox.expand(
-      child: Stack(
-        children: [
-          // ── Layer 1: Background image (full layar) ─────────────
-          Positioned.fill(
-            child: Image.network(
-              imageUrl,
-              key: ValueKey(imageUrl),
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  decoration: BoxDecoration(gradient: fallbackGradient),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white54,
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  decoration: BoxDecoration(gradient: fallbackGradient),
-                );
-              },
-            ),
-          ),
-
-          // ── Layer 2: Gradient shadow (foto → panel biru) ───────
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: bottomPanelHeight - 20,
-            height: size.height * 0.30,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    const Color(0xFF1A2D6B).withValues(alpha: 0.7),
-                    const Color(0xFF1A2D6B),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.55, 1.0],
-                ),
-              ),
-            ),
-          ),
-
-          // ── Layer 3: Panel bawah (pinned ke bottom) ────────────
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              color: const Color(0xFF1A2D6B),
-              padding: EdgeInsets.fromLTRB(
-                  24, 20, 24, (bottomPadding > 0 ? bottomPadding : 32)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Top Navigation Bar (Skip Button)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'ParkFinder',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Temukan Slot Parkir Anda dengan Cepat.',
-                    style: TextStyle(
-                      color: Color(0xFFB0BEC5),
-                      fontSize: 15,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRoutes.welcomeTransition);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
+                  Image.asset(
+                    'lib/assets/logo.png',
+                    height: 32,
+                    errorBuilder: (_, __, ___) => const Text(
+                      'PARKFINDER',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        fontSize: 18,
                       ),
-                      child: const Text(
-                        'Mulai',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _onSkip,
+                    child: Text(
+                      'Lewati',
+                      style: AppTextStyles.bodySecondary.copyWith(
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
 
-          // ── Layer 4: Theme toggle (pojok kanan atas) ───────────
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 12,
-            right: 16,
-            child: GestureDetector(
-              onTap: () => setState(() => _isDark = !_isDark),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white30),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _isDark ? 'Terang' : 'Gelap',
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+            // PageView Content
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
+                },
+                itemCount: _onboardingData.length,
+                itemBuilder: (context, index) {
+                  final data = _onboardingData[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Image Asset Container
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              color: AppColors.backgroundLight,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset(
+                                data['image']!,
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, __, ___) => Center(
+                                  child: Icon(
+                                    Icons.local_parking_rounded,
+                                    size: 100,
+                                    color: AppColors.accent.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Title & Description
+                        Text(
+                          data['title']!,
+                          style: AppTextStyles.heading1.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 24,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          data['subtitle']!,
+                          style: AppTextStyles.cardTitle.copyWith(
+                            color: AppColors.accent,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          data['description']!,
+                          style: AppTextStyles.bodySecondary.copyWith(
+                            color: AppColors.textSecondary,
+                            height: 1.4,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(width: 6),
-                    Icon(
-                      _isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                      color: Colors.amber,
-                      size: 16,
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
-          ),
-        ],
+
+            // Bottom Actions (Page Indicators + Next Button)
+            Padding(
+              padding: EdgeInsets.fromLTRB(24, 0, 24, bottomPadding > 0 ? bottomPadding : 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Indicators
+                  Row(
+                    children: List.generate(
+                      _onboardingData.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.only(right: 6),
+                        width: _currentIndex == index ? 24 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: _currentIndex == index ? AppColors.accent : const Color(0xFFCBD5E1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Next Button
+                  ElevatedButton(
+                    onPressed: _onNext,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _currentIndex == _onboardingData.length - 1 ? 'Mulai Sekarang' : 'Lanjut',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(Icons.arrow_forward_rounded, size: 18),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

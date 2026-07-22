@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import '../services/booking_service.dart';
 
 /// BookingWidget: Composer untuk halaman pencarian dan pemilihan gedung parkir.
-///
-/// Tanggung jawab:
-/// - Mengelola state [_searchCtrl], [_navIndex], filter hasil pencarian
-/// - Menyusun widget: Header, SearchBar, ListView dengan ParkingListItemWidget
-/// - Menangani navigasi ke DetailBooking
 class BookingWidget extends StatefulWidget {
   const BookingWidget({super.key});
 
@@ -18,12 +14,10 @@ class BookingWidget extends StatefulWidget {
 }
 
 class _BookingWidgetState extends State<BookingWidget> {
-  // ── State ────────────────────────────────────────────────────────────────
   final _searchCtrl = TextEditingController();
   int _navIndex = 1;
   bool _isLoading = true;
 
-  // ── Data ─────────────────────────────────────────────────────────────────
   List<ParkingItemData> _allParking = [];
 
   @override
@@ -61,7 +55,6 @@ class _BookingWidgetState extends State<BookingWidget> {
     return _allParking.where((e) => e.name.toLowerCase().contains(q)).toList();
   }
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   void _onNavTap(int idx) {
     setState(() => _navIndex = idx);
     switch (idx) {
@@ -86,58 +79,130 @@ class _BookingWidgetState extends State<BookingWidget> {
     super.dispose();
   }
 
-  // ── Build (Composer) ───────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ① Header
-              const _BookingHeaderWidget(),
-              const SizedBox(height: 12),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    const _BookingHeaderWidget(),
+                    const SizedBox(height: 12),
 
-              // ② Search bar
-              SearchBarWidget(
-                controller: _searchCtrl,
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-
-              // ③ Daftar gedung parkir (filtered)
-              Expanded(
-                child: _isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: Colors.white))
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: _filtered.length,
-                        itemBuilder: (context, i) => ParkingListItemWidget(
-                          item: _filtered[i],
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.detailBooking,
-                              arguments: _filtered[i].id,
-                            );
-                          },
+                    // Denah Banner Template PNG
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Container(
+                        height: 140,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: AppColors.cardBg2,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.borderColor),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Image.asset(
+                                  'assets/images/denah_parkir.png',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Icon(
+                                      Icons.map_rounded,
+                                      size: 60,
+                                      color: AppColors.accent.withValues(alpha: 0.4),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  color: Colors.black.withValues(alpha: 0.5),
+                                  child: const Text(
+                                    'Peta Denah Kawasan Parkir FT Unila',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-              ),
-            ],
-          ),
-        ),
+                    ),
+                    const SizedBox(height: 16),
 
-        // ④ Bottom nav
-        AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
-      ],
+                    // Search bar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SearchBarWidget(
+                        controller: _searchCtrl,
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    const SectionTitleWidget(
+                      title: 'Pilihan Gedung & Area Parkir',
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Lista Gedung Parkir
+                    _isLoading
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(24),
+                              child: CircularProgressIndicator(color: AppColors.accent),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              children: _filtered
+                                  .map(
+                                    (item) => ParkingListItemWidget(
+                                      item: item,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.detailBooking,
+                                          arguments: item.id,
+                                        );
+                                      },
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+
+            // Bottom Nav
+            AppBottomNavBar(currentIndex: _navIndex, onTap: _onNavTap),
+          ],
+        ),
+      ),
     );
   }
 }
-
-// ── Private feature header (hanya di booking) ─────────────────────────────────
 
 class _BookingHeaderWidget extends StatelessWidget {
   const _BookingHeaderWidget();
@@ -148,13 +213,11 @@ class _BookingHeaderWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Text(
-              'Carilah Tempat parkir anda',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              'Cari Area Parkir',
+              style: AppTextStyles.heading2.copyWith(
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -162,12 +225,15 @@ class _BookingHeaderWidget extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.cardBg,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.borderColor),
             ),
-            child: const Icon(Icons.notifications_outlined,
-                color: Colors.white70, size: 20),
+            child: const Icon(
+              Icons.notifications_outlined,
+              color: AppColors.textSecondary,
+              size: 20,
+            ),
           ),
         ],
       ),
