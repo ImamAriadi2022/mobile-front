@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'core/pwa/pwa_update_service.dart';
 import 'core/pwa/pwa_install_service.dart';
 import 'core/data/mock_data.dart';
+import 'shared/styles/theme_provider.dart';
 
 // Providers
 import 'features/auth/providers/auth_provider.dart';
@@ -37,6 +38,9 @@ class AppProviders extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(),
+        ),
         // Auth — digunakan oleh semua feature (cek login status)
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => AuthProvider(),

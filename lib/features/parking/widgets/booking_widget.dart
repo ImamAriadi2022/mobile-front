@@ -112,7 +112,7 @@ class _BookingWidgetState extends State<BookingWidget> {
                             children: [
                               Positioned.fill(
                                 child: Image.asset(
-                                  'assets/images/denah_parkir.png',
+                                  'lib/assets/parking/denah_parkir.png',
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, __, ___) => Center(
                                     child: Icon(

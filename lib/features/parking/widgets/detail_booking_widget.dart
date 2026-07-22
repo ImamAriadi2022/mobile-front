@@ -151,7 +151,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
-                      'assets/images/peta_parkir_ft_unila.png',
+                      'lib/assets/parking/peta_parkir_ft_unila.png',
                       fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => const Center(
                         child: Text(

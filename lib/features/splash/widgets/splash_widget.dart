@@ -134,25 +134,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
     }
 
     if (!mounted) return;
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 420),
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return const WelcomePage();
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0, 1);
-          const end = Offset.zero;
-          final tween = Tween(begin: begin, end: end)
-              .chain(CurveTween(curve: Curves.easeOutCubic));
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-      ),
-    );
+    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
   }
 
   Widget _buildLogo() {

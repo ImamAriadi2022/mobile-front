@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_text_styles.dart';
 
 class WelcomeWidget extends StatefulWidget {
   const WelcomeWidget({super.key});
@@ -19,19 +19,19 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       'title': 'ParkFinder FT Unila',
       'subtitle': 'Solusi Pintar Cari & Reservasi Slot Parkir Kampus',
       'description': 'Temukan lokasi parkir yang tersedia secara cepat dan efisien tanpa perlu memutar area kampus.',
-      'image': 'assets/images/onboarding_main.png',
+      'image': 'lib/assets/welcome/onboarding_main.png',
     },
     {
       'title': 'Denah & Slot Interaktif',
       'subtitle': 'Pilih Slot Sesuai Keinginan Anda',
       'description': 'Lihat ketersediaan slot parkir secara langsung dari peta denah interaktif Fakultas Teknik.',
-      'image': 'assets/images/onboarding_1.png',
+      'image': 'lib/assets/welcome/onboarding_1.png',
     },
     {
       'title': 'Scan QR & Status Aktif',
       'subtitle': 'Masuk & Keluar Parkir Lebih Praktis',
       'description': 'Gunakan QR Ticket untuk konfirmasi masuk dan pantau durasi serta status parkir secara realtime.',
-      'image': 'assets/images/onboarding_2.png',
+      'image': 'lib/assets/welcome/onboarding_2.png',
     },
   ];
 
@@ -42,20 +42,21 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
   void _onSkip() {
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    Navigator.pushReplacementNamed(context, AppRoutes.home);
   }
 
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,11 +69,11 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   Image.asset(
                     'lib/assets/logo.png',
                     height: 32,
-                    errorBuilder: (_, __, ___) => const Text(
+                    errorBuilder: (_, __, ___) => Text(
                       'PARKFINDER',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                        color: isDark ? Colors.white : AppColors.primaryLight,
                         fontSize: 18,
                       ),
                     ),
@@ -82,7 +83,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                     child: Text(
                       'Lewati',
                       style: AppTextStyles.bodySecondary.copyWith(
-                        color: AppColors.accent,
+                        color: AppColors.accentLight,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -111,7 +112,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 16),
                             decoration: BoxDecoration(
-                              color: AppColors.backgroundLight,
+                              color: isDark ? AppColors.cardBg2Dark : AppColors.cardBg2Light,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: ClipRRect(
@@ -123,7 +124,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                                   child: Icon(
                                     Icons.local_parking_rounded,
                                     size: 100,
-                                    color: AppColors.accent.withValues(alpha: 0.5),
+                                    color: AppColors.accentLight.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ),
@@ -137,7 +138,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                         Text(
                           data['title']!,
                           style: AppTextStyles.heading1.copyWith(
-                            color: AppColors.primary,
+                            color: isDark ? Colors.white : AppColors.primaryLight,
                             fontSize: 24,
                           ),
                           textAlign: TextAlign.center,
@@ -146,7 +147,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                         Text(
                           data['subtitle']!,
                           style: AppTextStyles.cardTitle.copyWith(
-                            color: AppColors.accent,
+                            color: AppColors.accentLight,
                             fontSize: 15,
                           ),
                           textAlign: TextAlign.center,
@@ -155,7 +156,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                         Text(
                           data['description']!,
                           style: AppTextStyles.bodySecondary.copyWith(
-                            color: AppColors.textSecondary,
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
@@ -184,7 +185,9 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                         width: _currentIndex == index ? 24 : 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: _currentIndex == index ? AppColors.accent : const Color(0xFFCBD5E1),
+                          color: _currentIndex == index
+                              ? AppColors.accentLight
+                              : (isDark ? Colors.white24 : const Color(0xFFCBD5E1)),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -195,7 +198,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   ElevatedButton(
                     onPressed: _onNext,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: isDark ? AppColors.accentDark : AppColors.primaryLight,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                       shape: RoundedRectangleBorder(

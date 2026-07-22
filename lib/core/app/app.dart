@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../pwa/pwa_update_service.dart';
 import '../routes/app_routes.dart';
 import '../routes/app_router.dart';
-import '../theme/app_colors.dart';
+import '../../shared/styles/app_theme.dart';
+import '../../shared/styles/theme_provider.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -15,84 +16,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+
     return MaterialApp(
       scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'ParkFinder',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme().apply(
-          bodyColor: AppColors.textPrimary,
-          displayColor: AppColors.textPrimary,
-        ),
-        colorScheme: const ColorScheme.light(
-          primary: AppColors.primary,
-          secondary: AppColors.accent,
-          surface: AppColors.surface,
-          error: AppColors.red,
-          onPrimary: Colors.white,
-          onSecondary: Colors.white,
-          onSurface: AppColors.textPrimary,
-          onError: Colors.white,
-        ),
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.surface,
-          foregroundColor: AppColors.textPrimary,
-          elevation: 0,
-        ),
-        cardTheme: CardThemeData(
-          color: AppColors.surface,
-          elevation: 0,
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: AppColors.borderColor),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: AppColors.backgroundLight,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          hintStyle: const TextStyle(color: AppColors.textMuted),
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          prefixIconColor: AppColors.textSecondary,
-          suffixIconColor: AppColors.textSecondary,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFFC9D2E3)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            minimumSize: const Size.fromHeight(52),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.accent;
-            }
-            return Colors.grey;
-          }),
-          trackColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.accent.withValues(alpha: 0.4);
-            }
-            return Colors.grey.withValues(alpha: 0.3);
-          }),
-        ),
-      ),
+      themeMode: themeProvider.themeMode,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       initialRoute: AppRoutes.splashScreen,
       onGenerateRoute: AppRouter.onGenerateRoute,
       builder: (context, child) {
@@ -136,7 +68,7 @@ class _UpdateListenerWrapperState extends State<UpdateListenerWrapper> {
 
     scaffoldMessengerKey.currentState?.showMaterialBanner(
       MaterialBanner(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 2.0,
         content: const Row(
           children: [

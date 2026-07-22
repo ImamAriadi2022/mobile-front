@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import 'package:provider/provider.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/theme_provider.dart';
 
 class PengaturanPage extends StatefulWidget {
   const PengaturanPage({super.key});
@@ -15,13 +17,13 @@ class _PengaturanPageState extends State<PengaturanPage> {
   bool _sesiSelesai = true;
   bool _salahParkir = true;
 
-  // 0=Terang, 1=Gelap, 2=Otomatis
-  int _temaIndex = 1;
-
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -35,20 +37,20 @@ class _PengaturanPageState extends State<PengaturanPage> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBg,
+                        color: isDark ? AppColors.cardBgDark : AppColors.cardBgLight,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.borderColor),
+                        border: Border.all(color: isDark ? AppColors.borderColorDark : AppColors.borderColorLight),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new,
-                          color: Colors.white, size: 18),
+                      child: Icon(Icons.arrow_back_ios_new,
+                          color: isDark ? Colors.white : AppColors.textPrimaryLight, size: 18),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Pengaturan',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
@@ -66,16 +68,15 @@ class _PengaturanPageState extends State<PengaturanPage> {
                   children: [
                     const SizedBox(height: 16),
 
-                    // Notifikasi section
-                    const Text('Notifikasi',
+                    Text('Notifikasi',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: isDark ? Colors.white : AppColors.textPrimaryLight,
                             fontSize: 16,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
-                    const Text('Kelola preferensi notifikasi Anda',
+                    Text('Kelola preferensi notifikasi Anda',
                         style: TextStyle(
-                            color: AppColors.textSecondary, fontSize: 12)),
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight, fontSize: 12)),
                     const SizedBox(height: 12),
 
                     _buildToggleItem(
@@ -83,6 +84,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       subtitle: 'Terima Notifikasi Secara Langsung',
                       value: _pushNotif,
                       onChanged: (v) => setState(() => _pushNotif = v),
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 8),
                     _buildToggleItem(
@@ -90,6 +92,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       subtitle: '15 Menit Sebelum waktu',
                       value: _pengingatBooking,
                       onChanged: (v) => setState(() => _pengingatBooking = v),
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 8),
                     _buildToggleItem(
@@ -97,6 +100,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       subtitle: 'Notifikasi Saat Sesi Aktif',
                       value: _sesiDimulai,
                       onChanged: (v) => setState(() => _sesiDimulai = v),
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 8),
                     _buildToggleItem(
@@ -104,6 +108,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       subtitle: 'Notifikasi akhir parkir',
                       value: _sesiSelesai,
                       onChanged: (v) => setState(() => _sesiSelesai = v),
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 8),
                     _buildToggleItem(
@@ -111,61 +116,59 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       subtitle: 'Deteksi Perpindahan Slot',
                       value: _salahParkir,
                       onChanged: (v) => setState(() => _salahParkir = v),
+                      isDark: isDark,
                     ),
 
                     const SizedBox(height: 24),
 
-                    // Tampilan section
-                    const Text('Tampilan',
+                    Text('Tampilan',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: isDark ? Colors.white : AppColors.textPrimaryLight,
                             fontSize: 16,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
-                    const Text('Personalisasikan tampilan aplikasi',
+                    Text('Personalisasikan tampilan aplikasi',
                         style: TextStyle(
-                            color: AppColors.textSecondary, fontSize: 12)),
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight, fontSize: 12)),
                     const SizedBox(height: 12),
 
                     // Tema aplikasi
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.cardBg,
+                        color: isDark ? AppColors.cardBgDark : AppColors.cardBgLight,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.borderColor),
+                        border: Border.all(color: isDark ? AppColors.borderColorDark : AppColors.borderColorLight),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(16, 14, 16, 8),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Tema Aplikasi',
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600)),
-                                SizedBox(height: 2),
-                                Text('Pilih tema aplikasi',
+                                const SizedBox(height: 2),
+                                Text('Pilih mode tema aplikasi',
                                     style: TextStyle(
-                                        color: AppColors.textSecondary,
+                                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                                         fontSize: 11)),
                               ],
                             ),
                           ),
-                          const Divider(
-                              color: AppColors.borderColor, height: 1),
+                          Divider(
+                              color: isDark ? AppColors.borderColorDark : AppColors.borderColorLight, height: 1),
                           Padding(
                             padding: const EdgeInsets.all(14),
                             child: Row(
                               children: [
-                                _buildThemeOption(0, 'Terang'),
-                                const SizedBox(width: 24),
-                                _buildThemeOption(1, 'Gelap'),
-                                const SizedBox(width: 24),
-                                _buildThemeOption(2, 'Otomatis'),
+                                _buildThemeOption(context, false, 'Terang', isDark),
+                                const SizedBox(width: 32),
+                                _buildThemeOption(context, true, 'Gelap', isDark),
                               ],
                             ),
                           ),
@@ -175,18 +178,12 @@ class _PengaturanPageState extends State<PengaturanPage> {
 
                     const SizedBox(height: 40),
 
-                    // About
                     Center(
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'tentang Aplikasi',
-                          style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 13,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.textSecondary),
-                        ),
+                      child: Text(
+                        'Tentang Aplikasi ParkFinder v1.0.0',
+                        style: TextStyle(
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                            fontSize: 12),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -205,13 +202,14 @@ class _PengaturanPageState extends State<PengaturanPage> {
     required String subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: isDark ? AppColors.cardBgDark : AppColors.cardBgLight,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.borderColor),
+        border: Border.all(color: isDark ? AppColors.borderColorDark : AppColors.borderColorLight),
       ),
       child: Row(
         children: [
@@ -220,34 +218,36 @@ class _PengaturanPageState extends State<PengaturanPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
-                        color: Colors.white,
+                    style: TextStyle(
+                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
                         fontSize: 14,
                         fontWeight: FontWeight.w500)),
                 const SizedBox(height: 2),
                 Text(subtitle,
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 11)),
+                    style: TextStyle(
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight, fontSize: 11)),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: AppColors.accent,
-            activeTrackColor: AppColors.accent.withValues(alpha: 0.3),
-            inactiveThumbColor: AppColors.textSecondary,
-            inactiveTrackColor: AppColors.borderColor,
+            activeThumbColor: AppColors.accentLight,
+            activeTrackColor: AppColors.accentLight.withValues(alpha: 0.3),
+            inactiveThumbColor: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+            inactiveTrackColor: isDark ? AppColors.borderColorDark : AppColors.borderColorLight,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildThemeOption(int index, String label) {
-    final isSelected = _temaIndex == index;
+  Widget _buildThemeOption(BuildContext context, bool isTargetDark, String label, bool isCurrentDark) {
+    final isSelected = isTargetDark == isCurrentDark;
     return GestureDetector(
-      onTap: () => setState(() => _temaIndex = index),
+      onTap: () {
+        context.read<ThemeProvider>().toggleTheme(isTargetDark);
+      },
       child: Row(
         children: [
           Container(
@@ -256,7 +256,7 @@ class _PengaturanPageState extends State<PengaturanPage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? AppColors.accent : AppColors.textSecondary,
+                color: isSelected ? AppColors.accentLight : (isCurrentDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
                 width: 2,
               ),
             ),
@@ -266,18 +266,19 @@ class _PengaturanPageState extends State<PengaturanPage> {
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                        color: AppColors.accent,
+                        color: AppColors.accentLight,
                         shape: BoxShape.circle,
                       ),
                     ),
                   )
                 : null,
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Text(label,
               style: TextStyle(
-                  color: isSelected ? AppColors.accent : Colors.white,
-                  fontSize: 13)),
+                  color: isSelected ? AppColors.accentLight : (isCurrentDark ? Colors.white : AppColors.textPrimaryLight),
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
         ],
       ),
     );
