@@ -140,7 +140,6 @@ class _EditProfilPageState extends State<EditProfilPage> {
   }
 
   void _showSuccess() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.getCardBg(context);
     final textPrimary = AppColors.getTextPrimary(context);
 

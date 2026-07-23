@@ -19,7 +19,6 @@ class SettingsRowItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);
     final borderColor = AppColors.getBorderColor(context);

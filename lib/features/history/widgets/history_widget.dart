@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
-import '../../../shared/styles/app_text_styles.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/parking/models/parking_area.dart';
@@ -20,7 +19,6 @@ class HistoryWidget extends StatefulWidget {
 class _HistoryWidgetState extends State<HistoryWidget> {
   int _navIndex = 3;
   String _userName = 'User';
-  String _greeting = '';
   String? _photoUrl;
   bool _isLoading = true;
   String? _errorMessage;

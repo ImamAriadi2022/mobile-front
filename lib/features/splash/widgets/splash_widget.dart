@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:mobile_front/core/routes/app_routes.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/pwa/pwa_install_service.dart';
 import '../../../core/pwa/pwa_install_dialog.dart';
@@ -135,10 +136,20 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget>
   }
 
   Widget _buildLogo() {
-    return Image.asset(
-      'lib/assets/logo.png',
+    return Image.network(
+      '${AppConfig.storageUrl}/logo.png',
       width: 250,
       fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => Image.asset(
+        'lib/assets/logo.png',
+        width: 250,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const Icon(
+          Icons.local_parking_rounded,
+          size: 100,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

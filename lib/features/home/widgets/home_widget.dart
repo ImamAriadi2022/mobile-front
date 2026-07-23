@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
-import '../../../shared/styles/app_text_styles.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/features/scan/models/ticket_data.dart';
@@ -22,10 +21,8 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   int _navIndex = 0;
   bool _isLoading = true;
-  String? _error;
   List<ParkingItemData> _parkingList = [];
   String _userName = 'User';
-  String _greeting = 'Selamat Datang';
   String? _photoUrl;
 
   bool _hasActiveTicket = false;
@@ -87,7 +84,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   Future<void> _fetchAreas() async {
     setState(() {
       _isLoading = true;
-      _error = null;
     });
 
     final service = BookingService();
@@ -98,7 +94,6 @@ class _HomeWidgetState extends State<HomeWidget> {
     if (areas.isEmpty) {
       setState(() {
         _isLoading = false;
-        _error = 'Gagal memuat data parkir.';
       });
       return;
     }
@@ -292,15 +287,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                   color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Image.asset(
-                  'lib/assets/scan/qr_scanner.png',
+                child: Image.network(
+                  '${AppConfig.storageUrl}/scan/qr_scanner.png',
                   height: 180,
                   width: 180,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.qr_code_2_rounded,
-                    size: 160,
-                    color: Color(0xFF061E3D),
+                  errorBuilder: (_, __, ___) => Image.asset(
+                    'lib/assets/scan/qr_scanner.png',
+                    height: 180,
+                    width: 180,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.qr_code_2_rounded,
+                      size: 160,
+                      color: Color(0xFF061E3D),
+                    ),
                   ),
                 ),
               ),
@@ -540,14 +541,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                     child: SizedBox(
                       height: 140,
                       width: double.infinity,
-                      child: Image.asset(
+                      child: Image.network(
                         index == 0
-                            ? 'lib/assets/home/dashboard_parkir.png'
-                            : 'lib/assets/parking/denah_parkir.png',
+                            ? '${AppConfig.storageUrl}/home/dashboard_parkir.png'
+                            : '${AppConfig.storageUrl}/parking/denah_parkir.png',
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: const Color(0xFFF1F5F9),
-                          child: const Icon(Icons.apartment_rounded, size: 60, color: Color(0xFF94A3B8)),
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          index == 0
+                              ? 'lib/assets/home/dashboard_parkir.png'
+                              : 'lib/assets/parking/denah_parkir.png',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: const Color(0xFFF1F5F9),
+                            child: const Icon(Icons.apartment_rounded, size: 60, color: Color(0xFF94A3B8)),
+                          ),
                         ),
                       ),
                     ),

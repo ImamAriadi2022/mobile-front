@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/styles/app_text_styles.dart';
+import '../../../core/config/app_config.dart';
 
 class WelcomeWidget extends StatefulWidget {
   const WelcomeWidget({super.key});
@@ -20,18 +21,21 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       'subtitle': 'Solusi Pintar Cari & Reservasi Slot Parkir Kampus',
       'description': 'Temukan lokasi parkir yang tersedia secara cepat dan efisien tanpa perlu memutar area kampus.',
       'image': 'lib/assets/welcome/onboarding_main.png',
+      'cdnImage': '${AppConfig.storageUrl}/onboarding/onboarding-light.png',
     },
     {
       'title': 'Denah & Slot Interaktif',
       'subtitle': 'Pilih Slot Sesuai Keinginan Anda',
       'description': 'Lihat ketersediaan slot parkir secara langsung dari peta denah interaktif Fakultas Teknik.',
       'image': 'lib/assets/welcome/onboarding_1.png',
+      'cdnImage': '${AppConfig.storageUrl}/parking/peta_parkir_ft_unila.png',
     },
     {
       'title': 'Scan QR & Status Aktif',
       'subtitle': 'Masuk & Keluar Parkir Lebih Praktis',
       'description': 'Gunakan QR Ticket untuk konfirmasi masuk dan pantau durasi serta status parkir secara realtime.',
       'image': 'lib/assets/welcome/onboarding_2.png',
+      'cdnImage': '${AppConfig.storageUrl}/scan/qr_scanner.png',
     },
   ];
 
@@ -66,15 +70,19 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    'lib/assets/logo.png',
+                  Image.network(
+                    '${AppConfig.storageUrl}/logo.png',
                     height: 32,
-                    errorBuilder: (_, __, ___) => Text(
-                      'PARKFINDER',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : AppColors.primaryLight,
-                        fontSize: 18,
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      'lib/assets/logo.png',
+                      height: 32,
+                      errorBuilder: (_, __, ___) => Text(
+                        'PARKFINDER',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : AppColors.primaryLight,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),
@@ -117,14 +125,18 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
-                              child: Image.asset(
-                                data['image']!,
+                              child: Image.network(
+                                data['cdnImage'] ?? '',
                                 fit: BoxFit.contain,
-                                errorBuilder: (_, __, ___) => Center(
-                                  child: Icon(
-                                    Icons.local_parking_rounded,
-                                    size: 100,
-                                    color: AppColors.accentLight.withValues(alpha: 0.5),
+                                errorBuilder: (_, __, ___) => Image.asset(
+                                  data['image']!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Icon(
+                                      Icons.local_parking_rounded,
+                                      size: 100,
+                                      color: AppColors.accentLight.withValues(alpha: 0.5),
+                                    ),
                                   ),
                                 ),
                               ),

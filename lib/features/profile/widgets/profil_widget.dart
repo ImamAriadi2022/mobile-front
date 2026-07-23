@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
-import '../../../shared/styles/app_text_styles.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'profile_avatar_widget.dart';
 import 'stats_card_widget.dart';

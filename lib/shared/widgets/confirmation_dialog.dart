@@ -46,7 +46,6 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.getCardBg(context);
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);

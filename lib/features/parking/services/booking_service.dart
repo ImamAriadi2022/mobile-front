@@ -69,10 +69,8 @@ class BookingService {
       final response = await _api.post(
         '/reservations',
         body: {
-          'slotId': slotId,
           'ticketId': ticketId,
-          'name': name,
-          'plateNumber': plateNumber,
+          'slotId': slotId,
         },
         requireAuth: true,
       );

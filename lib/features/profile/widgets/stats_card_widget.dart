@@ -54,7 +54,6 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary = AppColors.getTextSecondary(context);
 
     return Column(

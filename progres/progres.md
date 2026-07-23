@@ -2,25 +2,26 @@
 
 ## Selesai
 
-- **Penjelasan Struktur & Pemetaan Aset Gambar PNG (`lib/assets/`)**:
-  - Menyediakan tabel panduan pemetaan lengkap antara berkas PNG di `lib/assets/` dengan layar/widget pada antarmuka frontend aplikasi.
-- **Implementasi Tombol Floating Tutorial "?" di Pojok Kanan Bawah**:
-  - Membuat `FloatingTutorialWidget` (`lib/shared/widgets/floating_tutorial_widget.dart`) berupa tombol lingkaran melayang bertanda logo `?` di pojok kanan bawah pada seluruh halaman utama (`Beranda`, `Area Parkir`, `Status Parkir`, `Riwayat`, `Profil`).
-  - Mengetuk tombol tersebut akan membuka Bottom Sheet Modal **"Panduan Penggunaan"** interaktif yang menjelaskan 4 langkah praktis menggunakan aplikasi ParkFinder FT Unila.
+- **Pendokumentasian Rute CDN Bucket (`bucket.md`)**:
+  - Membuat dokumen resmi [bucket.md](file:///c:/programming/mobile-front/bucket.md) dan [api-docs/bucket.md](file:///c:/programming/mobile-front/api-docs/bucket.md) yang merinci seluruh endpoint aset gambar Google Cloud Storage CDN Bucket (`https://storage.googleapis.com/parkfinderbucket`).
+  - Berisi pemetaan rute aset gambar logo, latar belakang (background), onboarding, dashboard parkir, peta denah slot, QR scanner, serta foto profil pengguna.
+- **Penggunaan Google Cloud Storage Bucket CDN untuk Seluruh Gambar**:
+  - Mengonfigurasi seluruh pemuatan gambar dalam aplikasi menggunakan `Image.network` yang mengacu ke `AppConfig.storageUrl` (`https://storage.googleapis.com/parkfinderbucket`).
+  - Dilengkapi *fallback errorBuilder* otomatis ke aset lokal & ikon universal.
+- **Penghapusan Total Seluruh Data & Berkas Mock**:
+  - Menghapus berkas simulasi offline `mock_data.dart`, `mock_response.dart`, dan `mock_router.dart`.
+- **Integrasi Full Real REST API Live Backend**:
+  - Aplikasi 100% berkomunikasi langsung dengan server backend Google Cloud Run (`https://backend-api-services-173368161554.asia-southeast2.run.app`).
+  - Lulus verifikasi analisis kode Flutter (0 error & 0 warning).
 - **Penerjemahan 100% Copywriting ke Bahasa Indonesia**:
-  - Mengubah seluruh label navigasi pada [bottom_nav_bar.dart](file:///c:/programming/mobile-front/lib/shared/widgets/bottom_nav_bar.dart):
-    - `Home` $\rightarrow$ **`Beranda`**
-    - `Area` $\rightarrow$ **`Area Parkir`**
-    - `Parking` $\rightarrow$ **`Status Parkir`**
-    - `History` $\rightarrow$ **`Riwayat`**
-    - `Profile` $\rightarrow$ **`Profil`**
-- **Re-build & Ekspor PWA**: Berhasil mengompilasi ulang Flutter PWA (`flutter build web --release`) dan memperbarui seluruh berkas di direktori root `pwa/`.
-- Redesign presisi Halaman Masuk (`login_widget.dart`), Halaman Daftar (`register_widget.dart`), Beranda (Home), Area Parkir, Status Kendaraan, Riwayat, dan Profil.
+  - Seluruh label navigasi dan antarmuka menggunakan Bahasa Indonesia baku & profesional.
+- **Floating Tutorial Button "?"**:
+  - Modal panduan 4 langkah penggunaan aplikasi di pojok kanan bawah.
 
 ## Sedang dikerjakan
 
-- Selesai.
+- Menunggu instruksi rilis/ekspor PWA dari pengguna.
 
 ## Tersisa
 
-- Tidak ada.
+- Ekspor build rilis PWA ke direktori `pwa/` apabila diperintahkan oleh pengguna.

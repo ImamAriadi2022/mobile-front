@@ -12,7 +12,6 @@ import 'package:mobile_front/features/profile/models/vehicle.dart';
 import 'package:mobile_front/features/history/services/history_service.dart';
 import 'package:mobile_front/features/history/models/reservation_history.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
-import 'package:mobile_front/features/parking/models/parking_slot.dart';
 import 'package:mobile_front/features/parking/models/reservation_result.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
@@ -35,10 +34,8 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   bool _isCancelling = false;
   bool _isLoading = true;
   bool _isArriving = false;
-  bool _isSwapping = false;
 
   String _plateNumber = '';
-  String _vehicleType = 'Mobil';
 
   @override
   void initState() {
@@ -113,7 +110,6 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         if (vehicles.isNotEmpty) {
           _plateNumber = vehicles.first.plateNumber;
         }
-        _vehicleType = 'Mobil';
         _isLoading = false;
       });
 
@@ -652,7 +648,6 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   void _showArriveSuccessDialog(String slotName) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.getCardBg(context);
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);

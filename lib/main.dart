@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'core/pwa/pwa_update_service.dart';
 import 'core/pwa/pwa_install_service.dart';
-import 'core/data/mock_data.dart';
 import 'shared/styles/theme_provider.dart';
 
 // Providers
@@ -19,7 +18,6 @@ import 'core/app/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MockDatabase.init();
   if (kIsWeb) {
     PwaUpdateService.instance.init();
     PwaInstallService.instance.init();

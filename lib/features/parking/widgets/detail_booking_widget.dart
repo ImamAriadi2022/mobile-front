@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
-import '../../../shared/styles/app_text_styles.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
-import 'floor_tab_widget.dart';
 import 'parking_slot_item_widget.dart';
-import 'parking_slot_map_widget.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 
@@ -21,9 +18,7 @@ class DetailBookingWidget extends StatefulWidget {
 }
 
 class _DetailBookingWidgetState extends State<DetailBookingWidget> {
-  int _selectedFloorTab = 0;
   int _navIndex = 1;
-  bool _isLoading = true;
 
   List<ParkingSlotData> _leftSlots = [];
   List<ParkingSlotData> _rightSlots = [];
@@ -36,7 +31,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
   Future<void> _fetchSlots() async {
     if (widget.areaId.isEmpty) {
-      if (mounted) setState(() => _isLoading = false);
       return;
     }
 
@@ -71,8 +65,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
             .map((s) => ParkingSlotData(
                 id: s.id, label: s.slotNumber, status: mapStatus(s.status)))
             .toList();
-
-        _isLoading = false;
       });
     }
   }
@@ -530,8 +522,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
   }
 
   Future<void> _handleSlotBooking(ParkingSlotData slot) async {
-    setState(() => _isLoading = true);
-
     final profileService = ProfileService();
     final vehicleService = VehicleService();
     final profile = await profileService.getProfile();
@@ -546,7 +536,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
     if (activeTicket == null) {
       if (mounted) {
-        setState(() => _isLoading = false);
         NoTicketDialog.show(context);
       }
       return;
@@ -561,7 +550,6 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     );
 
     if (mounted) {
-      setState(() => _isLoading = false);
       if (result.success && result.reservationId.isNotEmpty) {
         final reservation = ActiveReservation(
           reservationId: result.reservationId,

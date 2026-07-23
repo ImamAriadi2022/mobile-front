@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/styles/theme_provider.dart';
+import '../../../core/config/app_config.dart';
 import '../providers/auth_provider.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -183,13 +184,17 @@ class _LoginWidgetState extends State<LoginWidget> {
                     ),
                   ],
                 ),
-                child: Image.asset(
-                  'lib/assets/logo.png',
+                child: Image.network(
+                  '${AppConfig.storageUrl}/logo.png',
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.local_parking_rounded,
-                    color: Color(0xFF03192E),
-                    size: 36,
+                  errorBuilder: (_, __, ___) => Image.asset(
+                    'lib/assets/logo.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.local_parking_rounded,
+                      color: Color(0xFF03192E),
+                      size: 36,
+                    ),
                   ),
                 ),
               ),

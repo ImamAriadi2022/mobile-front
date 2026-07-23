@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
-import '../../../shared/styles/app_text_styles.dart';
+import '../../../core/config/app_config.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import '../services/booking_service.dart';
 
@@ -166,14 +166,20 @@ class _BookingWidgetState extends State<BookingWidget> {
                                               child: SizedBox(
                                                 height: 160,
                                                 width: double.infinity,
-                                                child: Image.asset(
+                                                child: Image.network(
                                                   index == 0
-                                                      ? 'lib/assets/parking/denah_parkir.png'
-                                                      : 'lib/assets/home/dashboard_parkir.png',
+                                                      ? '${AppConfig.storageUrl}/parking/denah_parkir.png'
+                                                      : '${AppConfig.storageUrl}/home/dashboard_parkir.png',
                                                   fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => Container(
-                                                    color: const Color(0xFFF1F5F9),
-                                                    child: const Icon(Icons.apartment_rounded, size: 60),
+                                                  errorBuilder: (_, __, ___) => Image.asset(
+                                                    index == 0
+                                                        ? 'lib/assets/parking/denah_parkir.png'
+                                                        : 'lib/assets/home/dashboard_parkir.png',
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (_, __, ___) => Container(
+                                                      color: const Color(0xFFF1F5F9),
+                                                      child: const Icon(Icons.apartment_rounded, size: 60),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
