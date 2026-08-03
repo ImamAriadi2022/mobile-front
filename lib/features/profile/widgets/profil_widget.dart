@@ -8,6 +8,9 @@ import 'package:mobile_front/features/profile/services/profile_service.dart';
 import 'package:mobile_front/features/profile/models/vehicle.dart';
 import 'package:mobile_front/features/profile/models/profile_data.dart';
 import 'package:mobile_front/features/auth/services/auth_service.dart';
+import 'package:mobile_front/features/history/services/history_service.dart';
+import 'package:mobile_front/core/storage/active_reservation_storage.dart';
+import 'package:mobile_front/core/storage/active_ticket_storage.dart';
 
 class ProfilWidget extends StatefulWidget {
   const ProfilWidget({super.key});
@@ -21,6 +24,8 @@ class _ProfilWidgetState extends State<ProfilWidget> {
   bool _isLoading = true;
   ProfileData? _profileData;
   List<Vehicle> _vehicles = [];
+  int _totalParkir = 0;
+  int _parkirAktif = 0;
 
   @override
   void initState() {
@@ -31,13 +36,41 @@ class _ProfilWidgetState extends State<ProfilWidget> {
   Future<void> _loadProfile() async {
     final profileService = ProfileService();
     final vehicleService = VehicleService();
+    final historyService = HistoryService();
+
     final profile = await profileService.getProfile();
     final vehicles = await vehicleService.getVehicles();
+
+    int totalCount = 0;
+    int activeCount = 0;
+
+    if (profile != null) {
+      final history = await historyService.getHistory(profile.userId);
+      totalCount = history.length;
+      activeCount = history.where((h) {
+        final st = h.status.toLowerCase();
+        return st == 'active' ||
+            st == 'pending' ||
+            st == 'arrived' ||
+            st == 'booked' ||
+            st == 'claimed';
+      }).length;
+    }
+
+    final activeRes = await ActiveReservationStorage().load();
+    final activeTicket = await ActiveTicketStorage().load();
+    if (activeCount == 0 &&
+        ((activeRes != null && activeRes.reservationId.isNotEmpty) ||
+            (activeTicket != null && activeTicket.isActive))) {
+      activeCount = 1;
+    }
 
     if (mounted) {
       setState(() {
         _profileData = profile;
         _vehicles = vehicles;
+        _totalParkir = totalCount;
+        _parkirAktif = activeCount;
         _isLoading = false;
       });
     }
@@ -127,9 +160,9 @@ class _ProfilWidgetState extends State<ProfilWidget> {
                               const SizedBox(height: 20),
 
                               // Kartu Statistik
-                              const StatsCardWidget(
-                                totalParkir: '33',
-                                parkirAktif: '1',
+                              StatsCardWidget(
+                                totalParkir: '$_totalParkir',
+                                parkirAktif: '$_parkirAktif',
                               ),
                               const SizedBox(height: 20),
 

@@ -64,32 +64,35 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     ActiveReservation? reservation = await ActiveReservationStorage().load();
     try {
       final profile = await ProfileService().getProfile();
-      if (profile != null) {
-        final historyList = await HistoryService().getHistory(profile.userId);
-        ReservationHistory? activeResFromApi;
-        for (final r in historyList) {
-          if (r.status == 'active' || r.status == 'pending') {
-            activeResFromApi = r;
-            break;
-          }
-        }
+      final historyList = await HistoryService().getHistory(profile?.userId ?? '');
 
-        if (activeResFromApi != null) {
-          reservation = ActiveReservation(
-            reservationId: activeResFromApi.reservationId,
-            status: activeResFromApi.status,
-            slotId: activeResFromApi.slotId,
-            slotName: activeResFromApi.slotName,
-            areaId: activeResFromApi.areaId,
-            ticketId: activeResFromApi.ticketId,
-            startTime: activeResFromApi.timestamps.created ?? '',
-          );
-          await ActiveReservationStorage().save(reservation);
-        } else {
-          if (reservation != null) {
-            await ActiveReservationStorage().clear();
-            reservation = null;
-          }
+      ReservationHistory? activeResFromApi;
+      for (final r in historyList) {
+        final st = r.status.toLowerCase();
+        if (st == 'active' || st == 'pending' || st == 'arrived' || st == 'booked' || st == 'claimed') {
+          activeResFromApi = r;
+          break;
+        }
+      }
+
+      if (activeResFromApi != null) {
+        reservation = ActiveReservation(
+          reservationId: activeResFromApi.reservationId,
+          status: activeResFromApi.status.toLowerCase(),
+          slotId: activeResFromApi.slotId,
+          slotName: activeResFromApi.slotName,
+          areaId: activeResFromApi.areaId,
+          ticketId: activeResFromApi.ticketId,
+          startTime: activeResFromApi.timestamps.created ?? DateTime.now().toIso8601String(),
+        );
+        await ActiveReservationStorage().save(reservation);
+      } else if (historyList.isNotEmpty && reservation != null) {
+        final matchedCompleted = historyList.any((h) =>
+            h.reservationId == reservation!.reservationId &&
+            (h.status.toLowerCase() == 'completed' || h.status.toLowerCase() == 'cancelled'));
+        if (matchedCompleted) {
+          await ActiveReservationStorage().clear();
+          reservation = null;
         }
       }
     } catch (e) {

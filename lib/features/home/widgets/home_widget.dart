@@ -9,6 +9,8 @@ import 'package:mobile_front/features/scan/models/ticket_data.dart';
 import 'package:mobile_front/features/scan/services/scan_service.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
+import 'package:mobile_front/features/history/services/history_service.dart';
+import 'package:mobile_front/features/history/models/reservation_history.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -40,31 +42,76 @@ class _HomeWidgetState extends State<HomeWidget> {
   Future<void> _checkActiveTicket() async {
     var ticket = await ActiveTicketStorage().load();
     var reservation = await ActiveReservationStorage().load();
+
     if (mounted) {
       setState(() {
         _activeTicket = ticket;
-        _hasActiveTicket = ticket != null &&
-            ticket.ticketCode.isNotEmpty &&
-            (ticket.status == 'active' || ticket.status == 'claimed');
         _activeReservation = reservation;
+        _hasActiveTicket = (reservation != null && reservation.reservationId.isNotEmpty) ||
+            (ticket != null &&
+                ticket.ticketCode.isNotEmpty &&
+                (ticket.status.toLowerCase() == 'active' || ticket.status.toLowerCase() == 'claimed'));
       });
     }
 
+    // 1. Fetch live active ticket from server (/access/activeTicket)
     final accessService = AccessService();
-    final apiTicket = await accessService.getActiveTicket();
-    if (apiTicket != null) {
-      await ActiveTicketStorage().save(apiTicket);
-    }
+    try {
+      final apiTicket = await accessService.getActiveTicket();
+      if (apiTicket != null) {
+        await ActiveTicketStorage().save(apiTicket);
+        ticket = apiTicket;
+      }
+    } catch (_) {}
+
+    // 2. Fetch live active reservation from server (/users/{userId}/reservations or /reservations)
+    try {
+      final profile = await ProfileService().getProfile();
+      final history = await HistoryService().getHistory(profile?.userId ?? '');
+
+      ReservationHistory? activeRes;
+      for (final r in history) {
+        final st = r.status.toLowerCase();
+        if (st == 'active' || st == 'pending' || st == 'arrived' || st == 'booked' || st == 'claimed') {
+          activeRes = r;
+          break;
+        }
+      }
+
+      if (activeRes != null) {
+        final updatedRes = ActiveReservation(
+          reservationId: activeRes.reservationId,
+          status: activeRes.status.toLowerCase(),
+          slotId: activeRes.slotId,
+          slotName: activeRes.slotName,
+          areaId: activeRes.areaId,
+          ticketId: activeRes.ticketId,
+          startTime: activeRes.timestamps.created ?? DateTime.now().toIso8601String(),
+        );
+        await ActiveReservationStorage().save(updatedRes);
+        reservation = updatedRes;
+      } else if (history.isNotEmpty && reservation != null) {
+        final matchedCompleted = history.any((h) =>
+            h.reservationId == reservation!.reservationId &&
+            (h.status.toLowerCase() == 'completed' || h.status.toLowerCase() == 'cancelled'));
+        if (matchedCompleted) {
+          await ActiveReservationStorage().clear();
+          reservation = null;
+        }
+      }
+    } catch (_) {}
 
     ticket = await ActiveTicketStorage().load();
     reservation = await ActiveReservationStorage().load();
+
     if (mounted) {
       setState(() {
         _activeTicket = ticket;
-        _hasActiveTicket = ticket != null &&
-            ticket.ticketCode.isNotEmpty &&
-            (ticket.status == 'active' || ticket.status == 'claimed');
         _activeReservation = reservation;
+        _hasActiveTicket = (reservation != null && reservation.reservationId.isNotEmpty) ||
+            (ticket != null &&
+                ticket.ticketCode.isNotEmpty &&
+                (ticket.status.toLowerCase() == 'active' || ticket.status.toLowerCase() == 'claimed'));
       });
     }
   }

@@ -78,10 +78,21 @@ class BookingService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
         final data = body['data'] as Map<String, dynamic>?;
+        final resId = data?['reservationId'] as String? ??
+            data?['id'] as String? ??
+            data?['_id'] as String? ??
+            body['reservationId'] as String? ??
+            body['id'] as String? ??
+            body['_id'] as String? ??
+            'res_${DateTime.now().millisecondsSinceEpoch}';
+        final status = data?['status'] as String? ??
+            body['status'] as String? ??
+            'pending';
+
         return ReservationResult(
           success: true,
-          reservationId: data?['reservationId'] as String? ?? '',
-          status: data?['status'] as String? ?? 'pending',
+          reservationId: resId,
+          status: status,
           message: body['message'] as String? ?? 'Booking berhasil.',
         );
       }

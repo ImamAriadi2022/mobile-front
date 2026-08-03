@@ -21,11 +21,19 @@ class ProfileData {
     final Map<String, dynamic> src =
         (json['data'] is Map) ? json['data'] as Map<String, dynamic> : json;
     return ProfileData(
-      userId: src['userId'] as String? ?? '',
+      userId: src['userId'] as String? ??
+          src['id'] as String? ??
+          src['_id'] as String? ??
+          src['user_id'] as String? ??
+          '',
       name: src['name'] as String? ?? 'User',
       email: src['email'] as String? ?? 'No Email',
-      phoneNumber: src['phoneNumber'] as String? ?? 'No Phone Number',
-      photoUrl: src['photoUrl'] as String?,
+      phoneNumber: src['phoneNumber'] as String? ??
+          src['phone'] as String? ??
+          'No Phone Number',
+      photoUrl: src['photoUrl'] as String? ??
+          src['photo'] as String? ??
+          src['avatar'] as String?,
       role: src['role'] as String? ?? 'user',
     );
   }

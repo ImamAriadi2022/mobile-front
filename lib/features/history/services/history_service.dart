@@ -8,13 +8,21 @@ class HistoryService {
 
   Future<List<ReservationHistory>> getHistory(String userId) async {
     try {
-      final response = await _apiService.get('/users/$userId/reservations',
-          requireAuth: true);
+      final endpoint = userId.isNotEmpty ? '/users/$userId/reservations' : '/reservations';
+      final response = await _apiService.get(endpoint, requireAuth: true);
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        if (body['success'] == true && body['data'] is List) {
-          final list = body['data'] as List;
-          return list.map((json) => ReservationHistory.fromJson(json)).toList();
+        final dynamic rawList = (body is Map && body['data'] is List)
+            ? body['data']
+            : ((body is Map && body['reservations'] is List)
+                ? body['reservations']
+                : (body is List ? body : []));
+
+        if (rawList is List) {
+          return rawList
+              .whereType<Map<String, dynamic>>()
+              .map((json) => ReservationHistory.fromJson(json))
+              .toList();
         }
       }
       return [];
