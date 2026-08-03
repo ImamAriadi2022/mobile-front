@@ -46,7 +46,7 @@ class AppBottomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(BuildContext context, int index, IconData icon, String label, bool isDark) {
     final isActive = currentIndex == index;
-    final activeColor = const Color(0xFFF97316);
+    const activeColor = Color(0xFFF97316);
     final unselectedColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return GestureDetector(

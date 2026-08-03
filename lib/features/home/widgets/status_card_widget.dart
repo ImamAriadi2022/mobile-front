@@ -29,11 +29,22 @@ class StatusCardWidget extends StatelessWidget {
   String get _imageUrl {
     switch (cardImage) {
       case StatusCardImage.tiket:
-        return '$_cdn/foto/tiket.png';
+        return '$_cdn/scan/qr_scanner.png';
       case StatusCardImage.waiting:
-        return '$_cdn/foto/wait.png';
+        return '$_cdn/home/dashboard_parkir.png';
       case StatusCardImage.car:
-        return '$_cdn/foto/yellow-mobil.png';
+        return '$_cdn/foto/mobil.png';
+    }
+  }
+
+  String get _assetPath {
+    switch (cardImage) {
+      case StatusCardImage.tiket:
+        return 'lib/assets/scan/qr_scanner.png';
+      case StatusCardImage.waiting:
+        return 'lib/assets/home/dashboard_parkir.png';
+      case StatusCardImage.car:
+        return 'lib/assets/home/mobil.png';
     }
   }
 
@@ -62,17 +73,17 @@ class StatusCardWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Gambar dari CDN
+          // Gambar dari CDN dengan fallback real asset
           SizedBox(
             height: 48,
             child: Image.network(
               _imageUrl,
               fit: BoxFit.contain,
               alignment: Alignment.centerLeft,
-              errorBuilder: (_, __, ___) => const Icon(
-                Icons.image_not_supported,
-                color: Colors.white24,
-                size: 36,
+              errorBuilder: (_, __, ___) => Image.asset(
+                _assetPath,
+                fit: BoxFit.contain,
+                alignment: Alignment.centerLeft,
               ),
             ),
           ),

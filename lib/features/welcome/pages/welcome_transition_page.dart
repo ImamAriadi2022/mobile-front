@@ -50,14 +50,18 @@ class _WelcomeTransitionPageState extends State<WelcomeTransitionPage>
         opacity: _fade,
         child: SizedBox.expand(
           child: Image.network(
-            '$_cdnBaseUrl/background/bg-wellcome-dark.png',
+            '$_cdnBaseUrl/assets/gedung-wellcome.png',
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF2C3E6B), Color(0xFF0D1628)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+            errorBuilder: (_, __, ___) => Image.asset(
+              'lib/assets/welcome/gedung_welcome.png',
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF2C3E6B), Color(0xFF0D1628)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
               ),
             ),

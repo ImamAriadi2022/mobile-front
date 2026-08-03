@@ -303,7 +303,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
           children: [
             Column(
               children: [
-                UserHeaderWidget(
+                const UserHeaderWidget(
                   name: 'User',
                   greeting: '',
                   title: 'Status Parkir Aktif',
@@ -428,7 +428,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   Widget _buildActiveSessionView(bool isDark) {
     final slotName = _activeReservation?.slotName ?? '';
     final areaName = _activeTicket?.areaName ?? '';
-    final displayVehicleType = 'MOBIL';
+    const displayVehicleType = 'MOBIL';
     final reservationStatus = _activeReservation?.status ?? 'pending';
 
     if (_activeReservation != null && reservationStatus == 'pending') {
@@ -494,7 +494,7 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
-                      'lib/assets/parking/peta_parkir_ft_unila.png',
+                      'lib/assets/parking/denah_parkir.png',
                       height: 180,
                       width: double.infinity,
                       fit: BoxFit.contain,
@@ -786,11 +786,16 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: Icon(
-                    Icons.directions_car_filled_rounded,
-                    color: Color(0xFF2563EB),
-                    size: 84,
+                child: Center(
+                  child: Image.asset(
+                    'lib/assets/home/mobil.png',
+                    height: 110,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.directions_car_filled_rounded,
+                      color: Color(0xFF2563EB),
+                      size: 84,
+                    ),
                   ),
                 ),
               );

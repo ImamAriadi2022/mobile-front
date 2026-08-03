@@ -72,6 +72,32 @@ class _BookingWidgetState extends State<BookingWidget> {
     }
   }
 
+  String _getBuildingCdnUrl(String name, int index) {
+    final nameLower = name.toLowerCase();
+    if (nameLower.contains('elektro')) {
+      return '${AppConfig.storageUrl}/gedung/elektro.png';
+    } else if (nameLower.contains('mastek') || nameLower.contains('dekanat')) {
+      return '${AppConfig.storageUrl}/gedung/mastek.png';
+    } else if (nameLower.contains('mbk') || nameLower.contains('mesin')) {
+      return '${AppConfig.storageUrl}/gedung/mbk.png';
+    }
+    final photos = ['elektro.png', 'mastek.png', 'mbk.png'];
+    return '${AppConfig.storageUrl}/gedung/${photos[index % photos.length]}';
+  }
+
+  String _getBuildingAssetPath(String name, int index) {
+    final nameLower = name.toLowerCase();
+    if (nameLower.contains('elektro')) {
+      return 'lib/assets/parking/elektro.png';
+    } else if (nameLower.contains('mastek') || nameLower.contains('dekanat')) {
+      return 'lib/assets/parking/mastek.png';
+    } else if (nameLower.contains('mbk') || nameLower.contains('mesin')) {
+      return 'lib/assets/parking/mbk.png';
+    }
+    final photos = ['elektro.png', 'mastek.png', 'mbk.png'];
+    return 'lib/assets/parking/${photos[index % photos.length]}';
+  }
+
   @override
   void dispose() {
     _searchCtrl.dispose();
@@ -99,7 +125,7 @@ class _BookingWidgetState extends State<BookingWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Header Bar (Cari Lokasi Parkir)
-                        UserHeaderWidget(
+                        const UserHeaderWidget(
                           name: 'User',
                           greeting: '',
                           title: 'Cari Lokasi Parkir',
@@ -167,14 +193,10 @@ class _BookingWidgetState extends State<BookingWidget> {
                                                 height: 160,
                                                 width: double.infinity,
                                                 child: Image.network(
-                                                  index == 0
-                                                      ? '${AppConfig.storageUrl}/parking/denah_parkir.png'
-                                                      : '${AppConfig.storageUrl}/home/dashboard_parkir.png',
+                                                  _getBuildingCdnUrl(item.name, index),
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (_, __, ___) => Image.asset(
-                                                    index == 0
-                                                        ? 'lib/assets/parking/denah_parkir.png'
-                                                        : 'lib/assets/home/dashboard_parkir.png',
+                                                    _getBuildingAssetPath(item.name, index),
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (_, __, ___) => Container(
                                                       color: const Color(0xFFF1F5F9),

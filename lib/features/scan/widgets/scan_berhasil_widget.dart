@@ -84,8 +84,14 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                 if (p == null) return child;
                 return Container(decoration: BoxDecoration(gradient: fallback));
               },
-              errorBuilder: (_, __, ___) =>
-                  Container(decoration: BoxDecoration(gradient: fallback)),
+              errorBuilder: (_, __, ___) => Image.asset(
+                'lib/assets/welcome/gedung_welcome.png',
+                fit: BoxFit.cover,
+                color: Colors.black.withValues(alpha: 0.45),
+                colorBlendMode: BlendMode.darken,
+                errorBuilder: (_, __, ___) =>
+                    Container(decoration: BoxDecoration(gradient: fallback)),
+              ),
             ),
           ),
 

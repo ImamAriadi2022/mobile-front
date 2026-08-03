@@ -5,7 +5,7 @@ const String _cdn = 'https://storage.googleapis.com/parkfinderbucket';
 
 /// Hero banner di halaman Home:
 /// - Background foto gedung parkir dari CDN
-/// - Mobil McLaren di kanan atas sebagai overlay
+/// - Mobil di kanan atas sebagai overlay
 class HeroBannerWidget extends StatelessWidget {
   const HeroBannerWidget({super.key});
 
@@ -26,14 +26,18 @@ class HeroBannerWidget extends StatelessWidget {
           children: [
             // ── Layer 1: Foto background gedung parkir ──────────
             Image.network(
-              '$_cdn/background/bg-home.png',
+              '$_cdn/home/dashboard_parkir.png',
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.accentDark],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              errorBuilder: (_, __, ___) => Image.asset(
+                'lib/assets/home/dashboard_parkir.png',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.primary, AppColors.accentDark],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
                 ),
               ),
@@ -55,18 +59,23 @@ class HeroBannerWidget extends StatelessWidget {
               ),
             ),
 
-            // ── Layer 3: Mobil McLaren ───────────────────────────
+            // ── Layer 3: Mobil ───────────────────────────
             Positioned(
-              right: -10,
-              bottom: -8,
+              right: 10,
+              bottom: 8,
               child: Image.network(
-                '$_cdn/foto/mclaren-depan.png',
-                height: 155,
+                '$_cdn/foto/mobil.png',
+                height: 140,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(
-                  Icons.directions_car_filled,
-                  color: Colors.white38,
-                  size: 90,
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'lib/assets/home/mobil.png',
+                  height: 140,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.directions_car_filled,
+                    color: Colors.white38,
+                    size: 90,
+                  ),
                 ),
               ),
             ),

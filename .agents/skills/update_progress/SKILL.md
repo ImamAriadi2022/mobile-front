@@ -1,5 +1,5 @@
 ---
-name: update_progress
+name: update-progress
 description: Updates the project progress markdown file in the progres/ directory when changes or improvements are made to the codebase.
 ---
 

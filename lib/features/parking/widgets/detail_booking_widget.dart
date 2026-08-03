@@ -338,7 +338,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
         child: Column(
           children: [
             // App Bar Header
-            UserHeaderWidget(
+            const UserHeaderWidget(
               name: 'User',
               greeting: '',
               title: 'Peta Parkir',
@@ -445,18 +445,18 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                           ),
 
                           // Middle Road Divider with Arrows
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                             child: Column(
                               children: [
-                                const SizedBox(height: 16),
-                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
-                                const SizedBox(height: 36),
-                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
-                                const SizedBox(height: 36),
-                                const Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
-                                const SizedBox(height: 36),
-                                const Text(
+                                SizedBox(height: 16),
+                                Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                SizedBox(height: 36),
+                                Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                SizedBox(height: 36),
+                                Icon(Icons.arrow_upward_rounded, size: 20, color: Color(0xFF1E40AF)),
+                                SizedBox(height: 36),
+                                Text(
                                   'MASUK\n↑',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

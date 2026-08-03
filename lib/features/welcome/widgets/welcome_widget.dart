@@ -20,22 +20,22 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       'title': 'ParkFinder FT Unila',
       'subtitle': 'Solusi Pintar Cari & Reservasi Slot Parkir Kampus',
       'description': 'Temukan lokasi parkir yang tersedia secara cepat dan efisien tanpa perlu memutar area kampus.',
-      'image': 'lib/assets/welcome/onboarding_main.png',
-      'cdnImage': '${AppConfig.storageUrl}/onboarding/onboarding-light.png',
+      'image': 'lib/assets/welcome/gedung_welcome.png',
+      'cdnImage': '${AppConfig.storageUrl}/assets/gedung-wellcome.png',
     },
     {
       'title': 'Denah & Slot Interaktif',
       'subtitle': 'Pilih Slot Sesuai Keinginan Anda',
       'description': 'Lihat ketersediaan slot parkir secara langsung dari peta denah interaktif Fakultas Teknik.',
-      'image': 'lib/assets/welcome/onboarding_1.png',
-      'cdnImage': '${AppConfig.storageUrl}/parking/peta_parkir_ft_unila.png',
+      'image': 'lib/assets/parking/denah_parkir.png',
+      'cdnImage': '${AppConfig.storageUrl}/assets/denah.png',
     },
     {
       'title': 'Scan QR & Status Aktif',
       'subtitle': 'Masuk & Keluar Parkir Lebih Praktis',
       'description': 'Gunakan QR Ticket untuk konfirmasi masuk dan pantau durasi serta status parkir secara realtime.',
-      'image': 'lib/assets/welcome/onboarding_2.png',
-      'cdnImage': '${AppConfig.storageUrl}/scan/qr_scanner.png',
+      'image': 'lib/assets/home/status_parkir_aktif.png',
+      'cdnImage': '${AppConfig.storageUrl}/assets/mobil-tempat-parkir.png',
     },
   ];
 
