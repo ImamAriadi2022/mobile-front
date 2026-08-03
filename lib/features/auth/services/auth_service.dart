@@ -45,6 +45,8 @@ class AuthService {
 
           await _tokenStorage.save(token);
           await _roleStorage.save(role);
+          await ActiveTicketStorage().clear();
+          await ActiveReservationStorage().clear();
           return const AuthResult.success();
         }
       }

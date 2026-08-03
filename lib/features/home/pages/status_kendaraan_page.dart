@@ -12,7 +12,6 @@ import 'package:mobile_front/features/profile/models/vehicle.dart';
 import 'package:mobile_front/features/history/services/history_service.dart';
 import 'package:mobile_front/features/history/models/reservation_history.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
-import 'package:mobile_front/features/parking/models/reservation_result.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
   const StatusKendaraanPage({super.key});
@@ -64,33 +63,36 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     ActiveReservation? reservation = await ActiveReservationStorage().load();
     try {
       final profile = await ProfileService().getProfile();
-      final historyList = await HistoryService().getHistory(profile?.userId ?? '');
+      if (profile != null) {
+        final historyList =
+            await HistoryService().getHistory(profile.userId);
 
-      ReservationHistory? activeResFromApi;
-      for (final r in historyList) {
-        final st = r.status.toLowerCase();
-        if (st == 'active' || st == 'pending' || st == 'arrived' || st == 'booked' || st == 'claimed') {
-          activeResFromApi = r;
-          break;
+        ReservationHistory? activeResFromApi;
+        for (final r in historyList) {
+          final st = r.status.toLowerCase();
+          if (st == 'active' ||
+              st == 'pending' ||
+              st == 'arrived' ||
+              st == 'booked' ||
+              st == 'claimed') {
+            activeResFromApi = r;
+            break;
+          }
         }
-      }
 
-      if (activeResFromApi != null) {
-        reservation = ActiveReservation(
-          reservationId: activeResFromApi.reservationId,
-          status: activeResFromApi.status.toLowerCase(),
-          slotId: activeResFromApi.slotId,
-          slotName: activeResFromApi.slotName,
-          areaId: activeResFromApi.areaId,
-          ticketId: activeResFromApi.ticketId,
-          startTime: activeResFromApi.timestamps.created ?? DateTime.now().toIso8601String(),
-        );
-        await ActiveReservationStorage().save(reservation);
-      } else if (historyList.isNotEmpty && reservation != null) {
-        final matchedCompleted = historyList.any((h) =>
-            h.reservationId == reservation!.reservationId &&
-            (h.status.toLowerCase() == 'completed' || h.status.toLowerCase() == 'cancelled'));
-        if (matchedCompleted) {
+        if (activeResFromApi != null) {
+          reservation = ActiveReservation(
+            reservationId: activeResFromApi.reservationId,
+            status: activeResFromApi.status.toLowerCase(),
+            slotId: activeResFromApi.slotId,
+            slotName: activeResFromApi.slotName,
+            areaId: activeResFromApi.areaId,
+            ticketId: activeResFromApi.ticketId,
+            startTime: activeResFromApi.timestamps.created ??
+                DateTime.now().toIso8601String(),
+          );
+          await ActiveReservationStorage().save(reservation);
+        } else {
           await ActiveReservationStorage().clear();
           reservation = null;
         }
@@ -208,64 +210,44 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     setState(() => _isCancelling = true);
 
     final service = BookingService();
+    bool isSuccess = false;
+    String message = 'Sesi parkir telah diselesaikan.';
 
     if (_activeReservation != null &&
-        (_activeReservation!.status == 'active' ||
-            _activeReservation!.status == 'arrived')) {
+        (_activeReservation!.status.toLowerCase() == 'active' ||
+            _activeReservation!.status.toLowerCase() == 'arrived')) {
       final result =
           await service.completeReservation(_activeReservation!.reservationId);
-      if (!mounted) return;
-      setState(() => _isCancelling = false);
-
-      if (result.success) {
-        _timer?.cancel();
-        await ActiveTicketStorage().clear();
-        await ActiveReservationStorage().clear();
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      } else {
-        _showErrorDialog(result.message);
-      }
-      return;
-    }
-
-    CancelResult result;
-    if (_activeReservation != null) {
-      result =
+      isSuccess = result.success;
+      message = result.message;
+    } else if (_activeReservation != null) {
+      final result =
           await service.cancelReservation(_activeReservation!.reservationId);
+      isSuccess = result.success;
+      message = result.message;
     } else if (_activeTicket != null) {
-      result = await service.cancelTicket(_activeTicket!.ticketCode);
+      final result = await service.cancelTicket(_activeTicket!.ticketCode);
+      isSuccess = result.success;
+      message = result.message;
     } else {
-      await ActiveTicketStorage().clear();
-      await ActiveReservationStorage().clear();
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
-      return;
+      isSuccess = true;
     }
 
     if (!mounted) return;
     setState(() => _isCancelling = false);
 
-    if (result.success) {
-      _timer?.cancel();
-      await ActiveTicketStorage().clear();
-      await ActiveReservationStorage().clear();
-      if (!mounted) return;
+    _timer?.cancel();
+    await ActiveTicketStorage().clear();
+    await ActiveReservationStorage().clear();
+
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.message),
-          backgroundColor: Colors.green,
+          content: Text(isSuccess ? message : 'Sesi parkir lokal telah dibersihkan.'),
+          backgroundColor: isSuccess ? Colors.green : Colors.orange,
         ),
       );
       Navigator.pushReplacementNamed(context, AppRoutes.home);
-    } else {
-      _showErrorDialog(result.message);
     }
   }
 

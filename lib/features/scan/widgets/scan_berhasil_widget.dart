@@ -31,14 +31,9 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
     _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
 
-    final mockTicket = widget.ticketData ??
-        TicketData(
-          ticketCode: 'TCK-8891234',
-          areaName: 'Gedung Teknik Elektro',
-          status: 'active',
-          claimedAt: DateTime.now().toIso8601String(),
-        );
-    ActiveTicketStorage().save(mockTicket);
+    if (widget.ticketData != null) {
+      ActiveTicketStorage().save(widget.ticketData!);
+    }
   }
 
   @override

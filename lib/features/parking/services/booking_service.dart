@@ -120,10 +120,23 @@ class BookingService {
 
   Future<ActionResult> completeReservation(String reservationId) async {
     try {
-      final response = await _api.patch(
+      var response = await _api.patch(
         '/reservations/$reservationId/complete',
         requireAuth: true,
       );
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _api.post(
+          '/reservations/$reservationId/complete',
+          requireAuth: true,
+        );
+      }
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _api.put(
+          '/reservations/$reservationId/complete',
+          requireAuth: true,
+        );
+      }
+
       return _parseActionResult(response, 'Sesi parkir berhasil diselesaikan.',
           'Gagal menyelesaikan sesi parkir.');
     } catch (e) {
@@ -133,10 +146,23 @@ class BookingService {
 
   Future<CancelResult> cancelReservation(String reservationId) async {
     try {
-      final response = await _api.patch(
+      var response = await _api.patch(
         '/reservations/$reservationId/cancel',
         requireAuth: true,
       );
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _api.post(
+          '/reservations/$reservationId/cancel',
+          requireAuth: true,
+        );
+      }
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _api.put(
+          '/reservations/$reservationId/cancel',
+          requireAuth: true,
+        );
+      }
+
       final ar = _parseActionResult(response, 'Reservasi berhasil dibatalkan.',
           'Gagal membatalkan reservasi.');
       return CancelResult(success: ar.success, message: ar.message);

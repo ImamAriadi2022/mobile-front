@@ -291,14 +291,24 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   void _showQrCodeDialog(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.getCardBg(context);
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);
 
-    final ticketCode = _activeTicket?.ticketCode ?? 'TCK-8891234';
-    final slotName = _activeReservation?.slotName ?? 'A-12';
-    final areaName = _activeTicket?.areaName ?? 'Gedung Teknik Elektro';
+    final ticketCode = _activeTicket?.ticketCode ??
+        _activeReservation?.ticketId ??
+        _activeReservation?.reservationId ??
+        '';
+    final slotName = (_activeReservation?.slotName.isNotEmpty == true)
+        ? _activeReservation!.slotName
+        : 'Slot Parkir';
+    final areaName = (_activeTicket?.areaName.isNotEmpty == true)
+        ? _activeTicket!.areaName
+        : 'Area Parkir';
+
+    final qrCodeValue = ticketCode.isNotEmpty ? ticketCode : 'PARKFINDER-$slotName';
+    final qrApiUrl =
+        'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${Uri.encodeComponent(qrCodeValue)}';
 
     showDialog(
       context: context,
@@ -314,7 +324,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'QR Ticket Masuk',
+                    'QR Tiket Masuk',
                     style: TextStyle(
                       color: textPrimary,
                       fontSize: 18,
@@ -331,35 +341,45 @@ class _HomeWidgetState extends State<HomeWidget> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF1F5F9),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
                 child: Image.network(
-                  '${AppConfig.storageUrl}/scan/qr_scanner.png',
+                  qrApiUrl,
                   height: 180,
                   width: 180,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Image.asset(
-                    'lib/assets/scan/qr_scanner.png',
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      height: 180,
+                      width: 180,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                  errorBuilder: (_, __, ___) => Image.network(
+                    '${AppConfig.storageUrl}/scan/qr_scanner.png',
                     height: 180,
                     width: 180,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.qr_code_2_rounded,
-                      size: 160,
-                      color: Color(0xFF061E3D),
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      'lib/assets/scan/qr_scanner.png',
+                      height: 180,
+                      width: 180,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               Text(
-                ticketCode,
+                'Kode Tiket: $qrCodeValue',
                 style: const TextStyle(
                   color: Color(0xFFF97316),
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
+                  letterSpacing: 1.2,
                 ),
               ),
               const SizedBox(height: 6),
