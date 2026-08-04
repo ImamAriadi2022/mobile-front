@@ -2,6 +2,9 @@
 
 ## Selesai
 
+- **Pemetaan Dinamis Nama & Detail Gedung pada Peta Parkir (Tanpa Hardcoded Dummy)**:
+  - Menyelesaikan bug pemilihan gedung di [detail_booking_widget.dart](file:///c:/programming/mobile-front/lib/features/parking/widgets/detail_booking_widget.dart). Ketika pengguna mengeklik kartu gedung mana pun (misal *Mastek / Dekanat*, *MBK / Mesin*, *Gedung Elektro*, dsb.), halaman Detail Booking kini secara dinamis mencari dan me-render nama gedung (`_areaName`) dan lokasi alamat (`_areaAddress`) asli dari REST API backend (`BookingService.getAreas()`).
+  - Menghapus teks dummy hardcoded *"Teknik elektro universitas lampung"* dan *"Gedung Teknik Elektro"* pada judul halaman, dialog konfirmasi reservasi slot, dan notifikasi header.
 - **Pembersihan Total Sesi Parkir Hantu untuk Akun Baru & Pengalihan Keluar Parkir**:
   - Mengonfigurasi `login` di [auth_service.dart](file:///c:/programming/mobile-front/lib/features/auth/services/auth_service.dart) agar menghapus sisa data tiket/reservasi lokal (`ActiveTicketStorage` & `ActiveReservationStorage`) ketika pengguna baru melakukan login/registrasi.
   - Memperbarui [status_kendaraan_page.dart](file:///c:/programming/mobile-front/lib/features/home/pages/status_kendaraan_page.dart) agar tombol "Selesai Parkir" / "Keluar Parkir" selalu menghapus sesi parkir lokal secara aman, meskipun server memberikan respons 404/400 (karena sesi di backend sudah berakhir), sehingga pengguna tidak lagi tertahan dengan pesan error.

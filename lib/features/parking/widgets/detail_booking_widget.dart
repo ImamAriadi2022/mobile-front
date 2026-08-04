@@ -6,6 +6,7 @@ import '../../../core/storage/active_reservation_storage.dart';
 import 'package:mobile_front/shared/widgets/shared_widgets.dart';
 import 'parking_slot_item_widget.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
+import 'package:mobile_front/features/parking/models/parking_area.dart';
 import 'package:mobile_front/features/profile/services/profile_service.dart';
 
 class DetailBookingWidget extends StatefulWidget {
@@ -22,6 +23,8 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
 
   List<ParkingSlotData> _leftSlots = [];
   List<ParkingSlotData> _rightSlots = [];
+  String _areaName = '';
+  String _areaAddress = '';
 
   @override
   void initState() {
@@ -35,10 +38,29 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
     }
 
     final service = BookingService();
+    ParkingArea? matchingArea;
+    try {
+      final areas = await service.getAreas();
+      for (final a in areas) {
+        if (a.id == widget.areaId || a.name.toLowerCase() == widget.areaId.toLowerCase()) {
+          matchingArea = a;
+          break;
+        }
+      }
+    } catch (_) {}
+
     final slots = await service.getSlots(widget.areaId);
 
     if (mounted) {
       setState(() {
+        if (matchingArea != null) {
+          _areaName = matchingArea.name;
+          _areaAddress = matchingArea.address;
+        } else {
+          _areaName = widget.areaId.isNotEmpty ? widget.areaId : 'Area Parkir';
+          _areaAddress = 'Fakultas Teknik Unila';
+        }
+
         final half = (slots.length / 2).ceil();
 
         SlotStatus mapStatus(String st) {
@@ -228,7 +250,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Apakah Anda yakin ingin memilih Slot ${slot.label} di Gedung Teknik Elektro?',
+                'Apakah Anda yakin ingin memilih Slot ${slot.label} di ${_areaName.isNotEmpty ? _areaName : "Area Parkir"}?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: textSecondary,
@@ -352,7 +374,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                   children: [
                     // Area Title & Location Subtitle
                     Text(
-                      'Teknik elektro universitas lampung',
+                      _areaName.isNotEmpty ? _areaName : 'Area Parkir',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -365,7 +387,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
                         const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
                         const SizedBox(width: 4),
                         Text(
-                          'Sisi Timur, Lantai 1',
+                          _areaAddress.isNotEmpty ? _areaAddress : 'Fakultas Teknik Unila',
                           style: TextStyle(
                             fontSize: 13,
                             color: textSecondary,

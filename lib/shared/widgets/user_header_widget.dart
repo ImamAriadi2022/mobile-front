@@ -89,7 +89,7 @@ class UserHeaderWidget extends StatelessWidget {
               icon: Icons.check_circle_outline_rounded,
               iconColor: const Color(0xFF10B981),
               title: 'Reservasi Slot Parkir Berhasil',
-              subtitle: 'Slot A-12 Gedung Teknik Elektro telah berhasil direservasi.',
+              subtitle: 'Slot parkir Anda telah berhasil direservasi.',
               time: '5 mnt yang lalu',
               isDark: isDark,
               cardBg2: cardBg2,

@@ -289,7 +289,8 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         final hinggaTime = _formatTime(dtHingga);
         final hinggaDate = _formatDateIndo(dtHingga);
 
-        final areaName = _areaNames[item.areaId] ?? 'Jurusan Teknik Elektro Unila';
+        final areaName = _areaNames[item.areaId] ??
+            (item.areaId.isNotEmpty ? item.areaId : 'Area Parkir FT Unila');
         final slotLabel = '$areaName\n(Slot ${item.slotName})';
 
         return HistoryCardWidget(
