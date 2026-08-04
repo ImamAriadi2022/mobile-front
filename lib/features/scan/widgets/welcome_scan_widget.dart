@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 import 'package:mobile_front/features/scan/services/scan_service.dart';
 import 'package:mobile_front/features/scan/models/ticket_data.dart';
@@ -247,7 +247,7 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             right: 0,
             bottom: 0,
             child: Container(
-              color: const Color(0xFF0B1A30),
+              color: const Color(0xFF070E1A),
               padding: EdgeInsets.fromLTRB(24, 16, 24, 16 + bottomPad),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -255,9 +255,11 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                   Text(
                     'Diakses pada ${now.format(context)}',
                     style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 12),
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   const Text(
                     'Selamat Datang',
                     style: TextStyle(
@@ -269,19 +271,22 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                   const SizedBox(height: 4),
                   const Text(
                     'Silahkan Scan tiket parkir terlebih dahulu',
-                    style:
-                        TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFF162B4D),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.1)),
+                        color: const Color(0xFF1E3A5F),
+                      ),
                     ),
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,18 +294,18 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                         Text(
                           'Langkah 1: Scan tiket yang diperoleh dari gerbang masuk.',
                           style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(height: 6),
                         Text(
                           'Langkah 2: Setelah tiket berhasil diverifikasi, Anda dapat melakukan booking slot parkir.',
                           style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -338,8 +343,9 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     child: const Text(
                       'Masukkan Kode Manual',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 13,
+                        color: Color(0xFF60A5FA),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -358,9 +364,9 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: Colors.black45,
+                  color: Colors.black54,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(color: Colors.white38),
                 ),
                 child: const Icon(Icons.close_rounded,
                     color: Colors.white, size: 20),
@@ -373,12 +379,20 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
             top: topPad + 72,
             left: 0,
             right: 0,
-            child: const Center(
-              child: Text(
-                'Arahkan kamera ke barcode tiket parkir',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.75),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'Arahkan kamera ke barcode tiket parkir',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -389,8 +403,15 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
   }
 
   Widget _buildManualLayout(BuildContext context) {
+    final scaffoldBg = AppColors.getBackgroundColor(context);
+    final cardBg = AppColors.getCardBg(context);
+    final cardBg2 = AppColors.getCardBg2(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+    final borderColor = AppColors.getBorderColor(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -405,20 +426,23 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBg,
+                        color: cardBg,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.borderColor),
+                        border: Border.all(color: borderColor),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new,
-                          color: Colors.white, size: 18),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: textPrimary,
+                        size: 18,
+                      ),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Verifikasi Tiket',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
@@ -433,12 +457,12 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg2,
+                  color: cardBg2,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.accent, width: 3),
+                  border: Border.all(color: const Color(0xFF2563EB), width: 3),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: const Color(0xFF2563EB).withValues(alpha: 0.3),
                       blurRadius: 25,
                       spreadRadius: 5,
                     ),
@@ -446,26 +470,26 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 ),
                 child: const Icon(
                   Icons.qr_code_scanner_rounded,
-                  color: Colors.white,
+                  color: Color(0xFF2563EB),
                   size: 64,
                 ),
               ),
               const SizedBox(height: 24),
 
-              const Text(
+              Text(
                 'Verifikasi Tiket',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Kamera tidak tersedia. Silakan masukkan kode tiket parkir Anda secara manual untuk melanjutkan booking.',
                 style: TextStyle(
-                  color: AppColors.textSecondary,
+                  color: textSecondary,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -476,28 +500,28 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF132136).withValues(alpha: 0.55),
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: const Color(0xFF00D2FF).withValues(alpha: 0.25),
+                    color: borderColor,
                     width: 1.2,
                   ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline_rounded,
-                          color: Color(0xFF00D2FF),
+                          color: Color(0xFF2563EB),
                           size: 18,
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           'Langkah Aktivasi Sesi',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
@@ -513,24 +537,24 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                           height: 22,
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF00D2FF),
+                            color: Color(0xFF2563EB),
                             shape: BoxShape.circle,
                           ),
                           child: const Text(
                             '1',
                             style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Masukkan kode tiket yang diperoleh dari gerbang masuk ke kolom di bawah.',
                             style: TextStyle(
-                              color: Colors.white70,
+                              color: textSecondary,
                               fontSize: 13,
                               height: 1.4,
                             ),
@@ -547,24 +571,24 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                           height: 22,
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF00D2FF),
+                            color: Color(0xFF2563EB),
                             shape: BoxShape.circle,
                           ),
                           child: const Text(
                             '2',
                             style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Setelah tiket berhasil diverifikasi, Anda dapat melakukan booking slot parkir.',
                             style: TextStyle(
-                              color: Colors.white70,
+                              color: textSecondary,
                               fontSize: 13,
                               height: 1.4,
                             ),
@@ -581,17 +605,17 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg,
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.borderColor),
+                  border: Border.all(color: borderColor),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Kode Tiket Parkir',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: textPrimary,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -599,24 +623,24 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                     const SizedBox(height: 8),
                     TextField(
                       controller: _ticketCodeCtrl,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: textPrimary),
                       decoration: InputDecoration(
                         hintText: 'Contoh: TCK-12345',
-                        hintStyle: const TextStyle(
-                            color: AppColors.textSecondary, fontSize: 14),
+                        hintStyle: TextStyle(
+                            color: textSecondary, fontSize: 14),
                         filled: true,
-                        fillColor: AppColors.cardBg2,
+                        fillColor: cardBg2,
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 14, horizontal: 16),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide:
-                              const BorderSide(color: AppColors.borderColor),
+                              BorderSide(color: borderColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                              color: AppColors.accent, width: 1.5),
+                              color: Color(0xFF2563EB), width: 1.5),
                         ),
                       ),
                     ),
@@ -627,7 +651,8 @@ class _WelcomeScanWidgetState extends State<WelcomeScanWidget>
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _verifyManualCode,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
+                          backgroundColor: const Color(0xFF2563EB),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),
@@ -862,16 +887,26 @@ class _ActionButton extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.10),
+              color: const Color(0xFF162B4D),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white24),
+              border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.3),
+                  blurRadius: 10,
+                ),
+              ],
             ),
-            child: Icon(icon, color: Colors.white70, size: 24),
+            child: Icon(icon, color: Colors.white, size: 24),
           ),
           const SizedBox(height: 6),
           Text(
             label,
-            style: const TextStyle(color: Colors.white60, fontSize: 11),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

@@ -80,7 +80,7 @@ class _VehicleManagementPageState extends State<VehicleManagementPage> {
             ],
           ),
           duration: Duration(seconds: 30),
-          backgroundColor: Color(0xFF061E3D),
+          backgroundColor: Color(0xFF2563EB),
         ),
       );
     }

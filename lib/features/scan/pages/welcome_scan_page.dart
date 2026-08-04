@@ -6,9 +6,6 @@ class WelcomeScanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF0A1225),
-      body: WelcomeScanWidget(),
-    );
+    return const WelcomeScanWidget();
   }
 }

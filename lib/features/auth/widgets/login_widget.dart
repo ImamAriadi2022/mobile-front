@@ -528,12 +528,17 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
   Widget build(BuildContext context) {
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(28, 28, 28, 24 + bottomPad),
-      decoration: const BoxDecoration(
-        color: Color(0xFF061E3D),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -542,7 +547,7 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white24,
+              color: isDark ? Colors.white24 : const Color(0xFFCBD5E1),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -564,19 +569,19 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'Selamat',
             style: TextStyle(
-              color: Colors.white,
+              color: textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Anda Berhasil Masuk',
             style: TextStyle(
-              color: Colors.white70,
+              color: textSecondary,
               fontSize: 14,
             ),
           ),
@@ -587,8 +592,8 @@ class _LoginSuccessSheetState extends State<_LoginSuccessSheet>
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF061E3D),
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

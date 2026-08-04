@@ -138,7 +138,7 @@ class FloatingTutorialWidget extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(ctx),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF03192E),
+                  backgroundColor: isDark ? const Color(0xFF1E3A5F) : const Color(0xFF0F172A),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

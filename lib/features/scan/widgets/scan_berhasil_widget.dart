@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/styles/app_colors.dart';
 import 'package:mobile_front/features/scan/models/ticket_data.dart';
 import '../../../core/storage/active_ticket_storage.dart';
 
@@ -100,12 +100,12 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
               child: Container(
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D1A30).withValues(alpha: 0.92),
+                  color: AppColors.getCardBg(context).withValues(alpha: 0.95),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.borderColor),
+                  border: Border.all(color: AppColors.getBorderColor(context)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
+                      color: Colors.black.withValues(alpha: _isDark ? 0.4 : 0.08),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
@@ -117,25 +117,25 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                     // Waktu akses
                     Text(
                       'Diakses pada ${now.format(context)}',
-                      style: const TextStyle(
-                          color: AppColors.textSecondary, fontSize: 13),
+                      style: TextStyle(
+                          color: AppColors.getTextSecondary(context), fontSize: 13),
                     ),
                     const SizedBox(height: 20),
 
                     // Judul
-                    const Text(
+                    Text(
                       'Scan Berhasil',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.getTextPrimary(context),
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
-                      'Tiket Parkir anda telah diaktifkan',
+                    Text(
+                      'Tiket Parkir Anda telah diaktifkan',
                       style: TextStyle(
-                          color: AppColors.textSecondary, fontSize: 14),
+                          color: AppColors.getTextSecondary(context), fontSize: 14),
                     ),
                     const SizedBox(height: 28),
 
@@ -168,36 +168,36 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                       padding: const EdgeInsets.symmetric(
                           vertical: 16, horizontal: 20),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBg2,
+                        color: AppColors.getCardBg2(context),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.borderColor),
+                        border: Border.all(color: AppColors.getBorderColor(context)),
                       ),
                       child: Column(
                         children: [
-                          const Text(
+                          Text(
                             'Kode Tiket:',
                             style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 13),
+                                color: AppColors.getTextSecondary(context), fontSize: 13),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             widget.ticketData?.ticketCode ??
                                 'TXT-00000000-0000',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColors.getTextPrimary(context),
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.2,
                             ),
                           ),
                           const SizedBox(height: 14),
-                          const Divider(
-                              color: AppColors.borderColor, height: 1),
+                          Divider(
+                              color: AppColors.getBorderColor(context), height: 1),
                           const SizedBox(height: 14),
-                          const Text(
+                          Text(
                             'Status:',
                             style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 13),
+                                color: AppColors.getTextSecondary(context), fontSize: 13),
                           ),
                           const SizedBox(height: 6),
                           Row(
@@ -210,7 +210,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                                   shape: BoxShape.circle,
                                   color: widget.ticketData?.status == 'active'
                                       ? AppColors.green
-                                      : AppColors.accent,
+                                      : const Color(0xFF2563EB),
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -224,7 +224,7 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                                 style: TextStyle(
                                   color: widget.ticketData?.status == 'active'
                                       ? AppColors.green
-                                      : AppColors.accent,
+                                      : const Color(0xFF2563EB),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -262,14 +262,12 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                         (route) => false,
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0D1A30),
+                        backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
-                          side: BorderSide(
-                              color: AppColors.accent.withValues(alpha: 0.4)),
                         ),
-                        elevation: 0,
+                        elevation: 2,
                       ),
                       child: const Text(
                         'Lanjut Booking',
@@ -284,17 +282,16 @@ class _ScanBerhasilWidgetState extends State<ScanBerhasilWidget>
                   SizedBox(
                     width: double.infinity,
                     height: 52,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       onPressed: () => Navigator.pushReplacementNamed(
                           context, AppRoutes.welcomeScan),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0D1A30),
-                        foregroundColor: Colors.white,
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: AppColors.getCardBg(context),
+                        foregroundColor: AppColors.getTextPrimary(context),
+                        side: BorderSide(color: AppColors.getBorderColor(context)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
-                          side: const BorderSide(color: AppColors.borderColor),
                         ),
-                        elevation: 0,
                       ),
                       child: const Text(
                         'Pindai Ulang',
