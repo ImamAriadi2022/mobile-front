@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import '../../../core/network/api_service.dart';
 import '../models/parking_area.dart';
 import '../models/parking_slot.dart';
 import '../models/reservation_result.dart';
+import 'package:mobile_front/features/notification/services/notification_service.dart';
 
 /// BookingService — Service layer untuk operasi booking dan reservasi parkir.
 ///
@@ -89,6 +91,13 @@ class BookingService {
             body['status'] as String? ??
             'pending';
 
+        NotificationService.addNotification(
+          title: 'Reservasi Slot Berhasil',
+          subtitle: 'Reservasi slot parkir berhasil dibuat.',
+          icon: Icons.check_circle_outline_rounded,
+          iconColor: const Color(0xFF10B981),
+        );
+
         return ReservationResult(
           success: true,
           reservationId: resId,
@@ -111,8 +120,17 @@ class BookingService {
         '/reservations/$reservationId/arrive',
         requireAuth: true,
       );
-      return _parseActionResult(response, 'Kedatangan berhasil dikonfirmasi.',
+      final res = _parseActionResult(response, 'Kedatangan berhasil dikonfirmasi.',
           'Gagal mengonfirmasi kedatangan.');
+      if (res.success) {
+        NotificationService.addNotification(
+          title: 'Sesi Parkir Berjalan',
+          subtitle: 'Kedatangan Anda di slot parkir telah dikonfirmasi.',
+          icon: Icons.local_parking_rounded,
+          iconColor: const Color(0xFF2563EB),
+        );
+      }
+      return res;
     } catch (e) {
       return ActionResult.failure('Terjadi kesalahan: ${e.toString()}');
     }
@@ -137,8 +155,17 @@ class BookingService {
         );
       }
 
-      return _parseActionResult(response, 'Sesi parkir berhasil diselesaikan.',
+      final res = _parseActionResult(response, 'Sesi parkir berhasil diselesaikan.',
           'Gagal menyelesaikan sesi parkir.');
+      if (res.success) {
+        NotificationService.addNotification(
+          title: 'Sesi Parkir Selesai',
+          subtitle: 'Sesi parkir Anda telah selesai.',
+          icon: Icons.task_alt_rounded,
+          iconColor: const Color(0xFF10B981),
+        );
+      }
+      return res;
     } catch (e) {
       return ActionResult.failure('Terjadi kesalahan: ${e.toString()}');
     }
@@ -165,6 +192,14 @@ class BookingService {
 
       final ar = _parseActionResult(response, 'Reservasi berhasil dibatalkan.',
           'Gagal membatalkan reservasi.');
+      if (ar.success) {
+        NotificationService.addNotification(
+          title: 'Reservasi Dibatalkan',
+          subtitle: 'Reservasi slot parkir telah dibatalkan.',
+          icon: Icons.cancel_outlined,
+          iconColor: const Color(0xFFEF4444),
+        );
+      }
       return CancelResult(success: ar.success, message: ar.message);
     } catch (e) {
       return CancelResult.failure('Terjadi kesalahan: ${e.toString()}');
@@ -180,6 +215,12 @@ class BookingService {
       );
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
+        NotificationService.addNotification(
+          title: 'Tiket Dibatalkan',
+          subtitle: 'Tiket parkir $ticketId telah dibatalkan.',
+          icon: Icons.cancel_outlined,
+          iconColor: const Color(0xFFEF4444),
+        );
         return CancelResult(
           success: json['success'] == true,
           message: json['message'] as String? ?? 'Tiket berhasil dibatalkan.',
@@ -209,8 +250,17 @@ class BookingService {
         );
       }
 
-      return _parseActionResult(response, 'Slot parkir berhasil diganti.',
+      final res = _parseActionResult(response, 'Slot parkir berhasil diganti.',
           'Gagal mengganti slot parkir.');
+      if (res.success) {
+        NotificationService.addNotification(
+          title: 'Slot Parkir Diganti',
+          subtitle: 'Berhasil berpindah ke slot parkir baru.',
+          icon: Icons.swap_horiz_rounded,
+          iconColor: const Color(0xFF8B5CF6),
+        );
+      }
+      return res;
     } catch (e) {
       return ActionResult.failure('Terjadi kesalahan: ${e.toString()}');
     }

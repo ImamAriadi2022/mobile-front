@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile_front/core/routes/app_routes.dart';
 import '../styles/app_colors.dart';
 import '../styles/theme_provider.dart';
+import 'package:mobile_front/features/notification/services/notification_service.dart';
+import 'package:mobile_front/features/notification/models/notification_item.dart';
 
 /// Widget shared: Header halaman dengan avatar (ketuk untuk ke profil),
 /// judul, tombol sakelar Tema (Light/Dark Mode), dan modal notifikasi.
@@ -73,7 +75,7 @@ class UserHeaderWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
-                    'Baru',
+                    'Realtime',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -85,42 +87,52 @@ class UserHeaderWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            _buildNotifItem(
-              icon: Icons.check_circle_outline_rounded,
-              iconColor: const Color(0xFF10B981),
-              title: 'Reservasi Slot Parkir Berhasil',
-              subtitle: 'Slot parkir Anda telah berhasil direservasi.',
-              time: '5 mnt yang lalu',
-              isDark: isDark,
-              cardBg2: cardBg2,
-              textPrimary: textPrimary,
-              textSecondary: textSecondary,
-            ),
-            const SizedBox(height: 12),
+            FutureBuilder<List<NotificationItem>>(
+              future: NotificationService().getNotifications(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  );
+                }
 
-            _buildNotifItem(
-              icon: Icons.local_parking_rounded,
-              iconColor: const Color(0xFF2563EB),
-              title: 'Sesi Parkir Aktif',
-              subtitle: 'Status parkir Anda sedang berjalan di Fakultas Teknik Unila.',
-              time: '15 mnt yang lalu',
-              isDark: isDark,
-              cardBg2: cardBg2,
-              textPrimary: textPrimary,
-              textSecondary: textSecondary,
-            ),
-            const SizedBox(height: 12),
+                final notifs = snapshot.data ?? [];
+                if (notifs.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        'Tidak ada notifikasi baru.',
+                        style: TextStyle(color: textSecondary, fontSize: 13),
+                      ),
+                    ),
+                  );
+                }
 
-            _buildNotifItem(
-              icon: Icons.warning_amber_rounded,
-              iconColor: const Color(0xFFF97316),
-              title: 'Pengingat Waktu Parkir',
-              subtitle: 'Sesi parkir Anda akan berakhir dalam 15 menit.',
-              time: '1 jam yang lalu',
-              isDark: isDark,
-              cardBg2: cardBg2,
-              textPrimary: textPrimary,
-              textSecondary: textSecondary,
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: notifs.length > 5 ? 5 : notifs.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (ctx, idx) {
+                    final item = notifs[idx];
+                    return _buildNotifItem(
+                      icon: item.icon,
+                      iconColor: item.iconColor,
+                      title: item.title,
+                      subtitle: item.subtitle,
+                      time: item.time,
+                      isDark: isDark,
+                      cardBg2: cardBg2,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                    );
+                  },
+                );
+              },
             ),
             const SizedBox(height: 20),
 
@@ -187,14 +199,19 @@ class UserHeaderWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: textPrimary,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       time,
                       style: TextStyle(

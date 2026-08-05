@@ -227,35 +227,6 @@ class FloatingTutorialWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 80,
-      right: 16,
-      child: GestureDetector(
-        onTap: () => showTutorialModal(context),
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF97316),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFF97316).withValues(alpha: 0.4),
-                blurRadius: 16,
-                spreadRadius: 2,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.question_mark_rounded,
-              color: Colors.white,
-              size: 26,
-            ),
-          ),
-        ),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import '../../../core/network/api_service.dart';
 import '../models/ticket_data.dart';
+import 'package:mobile_front/features/notification/services/notification_service.dart';
 
 /// ScanService — Service layer untuk verifikasi tiket QR.
 ///
@@ -26,10 +28,18 @@ class ScanService {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         final data = json['data'];
-        if (data != null) {
-          return TicketData.fromJson(data as Map<String, dynamic>);
-        }
-        return TicketData.fromJson(json);
+        final ticket = data != null
+            ? TicketData.fromJson(data as Map<String, dynamic>)
+            : TicketData.fromJson(json);
+
+        NotificationService.addNotification(
+          title: 'Tiket Berhasil Dipindai',
+          subtitle: 'Tiket ${ticket.ticketCode} telah berhasil diverifikasi.',
+          icon: Icons.qr_code_scanner_rounded,
+          iconColor: const Color(0xFF2563EB),
+        );
+
+        return ticket;
       }
       return null;
     } catch (e) {

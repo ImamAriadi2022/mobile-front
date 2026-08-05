@@ -588,7 +588,7 @@ class _DetailBookingWidgetState extends State<DetailBookingWidget> {
           SnackBar(
               content: Text(result.message), backgroundColor: Colors.green),
         );
-        _fetchSlots();
+        Navigator.pushReplacementNamed(context, AppRoutes.statusKendaraan);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

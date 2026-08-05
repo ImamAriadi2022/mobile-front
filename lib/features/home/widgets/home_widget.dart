@@ -39,6 +39,44 @@ class _HomeWidgetState extends State<HomeWidget> {
     _checkActiveTicket();
   }
 
+  Timer? _homeTimer;
+  int _elapsedSeconds = 0;
+
+  @override
+  void dispose() {
+    _homeTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startElapsedTimer() {
+    _homeTimer?.cancel();
+
+    if (_activeReservation != null && _activeReservation!.startTime.isNotEmpty) {
+      try {
+        final startTime = DateTime.parse(_activeReservation!.startTime);
+        _elapsedSeconds = DateTime.now().difference(startTime).inSeconds;
+        if (_elapsedSeconds < 0) _elapsedSeconds = 0;
+      } catch (_) {
+        _elapsedSeconds = 0;
+      }
+    } else if (_activeTicket != null && _activeTicket!.claimedAt.isNotEmpty) {
+      try {
+        final claimedTime = DateTime.parse(_activeTicket!.claimedAt);
+        _elapsedSeconds = DateTime.now().difference(claimedTime).inSeconds;
+        if (_elapsedSeconds < 0) _elapsedSeconds = 0;
+      } catch (_) {
+        _elapsedSeconds = 0;
+      }
+    } else {
+      _elapsedSeconds = 0;
+      return;
+    }
+
+    _homeTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _elapsedSeconds++);
+    });
+  }
+
   Future<void> _checkActiveTicket() async {
     var ticket = await ActiveTicketStorage().load();
     var reservation = await ActiveReservationStorage().load();
@@ -52,6 +90,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ticket.ticketCode.isNotEmpty &&
                 (ticket.status.toLowerCase() == 'active' || ticket.status.toLowerCase() == 'claimed'));
       });
+      _startElapsedTimer();
     }
 
     // 1. Fetch live active ticket from server (/access/activeTicket)
@@ -79,14 +118,20 @@ class _HomeWidgetState extends State<HomeWidget> {
       }
 
       if (activeRes != null) {
+        final existingSlotName = reservation?.slotName ?? '';
+        final finalSlotName = activeRes.slotName.isNotEmpty
+            ? activeRes.slotName
+            : (existingSlotName.isNotEmpty ? existingSlotName : activeRes.slotId);
+
         final updatedRes = ActiveReservation(
           reservationId: activeRes.reservationId,
           status: activeRes.status.toLowerCase(),
           slotId: activeRes.slotId,
-          slotName: activeRes.slotName,
-          areaId: activeRes.areaId,
+          slotName: finalSlotName,
+          areaId: activeRes.areaId.isNotEmpty ? activeRes.areaId : (reservation?.areaId ?? ''),
           ticketId: activeRes.ticketId,
-          startTime: activeRes.timestamps.created ?? DateTime.now().toIso8601String(),
+          startTime: activeRes.timestamps.created ??
+              (reservation?.startTime.isNotEmpty == true ? reservation!.startTime : DateTime.now().toIso8601String()),
         );
         await ActiveReservationStorage().save(updatedRes);
         reservation = updatedRes;
@@ -113,6 +158,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ticket.ticketCode.isNotEmpty &&
                 (ticket.status.toLowerCase() == 'active' || ticket.status.toLowerCase() == 'claimed'));
       });
+      _startElapsedTimer();
     }
   }
 
@@ -417,9 +463,43 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  String _formatBannerDuration(int totalSecs) {
+    final h = totalSecs ~/ 3600;
+    final m = (totalSecs % 3600) ~/ 60;
+    final s = totalSecs % 60;
+    if (h > 0) {
+      return '${h.toString().padLeft(2, '0')}j ${m.toString().padLeft(2, '0')}m ${s.toString().padLeft(2, '0')}s';
+    }
+    return '${m.toString().padLeft(2, '0')}m ${s.toString().padLeft(2, '0')}s';
+  }
+
   Widget _buildActiveParkingBanner(bool isDark) {
-    final slotName = _activeReservation?.slotName ?? 'A-12';
-    final areaName = _activeTicket?.areaName ?? 'GEDUNG TEKNIK ELEKTRO';
+    final rawSlot = _activeReservation?.slotName ?? '';
+    final slotName = rawSlot.isNotEmpty
+        ? rawSlot
+        : (_activeReservation?.slotId.isNotEmpty == true
+            ? _activeReservation!.slotId
+            : 'Belum Dipilih');
+
+    final rawArea = _activeReservation?.areaId.isNotEmpty == true
+        ? _activeReservation!.areaId
+        : (_activeTicket?.areaName.isNotEmpty == true ? _activeTicket!.areaName : '');
+    String displayAreaName = rawArea.isNotEmpty ? rawArea : 'Fakultas Teknik Unila';
+    if (rawArea.toLowerCase().contains('elektro')) {
+      displayAreaName = 'Gedung Teknik Elektro';
+    } else if (rawArea.toLowerCase().contains('mastek') || rawArea.toLowerCase().contains('dekanat')) {
+      displayAreaName = 'Gedung Dekanat / Mastek';
+    } else if (rawArea.toLowerCase().contains('mbk') || rawArea.toLowerCase().contains('mesin')) {
+      displayAreaName = 'Gedung Teknik Mesin';
+    }
+
+    String bannerSubtitle;
+    if (_hasActiveTicket) {
+      final durStr = _formatBannerDuration(_elapsedSeconds);
+      bannerSubtitle = 'Status: Parkir Berjalan (Durasi: $durStr)';
+    } else {
+      bannerSubtitle = 'Silakan lakukan booking slot parkir terlebih dahulu.';
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -461,7 +541,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    areaName.toUpperCase(),
+                    displayAreaName.toUpperCase(),
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 12,
@@ -488,9 +568,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
             // Subtitle info
             Text(
-              _hasActiveTicket
-                  ? 'Masuk: 10:15 WIB (Durasi: 01j 45m)'
-                  : 'Silakan lakukan booking slot parkir terlebih dahulu.',
+              bannerSubtitle,
               style: const TextStyle(
                 color: Colors.white60,
                 fontSize: 13,

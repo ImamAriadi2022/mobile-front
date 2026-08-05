@@ -12,6 +12,7 @@ import 'package:mobile_front/features/profile/models/vehicle.dart';
 import 'package:mobile_front/features/history/services/history_service.dart';
 import 'package:mobile_front/features/history/models/reservation_history.dart';
 import 'package:mobile_front/features/parking/services/booking_service.dart';
+import 'package:mobile_front/features/parking/models/parking_slot.dart';
 
 class StatusKendaraanPage extends StatefulWidget {
   const StatusKendaraanPage({super.key});
@@ -411,8 +412,25 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
   }
 
   Widget _buildActiveSessionView(bool isDark) {
-    final slotName = _activeReservation?.slotName ?? '';
-    final areaName = _activeTicket?.areaName ?? '';
+    final rawSlot = _activeReservation?.slotName ?? '';
+    final slotName = rawSlot.isNotEmpty
+        ? rawSlot
+        : (_activeReservation?.slotId.isNotEmpty == true
+            ? _activeReservation!.slotId
+            : 'Belum Dipilih');
+
+    final rawArea = _activeReservation?.areaId.isNotEmpty == true
+        ? _activeReservation!.areaId
+        : (_activeTicket?.areaName.isNotEmpty == true ? _activeTicket!.areaName : '');
+    String areaName = rawArea.isNotEmpty ? rawArea : 'Fakultas Teknik Unila';
+    if (rawArea.toLowerCase().contains('elektro')) {
+      areaName = 'Gedung Teknik Elektro';
+    } else if (rawArea.toLowerCase().contains('mastek') || rawArea.toLowerCase().contains('dekanat')) {
+      areaName = 'Gedung Dekanat / Mastek';
+    } else if (rawArea.toLowerCase().contains('mbk') || rawArea.toLowerCase().contains('mesin')) {
+      areaName = 'Gedung Teknik Mesin';
+    }
+
     const displayVehicleType = 'MOBIL';
     final reservationStatus = _activeReservation?.status ?? 'pending';
 
@@ -429,6 +447,19 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
     final textPrimary = AppColors.getTextPrimary(context);
     final textSecondary = AppColors.getTextSecondary(context);
     final cardBg = AppColors.getCardBg(context);
+    // Calculate remaining navigation time (15 minutes = 900 seconds)
+    const int totalNavSeconds = 900;
+    final int navSecondsLeft = totalNavSeconds - _elapsedSeconds;
+    final bool isNavExpired = navSecondsLeft <= 0;
+
+    String navTimerStr;
+    if (isNavExpired) {
+      navTimerStr = '00:00 (Waktu Habis)';
+    } else {
+      final m = navSecondsLeft ~/ 60;
+      final s = navSecondsLeft % 60;
+      navTimerStr = '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -441,7 +472,114 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                 fontSize: 14,
                 fontWeight: FontWeight.bold),
           ),
+          const SizedBox(height: 12),
+
+          // ── Timer Navigasi 15 Menit & Banner Warning Waktu Habis ────────
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isNavExpired
+                    ? (isDark ? const Color(0xFF3F1D1D) : const Color(0xFFFEF2F2))
+                    : cardBg,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: isNavExpired
+                      ? const Color(0xFFEF4444)
+                      : (isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0)),
+                  width: isNavExpired ? 1.5 : 1.0,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        isNavExpired
+                            ? Icons.warning_amber_rounded
+                            : Icons.timer_outlined,
+                        color: isNavExpired
+                            ? const Color(0xFFEF4444)
+                            : const Color(0xFF2563EB),
+                        size: 22,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          isNavExpired
+                              ? 'Waktu Navigasi 15 Menit Telah Habis!'
+                              : 'Batas Waktu Menuju Slot: 15 Menit',
+                          style: TextStyle(
+                            color: isNavExpired
+                                ? const Color(0xFFEF4444)
+                                : textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isNavExpired
+                              ? const Color(0xFFEF4444)
+                              : const Color(0xFF2563EB),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          navTimerStr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    isNavExpired
+                        ? 'Waktu menuju tempat parkir sudah lebih dari 15 menit. Anda sangat direkomendasikan untuk melakukan Pindah Slot ke lokasi terdekat.'
+                        : 'Harap tiba di tempat parkir sebelum batas waktu 15 menit berakhir.',
+                    style: TextStyle(
+                      color: isNavExpired
+                          ? (isDark ? Colors.white70 : const Color(0xFF991B1B))
+                          : textSecondary,
+                      fontSize: 12,
+                      height: 1.4,
+                    ),
+                  ),
+                  if (isNavExpired) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: ElevatedButton.icon(
+                        onPressed: () => _showSwapSlotModal(context),
+                        icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                        label: const Text('Pindah Slot Terdekat Sekarang',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8B5CF6),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
@@ -577,10 +715,30 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
                           ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showSwapSlotModal(context),
+                    icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+                    label: const Text(
+                      'Pindah / Swap Slot',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF8B5CF6),
+                      side: const BorderSide(color: Color(0xFF8B5CF6), width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: 44,
                   child: TextButton.icon(
                     onPressed: _isCancelling ? null : _onKeluarParkir,
                     icon: const Icon(Icons.cancel_outlined,
@@ -601,6 +759,235 @@ class _StatusKendaraanPageState extends State<StatusKendaraanPage>
         ],
       ),
     );
+  }
+
+  Future<void> _showSwapSlotModal(BuildContext context) async {
+    if (_activeReservation == null) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = AppColors.getCardBg(context);
+    final textPrimary = AppColors.getTextPrimary(context);
+    final textSecondary = AppColors.getTextSecondary(context);
+
+    final areaId = _activeReservation!.areaId.isNotEmpty
+        ? _activeReservation!.areaId
+        : 'teknik-elektro';
+
+    final service = BookingService();
+    List<ParkingSlot> availableSlots = [];
+    try {
+      final slots = await service.getSlots(areaId);
+      availableSlots = slots
+          .where((s) => s.status.toLowerCase() == 'available')
+          .toList();
+    } catch (_) {}
+
+    if (!mounted) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF8B5CF6),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.swap_horiz_rounded, color: Colors.white, size: 22),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pindah / Swap Slot Parkir',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textPrimary,
+                        ),
+                      ),
+                      Text(
+                        'Pilih slot baru yang masih tersedia di gedung ini',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            if (availableSlots.isEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Center(
+                  child: Text(
+                    'Tidak ada slot kosong yang tersedia di area ini saat ini.',
+                    style: TextStyle(color: textSecondary, fontSize: 13),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ] else ...[
+              Text(
+                'Slot Kosong Tersedia:',
+                style: TextStyle(
+                  color: textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 220),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: availableSlots.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (ctx, idx) {
+                    final slot = availableSlots[idx];
+                    return InkWell(
+                      onTap: () async {
+                        Navigator.pop(ctx);
+                        _handleSwapSlot(slot.id, slot.slotNumber);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.cardBg2Dark : const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark ? AppColors.borderColorDark : const Color(0xFFE2E8F0),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.local_parking_rounded,
+                                    color: Color(0xFF22C55E), size: 20),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Slot ${slot.slotNumber}',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF8B5CF6),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'Pilih Slot',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.pushNamed(context, AppRoutes.booking);
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF2563EB),
+                  side: const BorderSide(color: Color(0xFF2563EB)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Lihat Semua Denah Parkir'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleSwapSlot(String newSlotId, String newSlotName) async {
+    if (_activeReservation == null) return;
+    final bookingService = BookingService();
+
+    final result = await bookingService.swapReservation(
+        _activeReservation!.reservationId, newSlotId);
+
+    if (!mounted) return;
+
+    if (result.success) {
+      final updated = ActiveReservation(
+        reservationId: _activeReservation!.reservationId,
+        status: _activeReservation!.status,
+        slotId: newSlotId,
+        slotName: newSlotName,
+        areaId: _activeReservation!.areaId,
+        ticketId: _activeReservation!.ticketId,
+        startTime: _activeReservation!.startTime,
+      );
+      await ActiveReservationStorage().save(updated);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Berhasil pindah ke Slot $newSlotName.'),
+          backgroundColor: Colors.purple,
+        ),
+      );
+
+      await _loadAllData();
+    } else {
+      _showErrorDialog(result.message);
+    }
   }
 
   Future<void> _onArriveAtSlot() async {

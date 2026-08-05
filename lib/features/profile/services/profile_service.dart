@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../../../core/network/api_service.dart';
 import '../models/profile_data.dart';
 import '../models/vehicle.dart';
+import 'package:mobile_front/features/notification/services/notification_service.dart';
 
 /// ProfileService — Service layer profil pengguna.
 ///
@@ -43,9 +44,14 @@ class ProfileService {
 
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
-        return UpdateProfileResult.ok(
-          body['message'] as String? ?? 'Profil berhasil diperbarui.',
+        final msg = body['message'] as String? ?? 'Profil berhasil diperbarui.';
+        NotificationService.addNotification(
+          title: 'Profil Diperbarui',
+          subtitle: 'Data profil Anda ($name) telah berhasil diperbarui.',
+          icon: Icons.person_outline_rounded,
+          iconColor: const Color(0xFF2563EB),
         );
+        return UpdateProfileResult.ok(msg);
       }
       final body = jsonDecode(response.body) as Map<String, dynamic>;
       return UpdateProfileResult.failure(
@@ -76,9 +82,14 @@ class ProfileService {
 
       final body = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
-        return UpdateProfileResult.ok(
-          body['message'] as String? ?? 'Foto profil berhasil diunggah.',
+        final msg = body['message'] as String? ?? 'Foto profil berhasil diunggah.';
+        NotificationService.addNotification(
+          title: 'Foto Profil Diperbarui',
+          subtitle: 'Foto profil baru Anda berhasil disimpan.',
+          icon: Icons.account_circle_outlined,
+          iconColor: const Color(0xFF10B981),
         );
+        return UpdateProfileResult.ok(msg);
       }
       return UpdateProfileResult.failure(
         body['message'] as String? ?? 'Gagal mengunggah foto profil.',
