@@ -71,12 +71,20 @@ Halaman onboarding, panduan penggunaan (floating tutorial), halaman splash, dan 
 
 ## 4. Penentuan Kompleksitas Fungsi
 
-Kompleksitas ditentukan berdasarkan banyaknya elemen data (DET) yang diproses pada tiap fungsi. Karena frontend tidak mereferensikan internal logical file (FTR = 0), penetapan kompleksitas mengikuti ambang jumlah elemen data: Low untuk fungsi dengan 1–4 DET, dan Medium untuk fungsi dengan 5–15 DET.
+Kompleksitas ditentukan melalui matriks kompleksitas standar metode Function Point (Albrecht/IFPUG) berdasarkan dua parameter, yaitu banyaknya elemen data (DET) yang diproses dan banyaknya file yang direferensikan (FTR). Matriks untuk External Input, External Output, dan External Query adalah sebagai berikut.
+
+| FTR \ DET | 1–4 | 5–15 | ≥16 |
+|---|---|---|---|
+| 0–1 | Low | Low (EI) / Medium (EO–EQ) | Medium (EI) / High (EO–EQ) |
+| 2 | Low | Medium | High |
+| ≥3 | Medium | High | High |
+
+Karena frontend tidak memiliki internal logical file dan external interface file (FTR = 0), kompleksitas ditentukan semata oleh jumlah DET. Dengan demikian, untuk EI berlaku Low pada DET 1–15 dan Medium pada DET ≥16, sedangkan untuk EO/EQ berlaku Low pada DET 1–4, Medium pada DET 5–15, dan High pada DET ≥16.
 
 | No | Fungsi | Jenis FP | Kompleksitas | Alasan Penentuan |
 |---|---|---|---|---|
 | 1 | Login | EI | Low | 2 elemen data diproses (email, kata sandi) |
-| 2 | Registrasi Akun | EI | Medium | 6 elemen data diproses (nama, email, telepon, kata sandi, plat nomor, tipe kendaraan) |
+| 2 | Registrasi Akun | EI | Low | 6 elemen data diproses; FTR = 0 sehingga masuk rentang Low (1–15 DET) |
 | 3 | Pemindaian & Verifikasi Tiket | EI | Low | 1 elemen data diproses (kode QR) |
 | 4 | Reservasi Slot Parkir | EI | Low | 4 elemen data diproses (slotId, ticketId, nama, plat nomor) |
 | 5 | Konfirmasi Kedatangan | EI | Low | 1 elemen data diproses (reservationId) |
@@ -105,7 +113,7 @@ Bobot yang digunakan sesuai ketentuan analisis: EI Low=3, Medium=4, High=6; EO L
 | No | Fungsi | Jenis | Kompleksitas | Bobot | FP |
 |---|---|---|---|---|---:|
 | 1 | Login | EI | Low | 3 | 3 |
-| 2 | Registrasi Akun | EI | Medium | 4 | 4 |
+| 2 | Registrasi Akun | EI | Low | 3 | 3 |
 | 3 | Pemindaian & Verifikasi Tiket | EI | Low | 3 | 3 |
 | 4 | Reservasi Slot Parkir | EI | Low | 3 | 3 |
 | 5 | Konfirmasi Kedatangan | EI | Low | 3 | 3 |
@@ -131,12 +139,12 @@ Rekapitulasi per kategori:
 
 | Jenis Fungsi | Low | Medium | High | Total |
 |---|---|---:|---:|---:|
-| EI | 13 | 1 | 0 | 14 |
+| EI | 14 | 0 | 0 | 14 |
 | EO | 1 | 0 | 0 | 1 |
 | EQ | 2 | 5 | 0 | 7 |
 | ILF | 0 | 0 | 0 | 0 |
 | EIF | 0 | 0 | 0 | 0 |
-| **Total** | **16** | **6** | **0** | **22** |
+| **Total** | **17** | **5** | **0** | **22** |
 
 Perhitungan UFP dilakukan secara eksplisit:
 
@@ -147,18 +155,18 @@ UFP = (EI Low × 3) + (EI Medium × 4) + (EI High × 6)
     + (ILF Low × 7) + (ILF Medium × 10) + (ILF High × 15)
     + (EIF Low × 5) + (EIF Medium × 7) + (EIF High × 10)
 
-UFP = (13 × 3) + (1 × 4) + (0 × 6)
+UFP = (14 × 3) + (0 × 4) + (0 × 6)
     + (1 × 4) + (0 × 5) + (0 × 7)
     + (2 × 3) + (5 × 4) + (0 × 6)
     + (0 × 7) + (0 × 10) + (0 × 15)
     + (0 × 5) + (0 × 7) + (0 × 10)
 
-UFP = 39 + 4 + 0 + 4 + 0 + 0 + 6 + 20 + 0 + 0 + 0 + 0 + 0 + 0 + 0
+UFP = 42 + 0 + 0 + 4 + 0 + 0 + 6 + 20 + 0 + 0 + 0 + 0 + 0 + 0 + 0
 
-UFP = 73
+UFP = 72
 ```
 
-Nilai UFP tidak dibulatkan dan sebesar **73**.
+Nilai UFP tidak dibulatkan dan sebesar **72**.
 
 ## 6. Penilaian Degree of Influence
 
