@@ -162,25 +162,42 @@ Nilai UFP tidak dibulatkan dan sebesar **73**.
 
 ## 6. Penilaian Degree of Influence
 
-Penilaian empat belas faktor *General System Characteristics* menggunakan skala 0–5 dengan dasar penilaian dari implementasi aktual.
+Penilaian empat belas faktor *General System Characteristics* menggunakan skala 0–5 dengan dasar penilaian dari implementasi aktual. Rekapitulasi nilai tiap faktor ditampilkan pada Tabel berikut.
 
-| No | General System Characteristic | Nilai | Dasar Penilaian |
-|---|---|---|---:|---|
-| 1 | Data Communications | 2 | Seluruh transaksi berjalan secara online melalui REST API berbasis HTTP/HTTPS menuju backend Cloud Run |
-| 2 | Distributed Functions | 3 | Pemrosesan terdistribusi antara client (presentasi dan state lokal) dan server (logika bisnis), serta penggunaan penyimpanan aset GCS dan layanan QR eksternal |
-| 3 | Performance | 2 | Terdapat indikator pemuatan dan pemantauan durasi berjalan, namun tanpa target kinerja ketat yang terukur |
-| 4 | Heavily Used Configuration | 1 | Aplikasi berjalan pada perangkat bergerak standar tanpa konfigurasi perangkat keras khusus |
-| 5 | Transaction Rate | 1 | Frekuensi transaksi per pengguna relatif rendah (reservasi personal, bukan sistem transaksi volume tinggi) |
-| 6 | On-Line Data Entry | 4 | Hampir seluruh masukan data (login, registrasi, reservasi, profil, kendaraan) dilakukan interaktif secara online |
-| 7 | End-User Efficiency | 4 | Desain berorientasi seluler: denah interaktif, pencarian area, tombol aksi cepat, tutorial, dan umpan balik pemuatan |
-| 8 | On-Line Updating | 4 | Pembaruan data reservasi, profil, dan kendaraan dilakukan secara online melalui API |
-| 9 | Complex Processing | 1 | Pemrosesan kompleks pada frontend terbatas pada penghitungan persentase ketersediaan dan durasi |
-| 10 | Reusability | 2 | Terdapat pustaka widget bersama dan service layer terpusat yang dirancang untuk digunakan ulang |
-| 11 | Installation Ease | 2 | Instalasi melalui platform standar serta konversi PWA dengan service worker; tidak ada prosedur instalasi khusus |
-| 12 | Operational Ease | 3 | Menyediakan penanganan galat, state kosong, dan mekanisme muat ulang yang memudahkan operasional |
-| 13 | Multiple Sites | 2 | Aplikasi melayani beberapa area/gedung parkir pada satu lingkungan kampus |
-| 14 | Facilitate Change | 3 | Arsitektur berbasis fitur, konfigurasi terpusat (AppConfig), dan tema terpusat memudahkan pemeliharaan dan perubahan |
-| | **Total** | **34** | |
+| No | General System Characteristic | Nilai |
+|---|---|---:|
+| 1 | Data Communications | 2 |
+| 2 | Distributed Functions | 3 |
+| 3 | Performance | 2 |
+| 4 | Heavily Used Configuration | 1 |
+| 5 | Transaction Rate | 1 |
+| 6 | On-Line Data Entry | 4 |
+| 7 | End-User Efficiency | 4 |
+| 8 | On-Line Updating | 4 |
+| 9 | Complex Processing | 1 |
+| 10 | Reusability | 2 |
+| 11 | Installation Ease | 2 |
+| 12 | Operational Ease | 3 |
+| 13 | Multiple Sites | 2 |
+| 14 | Facilitate Change | 3 |
+| | **Total** | **34** |
+
+Dasar penilaian setiap faktor diuraikan sebagai berikut.
+
+1. **Data Communications (nilai 2).** Seluruh transaksi berjalan secara online melalui REST API berbasis HTTP/HTTPS menuju backend Cloud Run.
+2. **Distributed Functions (nilai 3).** Pemrosesan terdistribusi antara client (presentasi dan state lokal) dan server (logika bisnis), serta penggunaan penyimpanan aset GCS dan layanan QR eksternal.
+3. **Performance (nilai 2).** Terdapat indikator pemuatan dan pemantauan durasi berjalan, namun tanpa target kinerja ketat yang terukur.
+4. **Heavily Used Configuration (nilai 1).** Aplikasi berjalan pada perangkat bergerak standar tanpa konfigurasi perangkat keras khusus.
+5. **Transaction Rate (nilai 1).** Frekuensi transaksi per pengguna relatif rendah (reservasi personal, bukan sistem transaksi volume tinggi).
+6. **On-Line Data Entry (nilai 4).** Hampir seluruh masukan data (login, registrasi, reservasi, profil, kendaraan) dilakukan interaktif secara online.
+7. **End-User Efficiency (nilai 4).** Desain berorientasi seluler: denah interaktif, pencarian area, tombol aksi cepat, tutorial, dan umpan balik pemuatan.
+8. **On-Line Updating (nilai 4).** Pembaruan data reservasi, profil, dan kendaraan dilakukan secara online melalui API.
+9. **Complex Processing (nilai 1).** Pemrosesan kompleks pada frontend terbatas pada penghitungan persentase ketersediaan dan durasi.
+10. **Reusability (nilai 2).** Terdapat pustaka widget bersama dan service layer terpusat yang dirancang untuk digunakan ulang.
+11. **Installation Ease (nilai 2).** Instalasi melalui platform standar serta konversi PWA dengan service worker; tidak ada prosedur instalasi khusus.
+12. **Operational Ease (nilai 3).** Menyediakan penanganan galat, state kosong, dan mekanisme muat ulang yang memudahkan operasional.
+13. **Multiple Sites (nilai 2).** Aplikasi melayani beberapa area/gedung parkir pada satu lingkungan kampus.
+14. **Facilitate Change (nilai 3).** Arsitektur berbasis fitur, konfigurasi terpusat (AppConfig), dan tema terpusat memudahkan pemeliharaan dan perubahan.
 
 ## 7. Perhitungan General Characteristics Adjustment
 
